@@ -47,9 +47,7 @@ import java.util.UUID;`,
     suffix: '',
     annotation: '@Entity',
     import: `import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;`,
+import jakarta.persistence.Id;`,
     isEntity: true
   },
   {
@@ -72,7 +70,7 @@ function createDirectories(basePath, structure) {
   structure.forEach(pkg => {
     const packageDir = path.join(basePath, pkg.dir.replace(/\//g, path.sep));
     if (!fs.existsSync(packageDir)) {
-      fs.mkdirSync(packageDir, { recursive: true });
+      fs.mkdirSync(packageDir, {recursive: true});
       console.log(`Directory created: ${packageDir}`);
     }
 
@@ -88,10 +86,15 @@ function createDirectories(basePath, structure) {
 
     // 엔티티
     if (pkg.isEntity) {
-      imports += `
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;`.trim();
+      imports = [
+        imports, // 기존 import
+        'import java.util.UUID;',
+        'import jakarta.persistence.Column;',
+        'import org.hibernate.annotations.UuidGenerator;',
+        'import lombok.AllArgsConstructor;',
+        'import lombok.Builder;',
+        'import lombok.NoArgsConstructor;'
+      ].filter(Boolean).join('\n');
 
       declaration = `
 @Builder
@@ -99,11 +102,10 @@ import lombok.NoArgsConstructor;`.trim();
 @AllArgsConstructor
 public class ${classNameWithSuffix}`;
 
-      body = `
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-  `.trim();
+      body = `    @Id
+    @UuidGenerator
+    @Column(updatable = false, nullable = false)
+    private UUID id;`;
     }
     // Repository
     else if (pkg.isRepository) {

@@ -93,7 +93,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;`.trim();
 
-      declaration = `@Entity
+      declaration = `
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

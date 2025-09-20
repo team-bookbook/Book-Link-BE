@@ -126,6 +126,7 @@ public class LibraryService {
      * @param libraryId 조회할 Library Id
      * @return 변환된 dto
      */
+    @Transactional(readOnly = true)
     public LibraryDetailDto getLibrary(UUID libraryId) {
 
         Library library = findById(libraryId);

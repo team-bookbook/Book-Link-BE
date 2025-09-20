@@ -1,20 +1,21 @@
 package com.bookbook.booklink.common.exception;
 
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.io.IOException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -24,31 +25,76 @@ public class GlobalExceptionHandler {
     public GlobalExceptionHandler() {
     }
 
-    // @Valid 유효성 검증 실패 처리
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<BaseResponse<Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex, HttpServletRequest request) {
-
+    private ResponseEntity<BaseResponse<Object>> buildValidationErrorResponse(
+            BindingResult bindingResult, HttpServletRequest request) {
         ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
         String path = request.getRequestURI();
         String method = request.getMethod();
-        String query = request.getQueryString(); // null일 수 있음
+        String query = request.getQueryString();
 
-        // FieldError 목록에서 상세 메시지 조합
-        String detailMessage = ex.getBindingResult().getFieldErrors().stream()
+        String detailMessage = bindingResult.getFieldErrors().stream()
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
         if (query != null) {
-            log.error("Validation failed [{} {}?{}]: {}", method, path, query, detailMessage);
+            log.warn("Validation failed [{} {}?{}]: {}", method, path, query, detailMessage);
         } else {
-            log.error("Validation failed [{} {}]: {}", method, path, detailMessage);
+            log.warn("Validation failed [{} {}]: {}", method, path, detailMessage);
         }
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus().value())
                 .body(BaseResponse.error(errorCode, path));
     }
+
+    /**
+     * DTO 검증 실패 (ex: @Valid)
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BaseResponse<Object>> handleValidationExceptions(
+            MethodArgumentNotValidException ex, HttpServletRequest request) {
+        return buildValidationErrorResponse(ex.getBindingResult(), request);
+    }
+
+    /**
+     * 바인딩 예외 (ex: 타입 불일치)
+     */
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<BaseResponse<Object>> handleBindExceptions(
+            BindException ex, HttpServletRequest request) {
+        return buildValidationErrorResponse(ex.getBindingResult(), request);
+    }
+
+    /**
+     * 데이터 정합성 예외
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<BaseResponse<Object>> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, HttpServletRequest request) {
+        ErrorCode errorCode = ErrorCode.DATA_INTEGRITY_VIOLATION;
+        String path = request.getRequestURI();
+        log.error("DB constraint violation at [{}]: {}", path, ex.getMessage(), ex);
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus().value())
+                .body(BaseResponse.error(errorCode, path));
+    }
+
+    /**
+     * 데이터베이스에 문제 생김
+     */
+    @ExceptionHandler({JpaSystemException.class, TransactionSystemException.class, DataAccessException.class})
+    public ResponseEntity<BaseResponse<Object>> handleJpaSystemExceptions(
+            RuntimeException ex, HttpServletRequest request) {
+        ErrorCode errorCode = ErrorCode.DATABASE_ERROR;
+        String path = request.getRequestURI();
+        log.error("Unexpected DB error at [{}]: {}", path, ex.getMessage(), ex);
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus().value())
+                .body(BaseResponse.error(errorCode, path));
+    }
+
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<BaseResponse<String>> handleCustomException(CustomException ex, HttpServletRequest request) {
@@ -60,9 +106,9 @@ public class GlobalExceptionHandler {
 
         // 어떤 비즈니스 로직에서 발생했는지 로그에 남김
         if (query != null) {
-            log.error("Business exception [{} {}?{}]: code={}, message={}", method, path, query, errorCode.name(), message);
+            log.warn("Business exception [{} {}?{}]: code={}, message={}", method, path, query, errorCode.name(), message);
         } else {
-            log.error("Business exception [{} {}]: code={}, message={}", method, path, errorCode.name(), message);
+            log.warn("Business exception [{} {}]: code={}, message={}", method, path, errorCode.name(), message);
         }
 
         return ResponseEntity
@@ -80,9 +126,9 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.USER_LOGIN_FAILED;
 
         if (query != null) {
-            log.error("Authentication exception [{} {}?{}]: code={}, message={}", method, path, query, errorCode.name(), message);
+            log.warn("Authentication exception [{} {}?{}]: code={}, message={}", method, path, query, errorCode.name(), message);
         } else {
-            log.error("Authentication exception [{} {}]: code={}, message={}", method, path, errorCode.name(), message);
+            log.warn("Authentication exception [{} {}]: code={}, message={}", method, path, errorCode.name(), message);
         }
 
 
@@ -101,9 +147,9 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.METHOD_UNAUTHORIZED;
 
         if (query != null) {
-            log.error("AuthorizationDenied exception [{} {}?{}]: code={}, message={}", method, path, query, errorCode.name(), message);
+            log.warn("AuthorizationDenied exception [{} {}?{}]: code={}, message={}", method, path, query, errorCode.name(), message);
         } else {
-            log.error("AuthorizationDenied exception [{} {}]: code={}, message={}", method, path, errorCode.name(), message);
+            log.warn("AuthorizationDenied exception [{} {}]: code={}, message={}", method, path, errorCode.name(), message);
         }
 
         return ResponseEntity

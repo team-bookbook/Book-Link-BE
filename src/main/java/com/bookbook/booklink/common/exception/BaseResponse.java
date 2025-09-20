@@ -1,6 +1,7 @@
 package com.bookbook.booklink.common.exception;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -8,8 +9,31 @@ import java.time.Instant;
 
 @Getter
 public class BaseResponse<T> {
+    public static final String LIBRARY_ERROR_RESPONSE = """
+            {
+              "success": false,
+              "data": null,
+              "error": {
+                "timestamp": "2025-09-20T07:54:27.043Z",
+                "status": 400,
+                "code": "EXAMPLE_ERROR_CODE_400",
+                "message": "에러 안내 메시지",
+                "path": "api 경로"
+              }
+            }
+            """;
+    public static final String LIBRARY_SUCCESS_RESPONSE = """
+            {
+              "success": true,
+              "data": "123e4567-e89b-12d3-a456-426614174000",
+              "error": null
+            }
+            """;
+    @Schema(example = "true")
     private boolean success;
+    @Schema(description = "성공 데이터", nullable = true)
     private T data;
+    @Schema(description = "에러 정보", nullable = true)
     private ErrorInfo error;
 
     // private 생성자
@@ -35,5 +59,4 @@ public class BaseResponse<T> {
                 .build();
         return new BaseResponse<>(false, null, errorInfo);
     }
-
 }

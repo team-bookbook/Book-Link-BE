@@ -87,6 +87,29 @@ public class LibraryService {
     }
 
     /**
+     * 등록된 도서관 삭제
+     *
+     * @param libraryId 삭제할 Library Id
+     * @param traceId   요청 멱등성 체크용 ID
+     * @param userId    요청 사용자 ID
+     */
+    @Transactional
+    public void deleteLibrary(UUID libraryId, String traceId, UUID userId) {
+        log.info("[LibraryService] [traceId={}, userId={}] delete library initiate, libraryId={}",
+                traceId, userId, libraryId);
+
+        idempotencyService.checkIdempotency("library:delete", traceId, 1);
+
+        // 기존 Library 조회 후 삭제
+        Library existingLibrary = findById(libraryId);
+
+        libraryRepository.delete(existingLibrary);
+
+        log.info("[LibraryService] [traceId={}, userId={}] delete library success",
+                traceId, userId);
+    }
+
+    /**
      * Library 엔티티 DB 저장
      *
      * @param library 저장할 Library 엔티티

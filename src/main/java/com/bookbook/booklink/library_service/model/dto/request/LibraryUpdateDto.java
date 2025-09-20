@@ -16,7 +16,7 @@ import java.util.UUID;
 public class LibraryUpdateDto {
 
     @Schema(description = "수정할 도서관의 ID", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull
+    @NotNull(message = "수정할 도서관의 ID는 필수입니다.")
     private UUID libraryId;
 
     @Schema(description = "도서관 이름", example = "책책도서관", requiredMode = Schema.RequiredMode.REQUIRED)

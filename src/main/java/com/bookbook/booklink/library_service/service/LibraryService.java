@@ -7,6 +7,7 @@ import com.bookbook.booklink.library_service.event.LibraryLockEvent;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
+import com.bookbook.booklink.library_service.model.dto.response.LibraryDetailDto;
 import com.bookbook.booklink.library_service.repository.LibraryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,6 +118,18 @@ public class LibraryService {
 
         log.info("[LibraryService] [traceId={}, userId={}] delete library success",
                 traceId, userId);
+    }
+
+    /**
+     * 특정 도서관 조회 (단일 객체 반환)
+     *
+     * @param libraryId 조회할 Library Id
+     * @return 변환된 dto
+     */
+    public LibraryDetailDto getLibrary(UUID libraryId) {
+
+        Library library = findById(libraryId);
+        return LibraryDetailDto.fromEntity(library);
     }
 
     /**

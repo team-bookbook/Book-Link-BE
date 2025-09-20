@@ -1,5 +1,6 @@
 package com.bookbook.booklink.library_service.model;
 
+import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
@@ -21,6 +23,7 @@ import java.util.UUID;
 
 @Entity
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Library {
@@ -96,5 +99,18 @@ public class Library {
     @Schema(description = "영업 종료 시간", example = "21:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalTime end_time;
 
-    // TODO: User와 1:1 연결 필요
+    // todo: User와 1:1 연결 필요
+
+    public static Library toEntity(LibraryRegDto libraryRegDto) {
+        return Library.builder()
+                .name(libraryRegDto.getName())
+                .description(libraryRegDto.getDescription())
+                .latitude(13.241400)
+                .longitude(15.414000)   // todo: User에서 위치정보 가져와서 위도 경도 변환해서 넣어야함
+                .start_time(libraryRegDto.getStart_time())
+                .end_time(libraryRegDto.getEnd_time())
+                //todo: User 연결 추가
+                .thumbnail_url(libraryRegDto.getThumbnail_url())
+                .build();
+    }
 }

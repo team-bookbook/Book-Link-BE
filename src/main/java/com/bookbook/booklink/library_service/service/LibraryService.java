@@ -3,6 +3,7 @@ package com.bookbook.booklink.library_service.service;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
+import com.bookbook.booklink.library_service.event.LibraryLockEvent;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
@@ -43,8 +44,11 @@ public class LibraryService {
         log.info("[LibraryService] [traceId={}, userId={}] register library initiate, name={}",
                 traceId, userId, libraryRegDto.getName());
 
+        String key = idempotencyService.generateIdempotencyKey("library:register", traceId);
+
         // Redis Lock으로 멱등성 체크
-        idempotencyService.checkIdempotency("library:register", traceId, 1);
+        idempotencyService.checkIdempotency(key, 1,
+                () -> LibraryLockEvent.builder().key("library:register:" + traceId).build());
 
         // Library 엔티티 생성 후 DB 저장
         Library newLibrary = Library.toEntity(libraryRegDto);
@@ -71,8 +75,11 @@ public class LibraryService {
         log.info("[LibraryService] [traceId={}, userId={}] update library initiate",
                 traceId, userId);
 
+        String key = idempotencyService.generateIdempotencyKey("library:update", traceId);
+
         // Redis Lock으로 멱등성 체크
-        idempotencyService.checkIdempotency("library:update", traceId, 1);
+        idempotencyService.checkIdempotency(key, 1,
+                () -> LibraryLockEvent.builder().key("library:update:" + traceId).build());
 
         // 기존 Library 조회 후 정보 갱신
         Library existingLibrary = findById(libraryUpdateDto.getLibraryId());
@@ -98,7 +105,10 @@ public class LibraryService {
         log.info("[LibraryService] [traceId={}, userId={}] delete library initiate, libraryId={}",
                 traceId, userId, libraryId);
 
-        idempotencyService.checkIdempotency("library:delete", traceId, 1);
+        String key = idempotencyService.generateIdempotencyKey("library:delete", traceId);
+
+        idempotencyService.checkIdempotency(key, 1,
+                () -> LibraryLockEvent.builder().key("library:register:" + traceId).build());
 
         // 기존 Library 조회 후 삭제
         Library existingLibrary = findById(libraryId);

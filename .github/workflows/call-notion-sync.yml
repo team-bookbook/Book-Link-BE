@@ -1,0 +1,13 @@
+# .github/workflows/call-notion-sync.yml (사용하는 쪽 레포)
+name: Call Notion Sync
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+jobs:
+  call-notion-sync:
+    uses: Beyond-Imagination/github-actions/.github/workflows/sync-pr-to-notion.yml@main
+    secrets:
+      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+      NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}

@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -261,5 +262,59 @@ public class LibraryController {
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(libraryDetailDto));
+    }
+
+    @Operation(
+            summary = "내 주변 3km 이내의 도서관 조회 (리스트 반환)",
+            description = "내 주변 3km 이내의 도서관을 조회해 반환합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "조회 성공",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "successResponse",
+                                            value = BaseResponse.LIBRARY_SUCCESS_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "입력값 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.LIBRARY_ERROR_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.LIBRARY_ERROR_RESPONSE
+                                    )
+                            )
+                    )
+            }
+    )
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<LibraryDetailDto>>> getLibraries(
+            @RequestParam Double lat,
+            @RequestParam Double lng
+    ) {
+
+        List<LibraryDetailDto> result = libraryService.getLibraries(lat, lng);
+
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(result));
     }
 }

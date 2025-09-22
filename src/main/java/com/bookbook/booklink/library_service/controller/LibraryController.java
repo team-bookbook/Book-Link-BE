@@ -2,6 +2,7 @@ package com.bookbook.booklink.library_service.controller;
 
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
+import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
 import com.bookbook.booklink.library_service.service.LibraryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,12 +14,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @Slf4j
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/library")
 @Tag(name = "Library API", description = "도서관 등록/조회/수정 관련 API")
@@ -85,6 +88,65 @@ public class LibraryController {
                 traceId, userId, savedLibraryId);
         return ResponseEntity.ok()
                 .body(BaseResponse.success(savedLibraryId));
+    }
+
+    @Operation(
+            summary = "도서관 수정",
+            description = "사용자 계정에 등록된 도서관을 수정합니다. ",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "도서관 수정 성공",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "successResponse",
+                                            value = BaseResponse.SUCCESS_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "입력값 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.ERROR_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.ERROR_RESPONSE
+                                    )
+                            )
+                    )
+            }
+    )
+    @PutMapping
+    public ResponseEntity<BaseResponse<UUID>> updateLibrary(
+            @Valid @RequestBody LibraryUpdateDto libraryUpdateDto,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = UUID.randomUUID(); // todo: 실제 인증 정보에서 추출
+        log.info("[LibraryController] [traceId = {}, userId = {}] update library request received, libraryId={}",
+                traceId, userId, libraryUpdateDto.getLibraryId());
+
+        UUID updatedLibraryId = libraryService.updateLibrary(libraryUpdateDto, traceId, userId);
+
+        log.info("[LibraryController] [traceId = {}, userId = {}] update library response success, libraryId={}",
+                traceId, userId, updatedLibraryId);
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(updatedLibraryId));
     }
 
 }

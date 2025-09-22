@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -149,4 +150,63 @@ public class LibraryController {
                 .body(BaseResponse.success(updatedLibraryId));
     }
 
+    @Operation(
+            summary = "도서관 삭제",
+            description = "사용자 계정에 등록된 도서관을 삭제합니다. ",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "도서관 삭제 성공",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "successResponse",
+                                            value = BaseResponse.SUCCESS_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "입력값 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.ERROR_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.ERROR_RESPONSE
+                                    )
+                            )
+                    )
+            }
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Boolean>> deleteLibrary(
+            @PathVariable @NotNull(message = "수정할 도서관의 ID는 필수입니다.") UUID id,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = UUID.randomUUID(); // todo: 실제 인증 정보에서 추출
+        log.info("[LibraryController] [traceId = {}, userId = {}] delete library request received, libraryId={}",
+                traceId, userId, id);
+
+        libraryService.deleteLibrary(id, traceId, userId);
+
+        log.info("[LibraryController] [traceId = {}, userId = {}] delete library response success, libraryId={}",
+                traceId, userId, id);
+
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(Boolean.TRUE));
+    }
 }

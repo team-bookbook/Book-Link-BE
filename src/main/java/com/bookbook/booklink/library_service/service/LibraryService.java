@@ -1,8 +1,8 @@
 package com.bookbook.booklink.library_service.service;
 
+import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
-import com.bookbook.booklink.library_service.event.LibraryLockEvent;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.repository.LibraryRepository;
@@ -44,7 +44,7 @@ public class LibraryService {
         }
 
         // DB 저장 실패시 Redis 롤백
-        eventPublisher.publishEvent(LibraryLockEvent.builder().key(key).build());
+        eventPublisher.publishEvent(LockEvent.builder().key(key).build());
 
         // 저장할 객체 생성
         Library newLibrary = Library.toEntity(libraryRegDto);

@@ -7,6 +7,7 @@ import com.bookbook.booklink.library_service.event.LibraryLockEvent;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
+import com.bookbook.booklink.library_service.model.dto.response.LibraryDetailDto;
 import com.bookbook.booklink.library_service.repository.LibraryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class LibraryService {
 
         // Redis Lock으로 멱등성 체크
         idempotencyService.checkIdempotency(key, 1,
-                () -> LibraryLockEvent.builder().key("library:register:" + traceId).build());
+                () -> LibraryLockEvent.builder().key(key).build());
 
         // Library 엔티티 생성 후 DB 저장
         Library newLibrary = Library.toEntity(libraryRegDto);
@@ -79,7 +80,7 @@ public class LibraryService {
 
         // Redis Lock으로 멱등성 체크
         idempotencyService.checkIdempotency(key, 1,
-                () -> LibraryLockEvent.builder().key("library:update:" + traceId).build());
+                () -> LibraryLockEvent.builder().key(key).build());
 
         // 기존 Library 조회 후 정보 갱신
         Library existingLibrary = findById(libraryUpdateDto.getLibraryId());
@@ -108,7 +109,7 @@ public class LibraryService {
         String key = idempotencyService.generateIdempotencyKey("library:delete", traceId);
 
         idempotencyService.checkIdempotency(key, 1,
-                () -> LibraryLockEvent.builder().key("library:register:" + traceId).build());
+                () -> LibraryLockEvent.builder().key(key).build());
 
         // 기존 Library 조회 후 삭제
         Library existingLibrary = findById(libraryId);
@@ -117,6 +118,19 @@ public class LibraryService {
 
         log.info("[LibraryService] [traceId={}, userId={}] delete library success",
                 traceId, userId);
+    }
+
+    /**
+     * 특정 도서관 조회 (단일 객체 반환)
+     *
+     * @param libraryId 조회할 Library Id
+     * @return 변환된 dto
+     */
+    @Transactional(readOnly = true)
+    public LibraryDetailDto getLibrary(UUID libraryId) {
+
+        Library library = findById(libraryId);
+        return LibraryDetailDto.fromEntity(library);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.bookbook.booklink.library_service.controller;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
+import com.bookbook.booklink.library_service.model.dto.response.LibraryDetailDto;
 import com.bookbook.booklink.library_service.service.LibraryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -208,5 +209,57 @@ public class LibraryController {
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(Boolean.TRUE));
+    }
+
+    @Operation(
+            summary = "특정 도서관 조회 (단일 객체 반환)",
+            description = "특정 도서관의 상세 정보를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "도서관 조회 성공",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "successResponse",
+                                            value = BaseResponse.SUCCESS_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "입력값 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.ERROR_RESPONSE
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 오류로 인한 예외",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BaseResponse.class),
+                                    examples = @ExampleObject(
+                                            name = "errorResponse",
+                                            value = BaseResponse.ERROR_RESPONSE
+                                    )
+                            )
+                    )
+            }
+    )
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<LibraryDetailDto>> getLibrary(
+            @PathVariable @NotNull(message = "조회할 도서관의 ID는 필수입니다.") UUID id
+    ) {
+        LibraryDetailDto libraryDetailDto = libraryService.getLibrary(id);
+
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(libraryDetailDto));
     }
 }

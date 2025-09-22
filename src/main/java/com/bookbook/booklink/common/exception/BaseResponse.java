@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @Getter
 public class BaseResponse<T> {
-    public static final String LIBRARY_ERROR_RESPONSE = """
+    public static final String ERROR_RESPONSE = """
             {
               "success": false,
               "data": null,
@@ -22,7 +22,7 @@ public class BaseResponse<T> {
               }
             }
             """;
-    public static final String LIBRARY_SUCCESS_RESPONSE = """
+    public static final String SUCCESS_RESPONSE = """
             {
               "success": true,
               "data": "123e4567-e89b-12d3-a456-426614174000",

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -131,6 +132,21 @@ public class LibraryService {
 
         Library library = findById(libraryId);
         return LibraryDetailDto.fromEntity(library);
+    }
+
+    /**
+     * 내 주변 3km 이내의 도서관 조회 (리스트 반환)
+     *
+     * @param lat 현재위치(위도)
+     * @param lng 현재위치(경도)
+     * @return 현재위치로부터 3km 이내의 도서관 정보 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<LibraryDetailDto> getLibraries(Double lat, Double lng) {
+
+        List<Library> libraries = libraryRepository.findNearbyLibraries(lat, lng);
+
+        return libraries.stream().map(LibraryDetailDto::fromEntity).toList();
     }
 
     /**

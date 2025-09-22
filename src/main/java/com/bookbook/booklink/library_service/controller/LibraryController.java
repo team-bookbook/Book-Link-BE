@@ -43,7 +43,7 @@ public class LibraryController {
                                     schema = @Schema(implementation = BaseResponse.class),
                                     examples = @ExampleObject(
                                             name = "successResponse",
-                                            value = BaseResponse.LIBRARY_SUCCESS_RESPONSE
+                                            value = BaseResponse.SUCCESS_RESPONSE
                                     )
                             )
                     ),
@@ -55,7 +55,7 @@ public class LibraryController {
                                     schema = @Schema(implementation = BaseResponse.class),
                                     examples = @ExampleObject(
                                             name = "errorResponse",
-                                            value = BaseResponse.LIBRARY_ERROR_RESPONSE
+                                            value = BaseResponse.ERROR_RESPONSE
                                     )
                             )
                     ),
@@ -67,7 +67,7 @@ public class LibraryController {
                                     schema = @Schema(implementation = BaseResponse.class),
                                     examples = @ExampleObject(
                                             name = "errorResponse",
-                                            value = BaseResponse.LIBRARY_ERROR_RESPONSE
+                                            value = BaseResponse.ERROR_RESPONSE
                                     )
                             )
                     )

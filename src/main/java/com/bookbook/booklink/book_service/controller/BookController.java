@@ -27,47 +27,9 @@ public class BookController {
 
 
     @Operation(
-            summary = "도서관 등록",
-            description = "사용자 계정에 새로운 도서관을 등록합니다. " +
-                    "하나의 계정당 도서관은 하나만 등록 가능합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "도서관 등록 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "successResponse",
-                                            value = BaseResponse.SUCCESS_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "입력값 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "서버 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    )
-            }
+            summary = "도서 등록",
+            description = "도서관에 새로운 도서를 등록합니다. " +
+                    "하나의 도서관당 도서는 하나만 등록 가능합니다."
     )
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> registerBook(

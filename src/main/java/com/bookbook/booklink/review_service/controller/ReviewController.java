@@ -4,6 +4,7 @@ import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.review_service.controller.docs.ReviewApiDocs;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;
+import com.bookbook.booklink.review_service.model.dto.response.ReviewListDto;
 import com.bookbook.booklink.review_service.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -31,12 +33,12 @@ public class ReviewController implements ReviewApiDocs {
         UUID userId = UUID.randomUUID();
 
         log.info("[ReviewController] [traceId = {}, userId = {}] create review request received. targetId={}",
-                traceId, userId, reviewCreateDto.getTarget_id());
+                traceId, userId, reviewCreateDto.getTargetId());
 
         reviewService.createReview(reviewCreateDto, traceId, userId);
 
         log.info("[ReviewController] [traceId = {}, userId = {}] create review response success. targetId={}",
-                traceId, userId, reviewCreateDto.getTarget_id());
+                traceId, userId, reviewCreateDto.getTargetId());
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(Boolean.TRUE));
@@ -79,6 +81,17 @@ public class ReviewController implements ReviewApiDocs {
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(Boolean.TRUE));
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<List<ReviewListDto>>> getLibraryReview(
+            @PathVariable UUID libraryId
+    ) {
+        // todo: user 테이블 생성되면 id 대신에 닉네임 주기
+        List<ReviewListDto> reviewListDtoList = reviewService.getLibraryReview(libraryId);
+
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(reviewListDtoList));
     }
 }
     

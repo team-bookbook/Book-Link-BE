@@ -6,12 +6,14 @@ import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;
+import com.bookbook.booklink.review_service.model.dto.response.ReviewListDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequestMapping("/api/review")
@@ -54,5 +56,14 @@ public interface ReviewApiDocs {
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<BaseResponse<Boolean>> deleteReview(
             @PathVariable UUID reviewId
+    );
+
+    @Operation(
+            summary = "도서관에 달린 모든 리뷰 조회",
+            description = "특정 도서관에 달린 모든 리뷰의 목록을 조회합니다. "
+    )
+    @GetMapping("/{libraryId}")
+    public ResponseEntity<BaseResponse<List<ReviewListDto>>> getLibraryReview(
+            @PathVariable UUID libraryId
     );
 }

@@ -1,72 +1,26 @@
 package com.bookbook.booklink.review_service.controller;
 
 import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.review_service.controller.docs.ReviewApiDocs;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import com.bookbook.booklink.review_service.service.ReviewService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
-import com.bookbook.booklink.review_service.service.ReviewService;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/review")
-public class ReviewController {
+public class ReviewController implements ReviewApiDocs {
     private final ReviewService reviewService;
 
-    @Operation(
-            summary = "리뷰 생성",
-            description = "사용자/도서관에 대한 리뷰를 생성합니다. " +
-                    "하나의 거래(도서 대여)당 하나의 리뷰가 가능합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "리뷰 생성 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "successResponse",
-                                            value = BaseResponse.SUCCESS_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "입력값 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "서버 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    )
-            }
-    )
-    @PostMapping
+    @Override
     public ResponseEntity<BaseResponse<Boolean>> createReview(
             @Valid @RequestBody ReviewCreateDto reviewCreateDto,
             @RequestHeader("Trace-Id") String traceId

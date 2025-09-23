@@ -3,6 +3,7 @@ package com.bookbook.booklink.member.model;
 import com.bookbook.booklink.member.code.Provider;
 import com.bookbook.booklink.member.code.Role;
 import com.bookbook.booklink.member.code.Status;
+import com.bookbook.booklink.member.model.dto.request.SignUpRequestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Min;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,7 @@ import lombok.NoArgsConstructor;
 @Entity
 
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
@@ -106,5 +109,20 @@ public class Member {
     @Schema(description = "프로필 이미지 URL", example = "https://example.com/profile.jpg", maxLength = 500)
     private String profile_image;
 
+    public static Member ofLocalSignup(SignUpRequestDto req, String encodedPassword) {
+        return Member.builder()
+                .email(req.getEmail())
+                .password(encodedPassword)
+                .name(req.getName())
+                .nickname(req.getNickname())
+                .address(req.getAddress())
+                .phone(req.getPhone())
+                .profile_image(req.getProfile_image())
+                .provider(Provider.LOCAL)
+                .role(Role.CUSTOMER)
+                .status(Status.ACTIVE)
+                .point_balance(0)
+                .build();
+    }
 }
     

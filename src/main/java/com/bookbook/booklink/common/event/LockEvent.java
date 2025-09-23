@@ -1,10 +1,10 @@
-package com.bookbook.booklink.library_service.event;
+package com.bookbook.booklink.common.event;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class LibraryLockEvent {
+public class LockEvent {
     private String key;
 }

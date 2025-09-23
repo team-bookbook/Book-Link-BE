@@ -2,16 +2,14 @@ package com.bookbook.booklink.book_service.model;
 
 import com.bookbook.booklink.book_service.model.dto.request.BookRegDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import org.hibernate.annotations.UuidGenerator;
@@ -50,7 +48,8 @@ public class Book {
     private String publisher;
 
     @Column(nullable = false)
-    @NotBlank()
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @Schema(description = "카테고리", example = "고전문학", requiredMode = Schema.RequiredMode.REQUIRED)
     private BookCategory category;
 

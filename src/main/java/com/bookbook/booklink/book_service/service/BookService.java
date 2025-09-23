@@ -2,12 +2,13 @@ package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.dto.request.BookRegDto;
-import com.bookbook.booklink.common.event.LockEvent;
-import com.bookbook.booklink.common.event.RedisLockUtil;
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.common.service.IdempotencyService;
+import com.bookbook.booklink.library_service.event.LibraryLockEvent;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import com.bookbook.booklink.book_service.repository.BookRepository;
@@ -19,8 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
-    private final RedisLockUtil redisLockUtil;
-    private final ApplicationEventPublisher eventPublisher;
+    private final IdempotencyService idempotencyService;
 
     @Transactional
     public UUID registerLibrary(@Valid BookRegDto bookRegDto, String traceId, UUID userId) {
@@ -28,13 +28,13 @@ public class BookService {
 
         // 멱등성 체크
         String key = "book:register:" + traceId;
-        redisLockUtil.acquireLockOrThrow(key);
-
-        // todo : event publisher 구조 논의
-        eventPublisher.publishEvent(LockEvent.builder().key(key).build());
+        idempotencyService.checkIdempotency(key, 1,
+                () -> LibraryLockEvent.builder().key(key).build());
 
         // register book
         Book newBook = Book.toEntity(bookRegDto);
+
+        // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
 
         Book savedBook = bookRepository.save(newBook);
         UUID bookId = savedBook.getId();

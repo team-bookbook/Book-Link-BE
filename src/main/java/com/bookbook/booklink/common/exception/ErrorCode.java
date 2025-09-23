@@ -30,7 +30,12 @@ public enum ErrorCode {
     /*
      * Library
      */
-    LIBRARY_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIBRARY_NOT_FOUND_400", "해당 ID의 도서관이 존재하지 않습니다.");
+    LIBRARY_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIBRARY_NOT_FOUND_400", "해당 ID의 도서관이 존재하지 않습니다."),
+
+    /*
+    * Book
+    */
+    INVALID_CATEGORY_CODE(HttpStatus.BAD_REQUEST, "INVALID_CATEGORY_CODE_400", "유효하지 않은 카테고리 코드입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

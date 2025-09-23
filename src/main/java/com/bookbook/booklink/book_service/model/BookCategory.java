@@ -1,5 +1,7 @@
 package com.bookbook.booklink.book_service.model;
 
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -23,7 +25,7 @@ public enum BookCategory {
                 return category;
             }
         }
-        throw new IllegalArgumentException("Invalid book category code: " + code); // todo : 에러 코드 처리
+        throw new CustomException(ErrorCode.INVALID_CATEGORY_CODE);
     }
 
     private final String categoryCode;

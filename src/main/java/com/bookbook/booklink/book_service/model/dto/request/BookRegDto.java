@@ -1,5 +1,6 @@
 package com.bookbook.booklink.book_service.model.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -35,10 +36,10 @@ public class BookRegDto {
 
     @Schema(description = "ISBN 코드", example = "9791192300818", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "ISBN 코드는 필수입니다.")
+    @JsonProperty("ISBN")
     String ISBN;
 
     @Schema(description = "정가", example = "17000")
-    @NotBlank(message = "도서 정가는 필수입니다.")
     @Min(value = 0, message = "도서 정가는 양수여야 합니다.")
     Integer originalPrice;
 

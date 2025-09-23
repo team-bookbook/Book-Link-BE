@@ -109,6 +109,31 @@ public class ReviewService {
     }
 
     /**
+     * 리뷰 삭제하는 메서드
+     *
+     * @param reviewId 삭제할 리뷰의 ID
+     * @param userId   요청한 유저의 ID
+     */
+    @Transactional
+    public void deleteReview(UUID traceId, UUID reviewId, UUID userId) {
+        log.info("[ReviewService] [traceId={}, userId={}] delete review initiate. reviewId={}",
+                traceId, userId, reviewId);
+
+        // 리뷰 삭제
+        Review existingReview = findReviewById(reviewId);
+        String targetId = existingReview.getTarget_id();
+        reviewRepository.delete(existingReview);
+
+        // 리뷰 집계에 반영
+        ReviewSummary reviewSummary = findReviewSummaryByTargetId(targetId);
+        reviewSummary.removeReview(existingReview.getRating());
+        reviewSummaryRepository.save(reviewSummary);
+
+        log.info("[ReviewService] [traceId={}, userId={}] delete review success. reviewId={}",
+                traceId, userId, reviewId);
+    }
+
+    /**
      * ID로 리뷰 집계 조회
      *
      * @param targetId 조회할 ID

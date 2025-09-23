@@ -61,5 +61,24 @@ public class ReviewController implements ReviewApiDocs {
         return ResponseEntity.ok()
                 .body(BaseResponse.success(Boolean.TRUE));
     }
+
+    @Override
+    public ResponseEntity<BaseResponse<Boolean>> deleteReview(
+            @PathVariable UUID reviewId
+    ) {
+        UUID traceId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        log.info("[ReviewController] [traceId = {}, userId = {}] delete review request received. reviewId={}",
+                traceId, userId, reviewId);
+
+        reviewService.deleteReview(reviewId, traceId, userId);
+
+        log.info("[ReviewController] [traceId = {}, userId = {}] delete review request success. reviewId={}",
+                traceId, userId, reviewId);
+
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(Boolean.TRUE));
+    }
 }
     

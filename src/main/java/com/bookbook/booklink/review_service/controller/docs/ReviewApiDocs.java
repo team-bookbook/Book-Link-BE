@@ -26,7 +26,6 @@ public interface ReviewApiDocs {
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
-
     @PostMapping
     public ResponseEntity<BaseResponse<Boolean>> createReview(
             @Valid @RequestBody ReviewCreateDto reviewCreateDto,
@@ -37,10 +36,23 @@ public interface ReviewApiDocs {
             summary = "리뷰 수정",
             description = "사용자/도서관에 대한 리뷰를 수정합니다. 평점, 코멘트 수정가능"
     )
+    @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PutMapping("/{reviewId}")
     public ResponseEntity<BaseResponse<Boolean>> updateReview(
             @PathVariable UUID reviewId,
             @Valid @RequestBody ReviewUpdateDto reviewUpdateDto,
             @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "리뷰 삭제",
+            description = "사용자/도서관에 대한 리뷰를 삭제합니다. "
+    )
+    @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<BaseResponse<Boolean>> deleteReview(
+            @PathVariable UUID reviewId
     );
 }

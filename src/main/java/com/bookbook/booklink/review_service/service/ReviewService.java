@@ -1,9 +1,9 @@
 package com.bookbook.booklink.review_service.service;
 
+import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
-import com.bookbook.booklink.library_service.event.LibraryLockEvent;
 import com.bookbook.booklink.review_service.model.Review;
 import com.bookbook.booklink.review_service.model.ReviewSummary;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
@@ -40,7 +40,7 @@ public class ReviewService {
         // Redis Lock으로 멱등성 체크
         String key = idempotencyService.generateIdempotencyKey("review:create", traceId);
         idempotencyService.checkIdempotency(key, 1,
-                () -> LibraryLockEvent.builder().key(key).build());
+                () -> LockEvent.builder().key(key).build());
 
         // 타입에 따라 review 생성 후 저장
         Review newReview = Review.toEntity(reviewCreateDto);

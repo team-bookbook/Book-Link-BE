@@ -169,5 +169,24 @@ public class ReviewService {
         return libraryReviewList.stream().map(ReviewListDto::fromEntity).toList();
     }
 
+    /**
+     * 유저/도서관의 평균 별점을 조회하는 메서드
+     *
+     * @param targetId 조회할 유저/도서관의 ID
+     * @return 평균 별점 or null
+     */
+    @Transactional(readOnly = true)
+    public Double getAvgRating(String targetId) {
+
+        ReviewSummary reviewSummary = findReviewSummaryByTargetId(targetId);
+
+        if (reviewSummary == null) {
+            return null;
+        } else {
+            return reviewSummary.getAvgRating();
+        }
+
+    }
+
 }
     

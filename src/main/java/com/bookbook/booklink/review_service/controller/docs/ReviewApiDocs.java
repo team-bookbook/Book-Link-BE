@@ -68,4 +68,16 @@ public interface ReviewApiDocs {
     public ResponseEntity<BaseResponse<List<ReviewListDto>>> getLibraryReview(
             @PathVariable UUID libraryId
     );
+
+    @Operation(
+            summary = "도서관/사용자의 평균 별점 조회",
+            description = "도서관/사용자의 평균 별점을 조회합니다. " +
+                    "리뷰가 하나도 없을 경우, null을 반환합니다."
+    )
+    @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
+            ErrorCode.DATA_INTEGRITY_VIOLATION})
+    @GetMapping("/rating/{targetId}")
+    public ResponseEntity<BaseResponse<Double>> getAvgRating(
+            @PathVariable String targetId
+    );
 }

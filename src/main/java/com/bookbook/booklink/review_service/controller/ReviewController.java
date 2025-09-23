@@ -93,5 +93,15 @@ public class ReviewController implements ReviewApiDocs {
         return ResponseEntity.ok()
                 .body(BaseResponse.success(reviewListDtoList));
     }
+
+    @Override
+    public ResponseEntity<BaseResponse<Double>> getAvgRating(
+            @PathVariable String targetId
+    ) {
+        Double avgRating = reviewService.getAvgRating(targetId);
+
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(avgRating));
+    }
 }
     

@@ -39,7 +39,7 @@ public interface ReviewApiDocs {
             description = "사용자/도서관에 대한 리뷰를 수정합니다. 평점, 코멘트 수정가능"
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
-            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.REVIEW_NOT_FOUND})
     @PutMapping("/{reviewId}")
     public ResponseEntity<BaseResponse<Boolean>> updateReview(
             @PathVariable UUID reviewId,
@@ -52,7 +52,7 @@ public interface ReviewApiDocs {
             description = "사용자/도서관에 대한 리뷰를 삭제합니다. "
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
-            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.REVIEW_NOT_FOUND})
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<BaseResponse<Boolean>> deleteReview(
             @PathVariable UUID reviewId
@@ -62,6 +62,8 @@ public interface ReviewApiDocs {
             summary = "도서관에 달린 모든 리뷰 조회",
             description = "특정 도서관에 달린 모든 리뷰의 목록을 조회합니다. "
     )
+    @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @GetMapping("/{libraryId}")
     public ResponseEntity<BaseResponse<List<ReviewListDto>>> getLibraryReview(
             @PathVariable UUID libraryId

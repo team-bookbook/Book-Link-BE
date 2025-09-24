@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
 @Schema(description = "도서 등록 요청 DTO")
-public class BookRegDto {
+public class BookRegisterDto {
     @Schema(description = "도서 이름", example = "마흔에 읽는 쇼펜하우어", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "도서 이름은 필수입니다.")
     @Size(min = 1, max = 64, message = "도서관 이름은 1자 이상 64자 이하이어야 합니다.")

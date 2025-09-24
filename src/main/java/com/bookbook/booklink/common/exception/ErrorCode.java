@@ -35,8 +35,12 @@ public enum ErrorCode {
     /*
      * Review
      */
-    REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "REVIEW_NOT_FOUND_400", "존재하지 않는 리뷰입니다.");
-    ;
+    REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "REVIEW_NOT_FOUND_400", "존재하지 않는 리뷰입니다."),
+
+    /*
+     * Notification
+     */
+    NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "NOTIFICATION_NOT_FOUND_400", "존재하지 않는 알림입니다.");;
 
     private final HttpStatus httpStatus;
     private final String code;

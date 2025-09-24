@@ -1,14 +1,15 @@
 package com.bookbook.booklink.book_service.model;
 
-import com.bookbook.booklink.book_service.model.dto.request.BookRegDto;
+import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -53,18 +54,6 @@ public class Book {
     @Schema(description = "카테고리", example = "고전문학", requiredMode = Schema.RequiredMode.REQUIRED)
     private BookCategory category;
 
-    @Min(0)
-    @Column(nullable = false)
-    @Builder.Default
-    @Schema(description = "대출된 총 횟수", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer borrow_count = 0;
-
-    @Min(0)
-    @Column(nullable = false)
-    @Builder.Default
-    @Schema(description = "보증금 (단위 : 포인트)", example = "1000", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer rent_price = 0;
-
     @Column(nullable = false, unique = true, length = 13)
     @Schema(description = "ISBN 코드", example = "9791192300818", requiredMode = Schema.RequiredMode.REQUIRED)
     @Size(min = 13, max = 13)
@@ -73,37 +62,31 @@ public class Book {
     @Min(0)
     @Column(nullable = false)
     @Schema(description = "도서 정가", example = "17000", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer original_price;
-
-    @Column(nullable = false)
-    @Schema(description = "대여 가능 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
-    private boolean can_borrow;
+    private Integer originalPrice;
 
     @Min(0)
     @Column(nullable = false)
     @Builder.Default
     @Schema(description = "좋아요 수", example = "14", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer like_count = 0;
+    private Integer likeCount = 0;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @Schema(description = "도서 등록일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
-    // todo : 등록된 도서관 1:N 매칭
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "도서를 보유한 도서관별 정보")
+    private List<LibraryBook> libraryBooks = new ArrayList<>();
 
-    // todo : 카테고리와 1:N 매칭
-
-    public static Book toEntity(BookRegDto bookRegDto) {
+    public static Book toEntity(BookRegisterDto bookRegDto) {
         return Book.builder()
                 .name(bookRegDto.getName())
                 .author(bookRegDto.getAuthor())
                 .publisher(bookRegDto.getPublisher())
                 .category(BookCategory.getByCode(bookRegDto.getCategory()))
-                .rent_price(bookRegDto.getRentPrice())
                 .ISBN(bookRegDto.getISBN())
-                .original_price(bookRegDto.getOriginalPrice())
-                .can_borrow(bookRegDto.isCanBorrow())
+                .originalPrice(bookRegDto.getOriginalPrice())
                 .build();
     }
 }

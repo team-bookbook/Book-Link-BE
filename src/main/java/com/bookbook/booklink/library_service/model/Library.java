@@ -1,11 +1,10 @@
 package com.bookbook.booklink.library_service.model;
 
+import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -20,6 +19,8 @@ import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -101,6 +102,10 @@ public class Library {
     private LocalTime end_time;
 
     // todo: User와 1:1 연결 필요
+
+    @OneToMany(mappedBy = "library", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "도서관이 소장하고 있는 도서들")
+    private List<LibraryBook> libraryBooks = new ArrayList<>();
 
     public static Library toEntity(LibraryRegDto libraryRegDto) {
         return Library.builder()

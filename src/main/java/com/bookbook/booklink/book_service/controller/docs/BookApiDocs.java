@@ -1,6 +1,7 @@
 package com.bookbook.booklink.book_service.controller.docs;
 
 import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
@@ -30,7 +31,7 @@ public interface BookApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> registerBook(
-            @Valid @RequestBody BookRegisterDto bookRegisterDto,
+            @Valid @RequestBody LibraryBookRegisterDto bookRegisterDto,
             @RequestHeader("Trace-Id") String traceId
     );
 }

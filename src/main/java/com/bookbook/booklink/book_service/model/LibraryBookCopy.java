@@ -2,9 +2,7 @@ package com.bookbook.booklink.book_service.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -19,6 +17,7 @@ public class LibraryBookCopy {
     @Id
     @Column(updatable = false, nullable = false)
     @UuidGenerator
+    @Getter
     @Schema(description = "도서관이 소장한 책 한 권의 실제 인스턴스 ID (UUID)", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID id;
 
@@ -38,4 +37,10 @@ public class LibraryBookCopy {
 
     @Schema(description = "반납 예정일", example = "2025-09-29T12:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private LocalDateTime dueAt;
+
+    public static LibraryBookCopy toEntity(LibraryBook libraryBook) {
+        return LibraryBookCopy.builder()
+                .libraryBook(libraryBook)
+                .build();
+    }
 }

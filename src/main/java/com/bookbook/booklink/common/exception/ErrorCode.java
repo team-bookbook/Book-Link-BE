@@ -52,6 +52,9 @@ public enum ErrorCode {
     @Schema(description = "유효하지 않은 카테고리 코드입니다.")
     INVALID_CATEGORY_CODE(HttpStatus.BAD_REQUEST, "INVALID_CATEGORY_CODE_400", "유효하지 않은 카테고리 코드입니다."),
 
+    @Schema(description = "존재하지 않는 도서입니다.")
+    BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK_NOT_FOUND_400", "존재하지 않는 도서입니다."),
+
     /*
      * Review
      */

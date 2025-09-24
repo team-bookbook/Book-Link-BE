@@ -52,7 +52,7 @@ public class Book {
     @Column(nullable = false)
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Schema(description = "카테고리", example = "고전문학", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "카테고리", example = "GENERALITIES", requiredMode = Schema.RequiredMode.REQUIRED)
     private BookCategory category;
 
     @Column(nullable = false, unique = true, length = 13)

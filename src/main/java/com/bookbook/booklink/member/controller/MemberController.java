@@ -19,12 +19,13 @@ public class MemberController implements MemberApiDocs {
     private final MemberService memberService;
 
     @Override
-    public ResponseEntity<BaseResponse<Member>> signup(
+    public ResponseEntity<BaseResponse<Boolean>> signup(
             @Valid @RequestBody SignUpRequestDto request,
-            @RequestHeader(value = "Trace-Id") String traceId
+            @RequestHeader(value = "Trace-Id",required = false) String traceId
     ) {
         Member saved = memberService.signUp(request, traceId);
-        return ResponseEntity.ok().body(BaseResponse.success(saved));
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(Boolean.TRUE));
     }
 }
     

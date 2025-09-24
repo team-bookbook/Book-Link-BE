@@ -3,7 +3,6 @@ package com.bookbook.booklink.member.controller.docs;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
-import com.bookbook.booklink.member.model.Member;
 import com.bookbook.booklink.member.model.dto.request.SignUpRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,9 +25,9 @@ public interface MemberApiDocs {
             description = "사용자로 부터 회원 정보를 입력 받아 가입합니다. "
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
-            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION,ErrorCode.PASSWORD_POLICY_INVALID})
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse<Member>> signup(
+    public ResponseEntity<BaseResponse<Boolean>> signup(
             @Valid @RequestBody SignUpRequestDto signUpRequestDto,
             @RequestHeader("Trace-Id") String traceId
     );

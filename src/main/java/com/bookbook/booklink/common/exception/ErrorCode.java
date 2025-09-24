@@ -31,6 +31,9 @@ public enum ErrorCode {
     @Schema(description = "데이터 제약 조건을 위반했습니다.")
     DATA_INTEGRITY_VIOLATION(HttpStatus.BAD_REQUEST, "DATA_INTEGRITY_VIOLATION_400", "데이터 제약 조건을 위반했습니다."),
 
+    @Schema(description = "비밀번호는 대/소문자·숫자·특수문자 각 1자 이상 포함, 공백 불가입니다.")
+    PASSWORD_POLICY_INVALID(HttpStatus.BAD_REQUEST, "PASSWORD_POLICY_INVALID_400", "비밀번호는 대/소문자·숫자·특수문자 각 1자 이상 포함, 공백 불가"),
+
     /*
      * 예외처리 예시
      */
@@ -50,8 +53,7 @@ public enum ErrorCode {
      * Review
      */
     @Schema(description = "존재하지 않는 리뷰입니다.")
-    REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "REVIEW_NOT_FOUND_400", "존재하지 않는 리뷰입니다.");
-    ;
+    REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "REVIEW_NOT_FOUND_400", "존재하지 않는 리뷰입니다.");;
 
     private final HttpStatus httpStatus;
     @Schema(description = "에러 코드", example = "UNKNOWN_ERROR_500", implementation = ErrorCode.class)

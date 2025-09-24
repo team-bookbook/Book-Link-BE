@@ -21,14 +21,20 @@ public class SignUpRequestDto {
     @Schema(description = "이메일 (로그인 ID)", example = "user@example.com", requiredMode = Schema.RequiredMode.REQUIRED, maxLength = 150)
     private String email;
 
-    @NotBlank @Size(min = 8, max = 100)
-    @Schema(description = "비밀번호(평문 입력)", example = "P@ssw0rd!", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 8, maxLength = 100)
+    @NotBlank
+    @Size(min = 8, max = 20, message = "비밀번호는 8~20자여야 합니다.")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-={}\\[\\]|:;\"'<>,.?/])\\S{8,20}$",
+            message = "비밀번호는 대문자/소문자/숫자/특수문자를 각각 1자 이상 포함해야 하며 공백을 포함할 수 없습니다."
+    )
     private String password;
 
-    @NotBlank @Size(min = 2, max = 20)
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String name;
 
-    @NotBlank @Size(min = 2, max = 20)
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String nickname;
 
     @Size(min = 5, max = 200)

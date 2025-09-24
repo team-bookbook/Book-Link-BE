@@ -37,7 +37,7 @@ public class MemberService {
         log.info("[MemberService] [traceId={}] signup member initiate, name={}",
                 traceId, signUpRequestDto.getName());
 
-        String key = idempotencyService.generateIdempotencyKey("library:register", traceId);
+        String key = idempotencyService.generateIdempotencyKey("member:signup", traceId);
 
         // Redis Lock으로 멱등성 체크
         idempotencyService.checkIdempotency(key, 1,

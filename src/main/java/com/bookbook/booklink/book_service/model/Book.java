@@ -76,6 +76,7 @@ public class Book {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     @Schema(description = "도서를 보유한 도서관별 정보")
     private List<LibraryBook> libraryBooks = new ArrayList<>();
 

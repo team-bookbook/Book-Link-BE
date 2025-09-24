@@ -57,19 +57,18 @@ public class LibraryBook {
 
     @Min(0)
     @Column(nullable = false)
-    @Builder.Default
     @Schema(description = "대여 가능한 도서 수", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer availableBooks = copies;
+    private Integer availableBooks;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @Schema(description = "도서 등록일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+/*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_id", nullable = false)
     @Schema(description = "이 도서를 소장한 도서관")
-    private Library library;
+    private Library library;*/
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_id", nullable = false)
@@ -77,16 +76,25 @@ public class LibraryBook {
     private Book book;
 
     @OneToMany(mappedBy = "libraryBook", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     @Schema(description = "도서관이 보유한 각 권 개별 도서")
     private List<LibraryBookCopy> copiesList = new ArrayList<>();
 
-    public static LibraryBook toEntity(LibraryBookRegisterDto libraryBookRegisterDto, Book book, Library library) {
+    public static LibraryBook toEntity(LibraryBookRegisterDto libraryBookRegisterDto, Book book
+//            , Library library
+    ) {
         return LibraryBook.builder()
                 .copies(libraryBookRegisterDto.getCopies())
+                .availableBooks(libraryBookRegisterDto.getCopies())
                 .deposit(libraryBookRegisterDto.getDeposit())
                 .book(book)
-                .library(library)
+//                .library(library)
                 .build();
+    }
+
+    public void addCopy(LibraryBookCopy copy) {
+        copiesList.add(copy);
+        copy.setLibraryBook(this);
     }
 
     public void updateAvailableBooks() {

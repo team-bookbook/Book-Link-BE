@@ -1,4 +1,4 @@
-package com.bookbook.booklink.common.config.security;
+package com.bookbook.booklink.common.jwt.CustomUserDetail;
 
 
 import com.bookbook.booklink.member.model.Member;
@@ -18,15 +18,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {
-    
+
+    /*
+    * Spring Security는 기본적으로 UserDetailsService 인터페이스를 통해 사용자 정보를 가져옵니다.
+    * 이를 구현한 CustomUserDetailsService는 데이터베이스에서 사용자 정보를 조회하고 인증 처리를 담당합니다.
+    * */
     private final MemberRepository memberRepository;
     
     @Override
     public UserDetails loadUserByUsername(String username) {
         Member member = memberRepository.findByEmail(username)
                             .orElseThrow(() -> new UsernameNotFoundException(username));
-        List<SimpleGrantedAuthority> authorities = findUserAuthorities(username);
-        return Principal.createPrincipal(member, authorities);
+        return new CustomUserDetails(member);
     }
     
     public List<SimpleGrantedAuthority> findUserAuthorities(String username){

@@ -1,14 +1,18 @@
 package com.bookbook.booklink.common.config.security;
 
+import com.bookbook.booklink.common.jwt.CustomUserDetail.UserDetailsServiceImpl;
+import com.bookbook.booklink.common.jwt.JwtAuthenticationFilter;
+import com.bookbook.booklink.common.jwt.JwtAuthorizationFilter;
+import com.bookbook.booklink.common.jwt.RefreshTokenService;
+import com.bookbook.booklink.common.jwt.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -23,30 +27,39 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JWTUtil jwtUtil;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final RefreshTokenService refreshTokenService;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .logout(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        (requests) -> requests
-                                .requestMatchers("/", "/error", "/favicon.ico", "/api/member/signin",
-                                        "/api/member/signup").permitAll()
-                                .requestMatchers("/api/**").authenticated()
-                                .anyRequest().authenticated()
-                );
-        return http.build();
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
+        AuthenticationManagerBuilder authManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authManagerBuilder.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
+
+        return authManagerBuilder.build();
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+        JwtAuthenticationFilter jwtAuthenticationFilter =
+                new JwtAuthenticationFilter(authenticationManager, jwtUtil, refreshTokenService);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/api/login"); // 로그인 URL 지정
+
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/member/signup", "/api/login", "/api/token/reissue").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilter(jwtAuthenticationFilter)
+                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService),
+                        UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean

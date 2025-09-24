@@ -1,6 +1,8 @@
 package com.bookbook.booklink.member.service;
 
 import com.bookbook.booklink.common.event.LockEvent;
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.member.model.Member;
 import com.bookbook.booklink.member.model.dto.request.SignUpRequestDto;
@@ -45,7 +47,7 @@ public class MemberService {
 
         // 이메일 중복 확인
         if (memberRepository.existsByEmail(signUpRequestDto.getEmail())) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
         String encodedPassword = passwordEncoder.encode(signUpRequestDto.getPassword());
 

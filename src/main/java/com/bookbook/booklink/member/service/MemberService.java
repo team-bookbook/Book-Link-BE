@@ -29,14 +29,13 @@ public class MemberService {
      *
      * @param signUpRequestDto 회원 가입 정보 DTO
      * @param traceId         요청 멱등성 체크용 ID (클라이언트 전달)
-     * @param userId          요청 사용자 ID
      * @return 등록된 Member ID
      */
     @Transactional
-    public Member signUp(SignUpRequestDto signUpRequestDto, String traceId, UUID userId) {
+    public Member signUp(SignUpRequestDto signUpRequestDto, String traceId) {
 
-        log.info("[MemberService] [traceId={}, userId={}] signup member initiate, name={}",
-                traceId, userId, signUpRequestDto.getName());
+        log.info("[MemberService] [traceId={}] signup member initiate, name={}",
+                traceId, signUpRequestDto.getName());
 
         String key = idempotencyService.generateIdempotencyKey("library:register", traceId);
 
@@ -54,8 +53,8 @@ public class MemberService {
         Member newMember = Member.ofLocalSignup(signUpRequestDto,encodedPassword);
         Member saveMember = memberRepository.save(newMember);
 
-        log.info("[MemberService] [traceId={}, userId={}] signup member success, name={}",
-                traceId, userId, saveMember.getName());
+        log.info("[MemberService] [traceId={}] signup member success, name={}",
+                traceId, saveMember.getName());
 
         return saveMember;
     }

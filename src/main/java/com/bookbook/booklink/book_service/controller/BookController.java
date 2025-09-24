@@ -1,12 +1,8 @@
 package com.bookbook.booklink.book_service.controller;
 
-import com.bookbook.booklink.book_service.model.dto.request.BookRegDto;
+import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -33,15 +29,15 @@ public class BookController {
     )
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> registerBook(
-            @Valid @RequestBody BookRegDto bookRegDto,
+            @Valid @RequestBody BookRegisterDto bookRegisterDto,
             @RequestHeader("Trace-Id") String traceId
             ) {
         UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
 
         log.info("[BookController] [traceId = {}, userId = {}] register book request received, name={}",
-                traceId, userId, bookRegDto.getName());
+                traceId, userId, bookRegisterDto.getName());
 
-        UUID savedBookId = bookService.registerLibrary(bookRegDto, traceId, userId);
+        UUID savedBookId = bookService.registerLibrary(bookRegisterDto, traceId, userId);
 
         log.info("[BookController] [traceId = {}, userId = {}] register book request success, bookId={}",
                 traceId, userId, savedBookId);

@@ -1,4 +1,4 @@
-package com.bookbook.booklink.library_service.event;
+package com.bookbook.booklink.common.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -8,11 +8,11 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class LibraryLockEventListener {
+public class LockEventListener {
     private final StringRedisTemplate redisTemplate;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
-    public void onRollback(LibraryLockEvent event) {
+    public void onRollback(LockEvent event) {
         redisTemplate.delete(event.getKey());
     }
 }

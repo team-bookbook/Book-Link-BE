@@ -1,12 +1,15 @@
 package com.bookbook.booklink.review_service.repository;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.UUID;
 import com.bookbook.booklink.review_service.model.Review;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
+    List<Review> findAllByTargetId(String targetId);
 }
     

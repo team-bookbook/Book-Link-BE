@@ -63,7 +63,7 @@ public class Review {
             example = "2025-09-22T23:00:00",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -72,7 +72,7 @@ public class Review {
             example = "LIBRARY",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private TargetType target_type;
+    private TargetType targetType;
 
     @Column(nullable = false)
     @NotBlank(message = "리뷰 작성자 ID는 필수입니다.")
@@ -81,7 +81,7 @@ public class Review {
             example = "user-1234",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String reviewer_id;
+    private String reviewerId;
 
     @Column(nullable = false)
     @NotBlank(message = "리뷰 대상 ID는 필수입니다.")
@@ -90,7 +90,7 @@ public class Review {
             example = "510e8440-eb9b-11d4-aa16-424651640000",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String target_id;
+    private String targetId;
 
     // TODO: 리뷰할 거래 연결 (Loan 등)
 
@@ -102,9 +102,9 @@ public class Review {
         return Review.builder()
                 .rating(createDto.getRating())
                 .comment(createDto.getComment())
-                .target_type(createDto.getTarget_type())
-                .reviewer_id(createDto.getReviewer_id())
-                .target_id(createDto.getTarget_id())
+                .targetType(createDto.getTargetType())
+                .reviewerId(createDto.getReviewerId())
+                .targetId(createDto.getTargetId())
                 .build();
     }
 

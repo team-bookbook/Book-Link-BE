@@ -20,7 +20,7 @@ public class SignUpResponseDto {
     private String password;
     private String name;
     private String nickname;
-    private String profile_image;
+    private String profileImage;
 
     public static SignUpResponseDto from(SignUpResponseDto dto) {
         return SignUpResponseDto.builder()
@@ -28,7 +28,7 @@ public class SignUpResponseDto {
                 .email(dto.getEmail())
                 .name(dto.getName())
                 .nickname(dto.getNickname())
-                .profile_image(dto.getProfile_image())
+                .profileImage(dto.getProfileImage())
                 .build();
     }
 }

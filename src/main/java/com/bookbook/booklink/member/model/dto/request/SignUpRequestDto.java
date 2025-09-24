@@ -45,6 +45,6 @@ public class SignUpRequestDto {
 
     @Size(max = 500)
     @Schema(description = "프로필 이미지 URL", example = "https://example.com/profile.jpg", maxLength = 500)
-    private String profile_image;
+    private String profileImage;
 
 }

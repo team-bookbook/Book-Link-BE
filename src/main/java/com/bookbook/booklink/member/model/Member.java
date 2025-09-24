@@ -94,20 +94,20 @@ public class Member {
     @Builder.Default
     @Column(nullable = false)
     @Schema(description = "보유 포인트", example = "1000", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer point_balance = 0;
+    private Integer pointBalance = 0;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     @Schema(description = "가입 일자", example = "2025-09-23T20:05:00")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Schema(description = "탈퇴 일자(소프트 삭제)", example = "2025-10-01T09:30:00")
-    private LocalDateTime deleted_at;
+    private LocalDateTime deletedAt;
 
     @Size(max = 500)
     @Column(length = 500)
     @Schema(description = "프로필 이미지 URL", example = "https://example.com/profile.jpg", maxLength = 500)
-    private String profile_image;
+    private String profileImage;
 
     public static Member ofLocalSignup(SignUpRequestDto req, String encodedPassword) {
         return Member.builder()
@@ -117,11 +117,11 @@ public class Member {
                 .nickname(req.getNickname())
                 .address(req.getAddress())
                 .phone(req.getPhone())
-                .profile_image(req.getProfile_image())
+                .profileImage(req.getProfile_image())
                 .provider(Provider.LOCAL)
                 .role(Role.CUSTOMER)
                 .status(Status.ACTIVE)
-                .point_balance(0)
+                .pointBalance(0)
                 .build();
     }
 }

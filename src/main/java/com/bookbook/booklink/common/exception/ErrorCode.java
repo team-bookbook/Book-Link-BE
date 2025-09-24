@@ -36,6 +36,10 @@ public enum ErrorCode {
 
     @Schema(description = "이미 등록된 이메일입니다.")
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL_ALREADY_EXISTS_409", "이미 등록된 이메일입니다."),
+
+    @Schema(description = "사용자를 찾을 수 없습니다.")
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND_404", "사용자를 찾을 수 없습니다.."),
+
     /*
      * 예외처리 예시
      */

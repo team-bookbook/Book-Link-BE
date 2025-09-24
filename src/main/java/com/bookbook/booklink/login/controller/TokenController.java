@@ -7,9 +7,10 @@ import com.bookbook.booklink.common.jwt.model.RefreshToken;
 import com.bookbook.booklink.common.jwt.repository.RefreshTokenRepository;
 import com.bookbook.booklink.common.jwt.util.JWTUtil;
 import com.bookbook.booklink.login.controller.docs.TokenApiDocs;
+import com.bookbook.booklink.member.model.Member;
+import com.bookbook.booklink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ public class TokenController implements TokenApiDocs {
 
     private final JWTUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public ResponseEntity<BaseResponse<String>> reissue(
@@ -37,7 +39,10 @@ public class TokenController implements TokenApiDocs {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        String newAccessToken = jwtUtil.createAccessToken(email, "ROLE_USER");
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        String role = member.getRole().name();
+        String newAccessToken = jwtUtil.createAccessToken(email, role);
         return ResponseEntity.ok()
                 .body(BaseResponse.success("Bearer " + newAccessToken));
     }

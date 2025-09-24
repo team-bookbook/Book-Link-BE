@@ -117,7 +117,7 @@ public class Member {
                 .nickname(req.getNickname())
                 .address(req.getAddress())
                 .phone(req.getPhone())
-                .profileImage(req.getProfile_image())
+                .profileImage(req.getProfileImage())
                 .provider(Provider.LOCAL)
                 .role(Role.CUSTOMER)
                 .status(Status.ACTIVE)

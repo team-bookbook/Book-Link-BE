@@ -1,16 +1,11 @@
 package com.bookbook.booklink.library_service.controller;
 
 import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.library_service.controller.docs.LibraryApiDocs;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
 import com.bookbook.booklink.library_service.model.dto.response.LibraryDetailDto;
 import com.bookbook.booklink.library_service.service.LibraryService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -26,56 +21,10 @@ import java.util.UUID;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/api/library")
-@Tag(name = "Library API", description = "도서관 등록/조회/수정 관련 API")
-public class LibraryController {
+public class LibraryController implements LibraryApiDocs {
     private final LibraryService libraryService;
 
-
-    @Operation(
-            summary = "도서관 등록",
-            description = "사용자 계정에 새로운 도서관을 등록합니다. " +
-                    "하나의 계정당 도서관은 하나만 등록 가능합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "도서관 등록 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "successResponse",
-                                            value = BaseResponse.SUCCESS_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "입력값 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "서버 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    )
-            }
-    )
-    @PostMapping
+    @Override
     public ResponseEntity<BaseResponse<UUID>> registerLibrary(
             @Valid @RequestBody LibraryRegDto libraryRegDto,
             @RequestHeader("Trace-Id") String traceId
@@ -93,49 +42,7 @@ public class LibraryController {
                 .body(BaseResponse.success(savedLibraryId));
     }
 
-    @Operation(
-            summary = "도서관 수정",
-            description = "사용자 계정에 등록된 도서관을 수정합니다. ",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "도서관 수정 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "successResponse",
-                                            value = BaseResponse.SUCCESS_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "입력값 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "서버 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    )
-            }
-    )
-    @PutMapping
+    @Override
     public ResponseEntity<BaseResponse<UUID>> updateLibrary(
             @Valid @RequestBody LibraryUpdateDto libraryUpdateDto,
             @RequestHeader("Trace-Id") String traceId
@@ -152,49 +59,8 @@ public class LibraryController {
                 .body(BaseResponse.success(updatedLibraryId));
     }
 
-    @Operation(
-            summary = "도서관 삭제",
-            description = "사용자 계정에 등록된 도서관을 삭제합니다. ",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "도서관 삭제 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "successResponse",
-                                            value = BaseResponse.SUCCESS_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "입력값 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "서버 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    )
-            }
-    )
-    @DeleteMapping("/{id}")
+
+    @Override
     public ResponseEntity<BaseResponse<Boolean>> deleteLibrary(
             @PathVariable @NotNull(message = "수정할 도서관의 ID는 필수입니다.") UUID id,
             @RequestHeader("Trace-Id") String traceId
@@ -212,49 +78,7 @@ public class LibraryController {
                 .body(BaseResponse.success(Boolean.TRUE));
     }
 
-    @Operation(
-            summary = "특정 도서관 조회 (단일 객체 반환)",
-            description = "특정 도서관의 상세 정보를 조회합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "도서관 조회 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "successResponse",
-                                            value = BaseResponse.SUCCESS_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "입력값 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "서버 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    )
-            }
-    )
-    @GetMapping("/{id}")
+    @Override
     public ResponseEntity<BaseResponse<LibraryDetailDto>> getLibrary(
             @PathVariable @NotNull(message = "조회할 도서관의 ID는 필수입니다.") UUID id
     ) {
@@ -264,49 +88,7 @@ public class LibraryController {
                 .body(BaseResponse.success(libraryDetailDto));
     }
 
-    @Operation(
-            summary = "내 주변 3km 이내의 도서관 조회 (리스트 반환)",
-            description = "내 주변 3km 이내의 도서관을 조회해 반환합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "조회 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "successResponse",
-                                            value = BaseResponse.SUCCESS_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "입력값 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "서버 오류로 인한 예외",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = BaseResponse.class),
-                                    examples = @ExampleObject(
-                                            name = "errorResponse",
-                                            value = BaseResponse.ERROR_RESPONSE
-                                    )
-                            )
-                    )
-            }
-    )
-    @GetMapping
+    @Override
     public ResponseEntity<BaseResponse<List<LibraryDetailDto>>> getLibraries(
             @RequestParam Double lat,
             @RequestParam Double lng

@@ -1,6 +1,7 @@
 package com.bookbook.booklink.review_service.model;
 
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
+import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -105,6 +106,14 @@ public class Review {
                 .reviewer_id(createDto.getReviewer_id())
                 .target_id(createDto.getTarget_id())
                 .build();
+    }
+
+    /**
+     * 리뷰 업데이트
+     */
+    public void updateReview(ReviewUpdateDto updateDto) {
+        this.rating = updateDto.getRating();
+        this.comment = updateDto.getComment();
     }
 
 }

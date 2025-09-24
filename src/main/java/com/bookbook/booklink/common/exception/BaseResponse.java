@@ -33,7 +33,7 @@ public class BaseResponse<T> {
     private boolean success;
     @Schema(description = "성공 데이터", nullable = true)
     private T data;
-    @Schema(description = "에러 정보", nullable = true)
+    @Schema(description = "에러 정보", example = "null")
     private ErrorInfo error;
 
     // private 생성자

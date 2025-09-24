@@ -7,11 +7,12 @@ import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.review_service.model.Review;
 import com.bookbook.booklink.review_service.model.ReviewSummary;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
+import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;
+import com.bookbook.booklink.review_service.repository.ReviewRepository;
 import com.bookbook.booklink.review_service.repository.ReviewSummaryRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
-import com.bookbook.booklink.review_service.repository.ReviewRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -67,6 +68,44 @@ public class ReviewService {
 
         log.info("[ReviewService] [traceId={}, userId={}] create review success. target={}",
                 traceId, userId, reviewCreateDto.getTarget_id());
+    }
+
+    /**
+     * 리뷰 수정하는 메서드
+     *
+     * @param reviewUpdateDto 리뷰의 수정 정보 Dto
+     * @param reviewId        수정할 리뷰의 ID
+     * @param traceId         요청 멱등성 체크용 ID
+     * @param userId          요청 사용자 ID
+     */
+    @Transactional
+    public void updateReview(ReviewUpdateDto reviewUpdateDto, UUID reviewId, String traceId, UUID userId) {
+
+        log.info("[ReviewService] [traceId={}, userId={}] update review initiate. reviewId={}",
+                traceId, userId, reviewId);
+
+        // Redis Lock으로 멱등성 체크
+        String key = idempotencyService.generateIdempotencyKey("review:update", traceId);
+        idempotencyService.checkIdempotency(key, 1,
+                () -> LockEvent.builder().key(key).build());
+
+        // 기존 리뷰 조회
+        Review existingReview = findReviewById(reviewId);
+
+        Short oldRating = existingReview.getRating();
+        Short newRating = reviewUpdateDto.getRating();
+
+        ReviewSummary reviewSummary = findReviewSummaryByTargetId(existingReview.getTarget_id());
+        reviewSummary.updateReview(oldRating, newRating);
+
+        // 리뷰 별점, 코멘트 수정
+        existingReview.updateReview(reviewUpdateDto);
+
+        reviewSummaryRepository.save(reviewSummary);
+        reviewRepository.save(existingReview);
+
+        log.info("[ReviewService] [traceId={}, userId={}] update review success. reviewId={}",
+                traceId, userId, reviewId);
     }
 
     /**

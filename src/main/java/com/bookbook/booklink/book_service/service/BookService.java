@@ -2,7 +2,7 @@ package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.LibraryBook;
-import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
+import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
 import com.bookbook.booklink.common.event.LockEvent;
@@ -25,7 +25,6 @@ import java.util.UUID;
 public class BookService {
     private final BookRepository bookRepository;
     private final LibraryBookRepository libraryBookRepository;
-    private final LibraryBookCopyService libraryBookCopyService;
     private final IdempotencyService idempotencyService;
 
     @Transactional
@@ -41,15 +40,14 @@ public class BookService {
         Book book = bookRepository.findById(UUID.fromString(bookRegisterDto.getId()))
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-        // todo : 유저 id 와 도서관 id 맵핑 후 library 엔티티 검색
-        Library library = new Library(); // 임시
-
-        LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
+        // todo : library 추가(userId로 libraryId find)
+        LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book);
 
         // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
 
         for(int i = 0; i < bookRegisterDto.getCopies(); i++) {
-            libraryBookCopyService.registerLibraryBookCopy(libraryBook, traceId, userId);
+            LibraryBookCopy copy = LibraryBookCopy.toEntity(libraryBook);
+            libraryBook.addCopy(copy);
         }
 
         LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);

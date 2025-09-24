@@ -28,6 +28,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Book {
     @Id
     @UuidGenerator
+    @GeneratedValue
     @Column(updatable = false, nullable = false)
     @Schema(description = "도서 고유 ID (UUID)", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
     @Getter

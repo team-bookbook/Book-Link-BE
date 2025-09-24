@@ -16,11 +16,13 @@ public class LibraryBookCopy {
 
     @Id
     @Column(updatable = false, nullable = false)
+    @GeneratedValue
     @UuidGenerator
     @Getter
     @Schema(description = "도서관이 소장한 책 한 권의 실제 인스턴스 ID (UUID)", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID id;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_book_id", nullable = false)
     @Schema(description = "도서관별 도서 정보")

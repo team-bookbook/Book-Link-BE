@@ -1,16 +1,20 @@
 package com.bookbook.booklink.book_service.model.dto.response;
 
+import com.bookbook.booklink.book_service.model.BookCategory;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Getter
 @Setter
 public class BookResponseDto {
-    private String id;
+    private UUID id;
     private String title;
     private String author;
-    private String isbn;
     private String publisher;
-    private String original_price;
-    private String publishDate;
+    private BookCategory category;
+    private String ISBN;
+    private String originalPrice;
+    private String publishedDate;
 }

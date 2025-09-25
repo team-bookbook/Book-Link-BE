@@ -1,6 +1,5 @@
 package com.bookbook.booklink.book_service.service;
 
-import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.book_service.model.dto.response.NationalLibraryResponseDto;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
@@ -64,7 +63,7 @@ public class NationalLibraryService {
 
             JsonNode root = objectMapper.readTree(response.toString());
 
-            if(!root.path("TOTAL_COUNT").asText().equals("1")) {
+            if (!root.path("TOTAL_COUNT").asText().equals("1")) {
                 throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
             }
 

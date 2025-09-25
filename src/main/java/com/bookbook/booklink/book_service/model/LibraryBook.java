@@ -1,7 +1,6 @@
 package com.bookbook.booklink.book_service.model;
 
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
-import com.bookbook.booklink.library_service.model.Library;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;

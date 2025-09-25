@@ -4,14 +4,12 @@ import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.book_service.model.dto.response.NationalLibraryResponseDto;
 import com.bookbook.booklink.book_service.repository.BookRepository;
-import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

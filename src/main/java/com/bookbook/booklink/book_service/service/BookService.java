@@ -34,6 +34,7 @@ public class BookService {
         Book book = bookRepository.findByISBN(isbn);
         if (book != null) {
             BookResponseDto dto = modelMapper.map(book, BookResponseDto.class);
+            dto.setHasFoundFromOurDatabase(true);
             log.info("[BookService] [traceId={}, userId={}] found bookId={}", traceId, userId, dto.getId());
             return dto;
         }
@@ -50,8 +51,10 @@ public class BookService {
             throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
         }
 
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book success bookId={}", traceId, userId, result.getId());
-        return null;
+        BookResponseDto dto = apiResponse.toBookResponseDto();
+        dto.setHasFoundFromOurDatabase(false);
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book success from nationalLibraryApi bookId={}, isbn={}", traceId, userId, null, dto.getISBN());
+        return dto;
     }
 
     @Transactional

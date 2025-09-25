@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class NationalLibraryResponseDto {
@@ -20,9 +23,20 @@ public class NationalLibraryResponseDto {
     private String publisher;
 
     @JsonProperty("PRE_PRICE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Integer originalPrice;
+    private String originalPrice;
 
     @JsonProperty("REAL_PUBLISH_DATE")
-    private String publishDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
+    private LocalDate publishedDate;
+
+    public BookResponseDto toBookResponseDto() {
+        return BookResponseDto.builder()
+                .title(title)
+                .author(author)
+                .publisher(publisher)
+                .ISBN(isbn)
+                .originalPrice(Integer.parseInt(originalPrice))
+                .publishedDate(publishedDate.atStartOfDay())
+                .build();
+    }
 }

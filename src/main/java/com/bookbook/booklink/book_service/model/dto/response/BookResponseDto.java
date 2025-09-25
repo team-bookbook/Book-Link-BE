@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,8 +29,8 @@ public class BookResponseDto {
     private String ISBN;
     @Schema(description = "도서 정가", example = "17000", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer originalPrice;
-    @Schema(description = "도서 발행일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalDateTime publishedDate;
+    @Schema(description = "도서 발행일", example = "2025-09-22", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDate publishedDate;
 
     @Schema(description = "national library 에서 가져오면 true, 우리 데이터베이스에서 가져오면 false", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private boolean foundInNationalLibrary;

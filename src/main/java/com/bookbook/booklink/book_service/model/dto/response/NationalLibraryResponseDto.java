@@ -36,7 +36,7 @@ public class NationalLibraryResponseDto {
                 .publisher(publisher)
                 .ISBN(isbn)
                 .originalPrice(Integer.parseInt(originalPrice))
-                .publishedDate(publishedDate.atStartOfDay())
+                .publishedDate(publishedDate)
                 .build();
     }
 }

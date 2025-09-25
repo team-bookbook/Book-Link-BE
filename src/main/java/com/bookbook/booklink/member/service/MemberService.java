@@ -6,12 +6,15 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.member.model.Member;
 import com.bookbook.booklink.member.model.dto.request.SignUpReqDto;
+import com.bookbook.booklink.member.model.dto.response.ProfileResDto;
 import com.bookbook.booklink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -57,6 +60,12 @@ public class MemberService {
                 traceId, saveMember.getName());
 
         return saveMember;
+    }
+
+    public ProfileResDto getMyProfile(UUID memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return ProfileResDto.from(member);
     }
 }
     

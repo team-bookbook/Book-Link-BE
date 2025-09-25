@@ -57,29 +57,29 @@ public class Library {
     @Column(nullable = false)
     @Builder.Default
     @Schema(description = "도서관이 받은 리뷰의 수", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer review_count = 0;
+    private Integer reviewCount = 0;
 
     @Min(0)
     @Column(nullable = false)
     @Builder.Default
     @Schema(description = "도서관이 받은 좋아요의 수", example = "15", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer like_count = 0;
+    private Integer likeCount = 0;
 
     @Min(0)
     @Column(nullable = false)
     @Builder.Default
     @Schema(description = "도서관이 보유한 책의 수", example = "120", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer book_count = 0;
+    private Integer bookCount = 0;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     @Schema(description = "도서관 생성 일자", example = "2025-09-19T23:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column
     @URL(message = "올바른 URL 형식이어야 합니다.")
     @Schema(description = "도서관 썸네일 URL", example = "https://example.com/thumbnail.jpg", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String thumbnail_url;
+    private String thumbnailUrl;
 
     @Column(nullable = false)
     @DecimalMin(value = "-90.0")
@@ -95,11 +95,11 @@ public class Library {
 
     @Column(nullable = false)
     @Schema(description = "영업 시작 시간", example = "09:00", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalTime start_time;
+    private LocalTime startTime;
 
     @Column(nullable = false)
     @Schema(description = "영업 종료 시간", example = "21:00", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalTime end_time;
+    private LocalTime endTime;
 
     // todo: User와 1:1 연결 필요
 
@@ -115,18 +115,18 @@ public class Library {
                 .description(libraryRegDto.getDescription())
                 .latitude(13.241400)
                 .longitude(15.414000)   // todo: User에서 위치정보 가져와서 위도 경도 변환해서 넣어야함
-                .start_time(libraryRegDto.getStart_time())
-                .end_time(libraryRegDto.getEnd_time())
+                .startTime(libraryRegDto.getStartTime())
+                .endTime(libraryRegDto.getEndTime())
                 //todo: User 연결 추가
-                .thumbnail_url(libraryRegDto.getThumbnail_url())
+                .thumbnailUrl(libraryRegDto.getThumbnailUrl())
                 .build();
     }
 
     public void updateLibraryInfo(LibraryUpdateDto libraryUpdateDto) {
         this.name = libraryUpdateDto.getName();
         this.description = libraryUpdateDto.getDescription();
-        this.thumbnail_url = libraryUpdateDto.getThumbnail_url();
-        this.start_time = libraryUpdateDto.getStart_time();
-        this.end_time = libraryUpdateDto.getEnd_time();
+        this.thumbnailUrl = libraryUpdateDto.getThumbnailUrl();
+        this.startTime = libraryUpdateDto.getStartTime();
+        this.endTime = libraryUpdateDto.getEndTime();
     }
 }

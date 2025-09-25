@@ -26,7 +26,7 @@ public interface LibraryApiDocs {
                     "하나의 계정당 도서관은 하나만 등록 가능합니다."
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
-            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.EMAIL_ALREADY_EXISTS})
     @PostMapping
     ResponseEntity<BaseResponse<UUID>> registerLibrary(
             @Valid @RequestBody LibraryRegDto libraryRegDto,

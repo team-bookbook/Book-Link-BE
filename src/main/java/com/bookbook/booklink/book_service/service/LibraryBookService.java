@@ -22,7 +22,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BookService {
+public class LibraryBookService {
     private final BookRepository bookRepository;
     private final LibraryBookRepository libraryBookRepository;
     private final IdempotencyService idempotencyService;

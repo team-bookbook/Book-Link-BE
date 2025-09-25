@@ -1,26 +1,20 @@
 package com.bookbook.booklink.book_service.controller.docs;
 
-import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
-import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
-import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
-import com.bookbook.booklink.library_service.model.dto.response.LibraryDetailDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Book API", description = "도서 등록/조회/수정 관련 API")
+@Tag(name = "Library Book API", description = "도서관에 등록된 도서 등록/조회/수정 관련 API")
 @RequestMapping("/api/book")
-public interface BookApiDocs {
+public interface LibraryBookApiDocs {
 
     @Operation(
             summary = "도서 등록",

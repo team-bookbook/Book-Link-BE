@@ -1,18 +1,15 @@
 package com.bookbook.booklink.book_service.controller;
 
-import com.bookbook.booklink.book_service.controller.docs.BookApiDocs;
-import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
+import com.bookbook.booklink.book_service.controller.docs.LibraryBookApiDocs;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
+import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.common.exception.BaseResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
-import com.bookbook.booklink.book_service.service.BookService;
 
 import java.util.UUID;
 
@@ -20,8 +17,8 @@ import java.util.UUID;
 @RestController
 @Validated
 @RequiredArgsConstructor
-public class BookController implements BookApiDocs {
-    private final BookService bookService;
+public class LibraryBookController implements LibraryBookApiDocs {
+    private final LibraryBookService bookService;
 
     @Override
     public ResponseEntity<BaseResponse<UUID>> registerBook(

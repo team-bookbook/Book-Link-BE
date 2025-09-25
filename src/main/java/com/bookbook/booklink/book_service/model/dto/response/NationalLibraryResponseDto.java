@@ -1,5 +1,6 @@
 package com.bookbook.booklink.book_service.model.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,8 @@ public class NationalLibraryResponseDto {
     private String publisher;
 
     @JsonProperty("PRE_PRICE")
-    private String original_price;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Integer originalPrice;
 
     @JsonProperty("REAL_PUBLISH_DATE")
     private String publishDate;

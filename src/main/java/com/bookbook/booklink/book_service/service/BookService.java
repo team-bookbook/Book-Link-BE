@@ -52,7 +52,7 @@ public class BookService {
 
     @Transactional
     protected BookResponseDto saveBookFromApi(NationalLibraryResponseDto apiResponse) {
-        Book newBook = modelMapper.map(apiResponse, Book.class);
+        Book newBook = Book.toEntity(apiResponse);
         Book savedBook = bookRepository.save(newBook);
         return modelMapper.map(savedBook, BookResponseDto.class);
     }

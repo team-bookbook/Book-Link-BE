@@ -38,7 +38,7 @@ public class NationalLibraryService {
      * @return JsonNode (응답 데이터)
      * @throws Exception 예외
      */
-    public BookResponseDto searchBookByIsbn(String isbn) throws Exception {
+    public NationalLibraryResponseDto searchBookByIsbn(String isbn) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(apiUrl);
         urlBuilder.append("?cert_key=").append(certKey);
         urlBuilder.append("&result_style=json");
@@ -63,7 +63,6 @@ public class NationalLibraryService {
             }
 
             JsonNode root = objectMapper.readTree(response.toString());
-            log.info("[national-library response] {}", response);
 
             if(!root.path("TOTAL_COUNT").asText().equals("1")) {
                 throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
@@ -74,11 +73,7 @@ public class NationalLibraryService {
                 throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
             }
 
-            log.info("[national-library docs.get(0)] {}", docs.get(0));
-
-
-            // todo : NationalLibraryResponse Dto 로 변경
-            BookResponseDto dto = objectMapper.treeToValue(docs.get(0), BookResponseDto.class);
+            NationalLibraryResponseDto dto = objectMapper.treeToValue(docs.get(0), NationalLibraryResponseDto.class);
 
             return dto;
         } finally {

@@ -10,5 +10,7 @@ import com.bookbook.booklink.book_service.model.Book;
 public interface BookRepository extends JpaRepository<Book, UUID> {
 
     boolean existsByISBN(String isbn);
+
+    Book findByISBN(String isbn);
 }
     

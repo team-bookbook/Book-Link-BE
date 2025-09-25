@@ -3,6 +3,7 @@ package com.bookbook.booklink.book_service.controller;
 import com.bookbook.booklink.book_service.controller.docs.BookApiDocs;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
+import com.bookbook.booklink.book_service.service.BookService;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.book_service.service.NationalLibraryService;
 import com.bookbook.booklink.common.exception.BaseResponse;
@@ -24,7 +25,7 @@ import java.util.UUID;
 @Validated
 @RequiredArgsConstructor
 public class BookController implements BookApiDocs {
-    private final NationalLibraryService nationalLibraryService;
+    private final BookService bookService;
 
     @Override
     public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
@@ -36,22 +37,15 @@ public class BookController implements BookApiDocs {
         log.info("[BookController] [traceId = {}, userId = {}] register book request received, isbn={}",
                 traceId, userId, isbn);
 
-        try {
-            BookResponseDto result = nationalLibraryService.searchBookByIsbn(isbn);
-            return ResponseEntity.ok()
-                    .body(BaseResponse.success(result));
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.API_FALLBACK_FAIL);
-            // todo : log 찍기
-        }
 
-//        BookResponseDto book = null;
 
-//        log.info("[BookController] [traceId = {}, userId = {}] register book request success, book={}",
-//                traceId, userId, book);
-//
-//        return ResponseEntity.ok()
-//                .body(BaseResponse.success(book));
+        BookResponseDto book = bookService.getBook(isbn, traceId, userId);
+
+        log.info("[BookController] [traceId = {}, userId = {}] register book request success, book={}",
+                traceId, userId, book);
+
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(book));
     }
 }
     

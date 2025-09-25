@@ -3,7 +3,7 @@ package com.bookbook.booklink.member.controller;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.member.controller.docs.MemberApiDocs;
 import com.bookbook.booklink.member.model.Member;
-import com.bookbook.booklink.member.model.dto.request.SignUpRequestDto;
+import com.bookbook.booklink.member.model.dto.request.SignUpReqDto;
 import com.bookbook.booklink.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class MemberController implements MemberApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Boolean>> signup(
-            @Valid @RequestBody SignUpRequestDto request,
+            @Valid @RequestBody SignUpReqDto request,
             @RequestHeader(value = "Trace-Id",required = false) String traceId
     ) {
         Member saved = memberService.signUp(request, traceId);

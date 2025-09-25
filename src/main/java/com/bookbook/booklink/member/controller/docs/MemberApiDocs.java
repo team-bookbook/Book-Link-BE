@@ -3,7 +3,7 @@ package com.bookbook.booklink.member.controller.docs;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
-import com.bookbook.booklink.member.model.dto.request.SignUpRequestDto;
+import com.bookbook.booklink.member.model.dto.request.SignUpReqDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public interface MemberApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION,ErrorCode.PASSWORD_POLICY_INVALID})
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse<Boolean>> signup(
-            @Valid @RequestBody SignUpRequestDto signUpRequestDto,
+            @Valid @RequestBody SignUpReqDto signUpReqDto,
             @RequestHeader("Trace-Id") String traceId
     );
 }

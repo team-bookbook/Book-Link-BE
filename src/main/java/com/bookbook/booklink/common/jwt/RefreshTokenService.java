@@ -1,0 +1,24 @@
+package com.bookbook.booklink.common.jwt;
+
+import com.bookbook.booklink.common.jwt.model.RefreshToken;
+import com.bookbook.booklink.common.jwt.repository.RefreshTokenRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class RefreshTokenService {
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    @Transactional
+    public void saveRefreshToken(String email, String token) {
+        refreshTokenRepository.deleteByEmail(email);
+        refreshTokenRepository.save(
+            RefreshToken.builder()
+                .email(email)
+                .token(token)
+                .build()
+        );
+    }
+}

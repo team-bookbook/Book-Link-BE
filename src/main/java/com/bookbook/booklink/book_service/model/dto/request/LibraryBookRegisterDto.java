@@ -6,12 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 @Schema(description = "도서 등록 요청 DTO")
 public class LibraryBookRegisterDto {
     @Schema(description = "도서 ID", example = "마흔에 읽는 쇼펜하우어", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "도서 ID는 필수입니다.")
-    String id;
+    @NotNull(message = "도서 ID는 필수입니다.")
+    UUID id;
 
     @Schema(description = "보유 권수", example = "1000")
     @NotNull(message = "보유 권수는 필수입니다.")

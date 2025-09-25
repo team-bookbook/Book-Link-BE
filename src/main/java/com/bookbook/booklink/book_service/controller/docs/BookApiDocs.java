@@ -25,7 +25,7 @@ public interface BookApiDocs {
     @Operation(
             summary = "도서 등록",
             description = "도서관에 새로운 도서를 등록합니다. " +
-                    "하나의 도서관당 도서는 하나만 등록 가능합니다."
+                    "하나의 도서관당 동일 도서는 한 번만 등록 가능합니다."
     )
     @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, ErrorCode.DATABASE_ERROR,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})

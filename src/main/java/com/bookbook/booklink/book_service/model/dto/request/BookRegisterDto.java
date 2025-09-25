@@ -13,7 +13,7 @@ import lombok.Getter;
 public class BookRegisterDto {
     @Schema(description = "도서 이름", example = "마흔에 읽는 쇼펜하우어", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "도서 이름은 필수입니다.")
-    @Size(min = 1, max = 64, message = "도서관 이름은 1자 이상 64자 이하이어야 합니다.")
+    @Size(min = 1, max = 64, message = "도서 이름은 1자 이상 64자 이하이어야 합니다.")
     String name;
 
     @Schema(description = "저자명", example = "강용수", requiredMode = Schema.RequiredMode.REQUIRED)

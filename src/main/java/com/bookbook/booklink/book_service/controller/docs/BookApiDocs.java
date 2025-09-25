@@ -24,7 +24,7 @@ public interface BookApiDocs {
             description = "도서를 검색합니다. " +
                     "기존 DB에 없을 시 국립중앙도서관 api를 이용해 카테고리 제외한 정보를 반환합니다."
     )
-    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, // todo : 발생하는 에러들 추가하기
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.API_FALLBACK_FAIL, ErrorCode.INVALID_ISBN_CODE,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @GetMapping("/{isbn}")
     public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
@@ -36,7 +36,7 @@ public interface BookApiDocs {
             summary = "도서 등록",
             description = "기존 DB에 없던 도서를 등록합니다."
     )
-    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, // todo : 발생하는 에러들 추가하기
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.DUPLICATE_BOOK,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> registerBook(

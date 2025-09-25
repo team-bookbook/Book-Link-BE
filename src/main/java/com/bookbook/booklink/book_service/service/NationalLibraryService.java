@@ -1,0 +1,88 @@
+package com.bookbook.booklink.book_service.service;
+
+import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
+import com.bookbook.booklink.book_service.model.dto.response.NationalLibraryResponseDto;
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class NationalLibraryService {
+
+    @Value("${national-library.api-url}")
+    private String apiUrl;
+
+    @Value("${national-library.cert-key}")
+    private String certKey;
+
+    private final ObjectMapper objectMapper;
+
+    /**
+     * 국립중앙도서관 ISBN 검색
+     *
+     * @param isbn ISBN 코드
+     * @return JsonNode (응답 데이터)
+     * @throws Exception 예외
+     */
+    public BookResponseDto searchBookByIsbn(String isbn) throws Exception {
+        StringBuilder urlBuilder = new StringBuilder(apiUrl);
+        urlBuilder.append("?cert_key=").append(certKey);
+        urlBuilder.append("&result_style=json");
+        urlBuilder.append("&page_no=1");
+        urlBuilder.append("&page_size=10");
+        urlBuilder.append("&isbn=").append(URLEncoder.encode(isbn, StandardCharsets.UTF_8));
+
+        URL url = new URL(urlBuilder.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) {
+            throw new RuntimeException("API 요청 실패 : HTTP error code : " + responseCode);
+        }
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+
+            JsonNode root = objectMapper.readTree(response.toString());
+            log.info("[national-library response] {}", response);
+
+            if(!root.path("TOTAL_COUNT").asText().equals("1")) {
+                throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
+            }
+
+            JsonNode docs = root.path("docs");
+            if (!docs.isArray() || docs.isEmpty()) {
+                throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
+            }
+
+            log.info("[national-library docs.get(0)] {}", docs.get(0));
+
+
+            // todo : NationalLibraryResponse Dto 로 변경
+            BookResponseDto dto = objectMapper.treeToValue(docs.get(0), BookResponseDto.class);
+
+            return dto;
+        } finally {
+            conn.disconnect();
+        }
+    }
+}

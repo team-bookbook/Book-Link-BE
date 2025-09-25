@@ -4,7 +4,11 @@ import com.bookbook.booklink.book_service.controller.docs.BookApiDocs;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
+import com.bookbook.booklink.book_service.service.NationalLibraryService;
 import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +24,9 @@ import java.util.UUID;
 @Validated
 @RequiredArgsConstructor
 public class BookController implements BookApiDocs {
+    private final NationalLibraryService nationalLibraryService;
 
     @Override
-    @GetMapping()
     public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
             @PathVariable @NotNull(message = "조회할 도서의 ISBN 코드는 필수입니다.") String isbn,
             @RequestHeader("Trace-Id") String traceId
@@ -32,13 +36,22 @@ public class BookController implements BookApiDocs {
         log.info("[BookController] [traceId = {}, userId = {}] register book request received, isbn={}",
                 traceId, userId, isbn);
 
-        BookResponseDto book = null;
+        try {
+            BookResponseDto result = nationalLibraryService.searchBookByIsbn(isbn);
+            return ResponseEntity.ok()
+                    .body(BaseResponse.success(result));
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.API_FALLBACK_FAIL);
+            // todo : log 찍기
+        }
 
-        log.info("[BookController] [traceId = {}, userId = {}] register book request success, book={}",
-                traceId, userId, book);
+//        BookResponseDto book = null;
 
-        return ResponseEntity.ok()
-                .body(BaseResponse.success(book));
+//        log.info("[BookController] [traceId = {}, userId = {}] register book request success, book={}",
+//                traceId, userId, book);
+//
+//        return ResponseEntity.ok()
+//                .body(BaseResponse.success(book));
     }
 }
     

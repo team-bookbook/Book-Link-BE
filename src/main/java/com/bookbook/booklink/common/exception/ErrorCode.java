@@ -55,6 +55,12 @@ public enum ErrorCode {
     @Schema(description = "존재하지 않는 도서입니다.")
     BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK_NOT_FOUND_400", "존재하지 않는 도서입니다."),
 
+    @Schema(description = "공공도서관 api 호출에 실패했습니다.")
+    API_FALLBACK_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "API_FALLBACK_FAIL_500", "공공도서관 api 호출에 실패했습니다."),
+
+    @Schema(description = "유효하지 않은 ISBN 코드입니다.")
+    INVALID_ISBN_CODE(HttpStatus.BAD_REQUEST, "INVALID_ISBN_CODE_400", "유효하지 않은 ISBN 코드입니다."),
+
     /*
      * Review
      */

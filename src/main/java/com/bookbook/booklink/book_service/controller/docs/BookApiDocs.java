@@ -25,6 +25,7 @@ public interface BookApiDocs {
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, // todo : 발생하는 에러들 추가하기
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+    @GetMapping("/{isbn}")
     public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
             @PathVariable @NotNull(message = "조회할 도서의 ISBN 코드는 필수입니다.") String isbn,
             @RequestHeader("Trace-Id") String traceId

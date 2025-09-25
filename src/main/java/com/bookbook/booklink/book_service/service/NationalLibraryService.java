@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -37,7 +38,9 @@ public class NationalLibraryService {
      * @return JsonNode (응답 데이터)
      * @throws Exception 예외
      */
-    public NationalLibraryResponseDto searchBookByIsbn(String isbn) throws Exception {
+    public NationalLibraryResponseDto searchBookByIsbn(String isbn, String traceId, UUID userId) throws Exception {
+        log.info("[NationalLibraryService] [traceId = {}, userId = {}] get book from national library initiate isbn={}", traceId, userId, isbn);
+
         StringBuilder urlBuilder = new StringBuilder(apiUrl);
         urlBuilder.append("?cert_key=").append(certKey);
         urlBuilder.append("&result_style=json");
@@ -73,6 +76,7 @@ public class NationalLibraryService {
             }
 
             NationalLibraryResponseDto dto = objectMapper.treeToValue(docs.get(0), NationalLibraryResponseDto.class);
+            log.info("[NationalLibraryService] [traceId = {}, userId = {}] get book from national library success isbn={}", traceId, userId, isbn);
 
             return dto;
         } finally {

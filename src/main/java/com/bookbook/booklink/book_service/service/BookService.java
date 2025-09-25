@@ -41,7 +41,7 @@ public class BookService {
 
         NationalLibraryResponseDto apiResponse;
         try {
-            apiResponse = nationalLibraryService.searchBookByIsbn(isbn);
+            apiResponse = nationalLibraryService.searchBookByIsbn(isbn, traceId, userId);
         } catch (Exception e) {
             log.error("[BookService] [traceId={}, userId={}] API 호출 실패 isbn={}", traceId, userId, isbn, e);
             throw new CustomException(ErrorCode.API_FALLBACK_FAIL);

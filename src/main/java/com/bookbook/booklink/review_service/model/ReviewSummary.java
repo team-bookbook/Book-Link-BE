@@ -1,5 +1,6 @@
 package com.bookbook.booklink.review_service.model;
 
+import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,41 +23,51 @@ public class ReviewSummary {
 
     @Id
     @Schema(description = "리뷰 대상 ID (도서관 또는 사용자)", example = "510e8440-eb9b-11d4-aa16-424651640000")
-    private String target_id;
+    private String targetId;
 
     @Schema(description = "리뷰 대상 유형", example = "LIBRARY")
-    private TargetType target_type;
+    private TargetType targetType;
 
     @Column(nullable = false)
     @Schema(description = "리뷰 총 개수", example = "10")
-    private Integer total_count;
+    private Integer totalCount;
 
     @Column(nullable = false)
     @Schema(description = "리뷰 총 별점 합", example = "42")
-    private Long total_rating;
+    private Long totalRating;
 
     @Column(nullable = false)
     @Schema(description = "평균 별점", example = "4.2")
-    private Double avg_rating;
+    private Double avgRating;
 
     @UpdateTimestamp
     @Schema(description = "집계 정보 업데이트 일자", example = "2025-09-22T23:00:00")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
+
+    public static ReviewSummary toEntity(ReviewCreateDto reviewCreateDto, long totalRating, double avgRating) {
+        return ReviewSummary.builder()
+                .targetId(reviewCreateDto.getTargetId())
+                .targetType(reviewCreateDto.getTargetType())
+                .totalCount(1)
+                .totalRating(totalRating)
+                .avgRating(avgRating)
+                .build();
+    }
 
     public void addReview(int rating) {
-        this.total_count++;
-        this.total_rating += rating;
-        this.avg_rating = (double) total_rating / total_count;
+        this.totalCount++;
+        this.totalRating += rating;
+        this.avgRating = (double) totalRating / totalCount;
     }
 
     public void updateReview(int oldRating, int newRating) {
-        this.total_rating = this.total_rating - oldRating + newRating;
-        this.avg_rating = (double) total_rating / total_count;
+        this.totalRating = this.totalRating - oldRating + newRating;
+        this.avgRating = (double) totalRating / totalCount;
     }
 
     public void removeReview(int rating) {
-        this.total_count--;
-        this.total_rating -= rating;
-        this.avg_rating = total_count > 0 ? (double) total_rating / total_count : 0.0;
+        this.totalCount--;
+        this.totalRating -= rating;
+        this.avgRating = totalCount > 0 ? (double) totalRating / totalCount : 0.0;
     }
 }

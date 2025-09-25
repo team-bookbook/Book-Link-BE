@@ -61,6 +61,9 @@ public enum ErrorCode {
     @Schema(description = "유효하지 않은 ISBN 코드입니다.")
     INVALID_ISBN_CODE(HttpStatus.BAD_REQUEST, "INVALID_ISBN_CODE_400", "유효하지 않은 ISBN 코드입니다."),
 
+    @Schema(description = "이미 존재하는 도서입니다.")
+    DUPLICATE_BOOK(HttpStatus.BAD_REQUEST, "DUPLICATE_BOOK_400", "이미 존재하는 도서입니다."),
+
     /*
      * Review
      */

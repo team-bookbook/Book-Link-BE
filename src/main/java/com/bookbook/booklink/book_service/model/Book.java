@@ -1,7 +1,6 @@
 package com.bookbook.booklink.book_service.model;
 
 import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
-import com.bookbook.booklink.book_service.model.dto.response.NationalLibraryResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -77,13 +76,15 @@ public class Book {
     @Schema(description = "도서를 보유한 도서관별 정보")
     private List<LibraryBook> libraryBooks = new ArrayList<>();
 
-    public static Book toEntity(NationalLibraryResponseDto dto) {
+    public static Book toEntity(BookRegisterDto dto) {
         return Book.builder()
                 .title(dto.getTitle())
                 .author(dto.getAuthor())
+                .ISBN(dto.getISBN())
                 .publisher(dto.getPublisher())
-                .ISBN(dto.getIsbn())
                 .originalPrice(dto.getOriginalPrice())
+                .publishedDate(dto.getPublishedDate().atStartOfDay())
+                .category(BookCategory.getByCode(dto.getCategory()))
                 .build();
     }
 }

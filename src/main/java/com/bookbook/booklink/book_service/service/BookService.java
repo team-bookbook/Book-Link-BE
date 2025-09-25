@@ -1,12 +1,14 @@
 package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
+import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.book_service.model.dto.response.NationalLibraryResponseDto;
 import com.bookbook.booklink.book_service.repository.BookRepository;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -45,15 +47,24 @@ public class BookService {
             throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
         }
 
-        BookResponseDto result = saveBookFromApi(apiResponse);
         log.info("[LibraryBookService] [traceId = {}, userId = {}] get book success bookId={}", traceId, userId, result.getId());
-        return result;
+        return null;
     }
 
     @Transactional
-    protected BookResponseDto saveBookFromApi(NationalLibraryResponseDto apiResponse) {
-        Book newBook = Book.toEntity(apiResponse);
+    public UUID saveBook(@Valid BookRegisterDto bookRegisterDto, String traceId, UUID userId) {
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book initiate isbn={}", traceId, userId, bookRegisterDto.getISBN());
+
+        if (bookRepository.existsByISBN(bookRegisterDto.getISBN())) {
+            throw new CustomException(ErrorCode.DUPLICATE_BOOK);
+        }
+
+        Book newBook = Book.toEntity(bookRegisterDto);
         Book savedBook = bookRepository.save(newBook);
-        return modelMapper.map(savedBook, BookResponseDto.class);
+        UUID bookId = savedBook.getId();
+
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book success bookId={}", traceId, userId, bookId);
+
+        return bookId;
     }
 }

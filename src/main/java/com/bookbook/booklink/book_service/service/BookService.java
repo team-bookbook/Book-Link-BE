@@ -5,8 +5,10 @@ import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.book_service.model.dto.response.NationalLibraryResponseDto;
 import com.bookbook.booklink.book_service.repository.BookRepository;
+import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.common.service.IdempotencyService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final NationalLibraryService nationalLibraryService;
     private final ModelMapper modelMapper;
+    private final IdempotencyService idempotencyService;
 
     @Transactional
     public BookResponseDto getBook(String isbn, String traceId, UUID userId) {
@@ -53,7 +56,12 @@ public class BookService {
 
     @Transactional
     public UUID saveBook(@Valid BookRegisterDto bookRegisterDto, String traceId, UUID userId) {
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book initiate isbn={}", traceId, userId, bookRegisterDto.getISBN());
+        log.info("[BookService] [traceId = {}, userId = {}] get book initiate isbn={}", traceId, userId, bookRegisterDto.getISBN());
+
+        // 멱등성 체크
+        String key = "book:register:" + traceId;
+        idempotencyService.checkIdempotency(key, 1,
+                () -> LockEvent.builder().key(key).build());
 
         if (bookRepository.existsByISBN(bookRegisterDto.getISBN())) {
             throw new CustomException(ErrorCode.DUPLICATE_BOOK);
@@ -63,7 +71,7 @@ public class BookService {
         Book savedBook = bookRepository.save(newBook);
         UUID bookId = savedBook.getId();
 
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book success bookId={}", traceId, userId, bookId);
+        log.info("[BookService] [traceId = {}, userId = {}] get book success bookId={}", traceId, userId, bookId);
 
         return bookId;
     }

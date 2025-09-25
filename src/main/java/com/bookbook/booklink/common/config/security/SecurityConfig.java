@@ -5,6 +5,7 @@ import com.bookbook.booklink.common.jwt.JwtAuthenticationFilter;
 import com.bookbook.booklink.common.jwt.JwtAuthorizationFilter;
 import com.bookbook.booklink.common.jwt.RefreshTokenService;
 import com.bookbook.booklink.common.jwt.util.JWTUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,6 +61,22 @@ public class SecurityConfig {
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)
+
+                // AccessToken 설정이 없을 시 오류 메세지
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // 인증 실패 (토큰 없음/만료 등)
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("{\"message\":\"인증 실패\"}");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            // 인가 실패 (권한 부족)
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.getWriter().write("{\"message\":\"권한 없음\"}");
+                        })
+                )
                 .build();
     }
 

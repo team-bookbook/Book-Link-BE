@@ -5,6 +5,7 @@ import com.bookbook.booklink.member.model.Member;
 import com.bookbook.booklink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +27,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Member member = memberRepository.findByEmail(username)
                             .orElseThrow(() -> new UsernameNotFoundException(username));
         List<SimpleGrantedAuthority> authorities = findUserAuthorities(username);
-        return Principal.createPrincipal(member, authorities);
+        return new User(
+                member.getEmail(),
+                member.getPassword(),
+                authorities
+        );
     }
     
     public List<SimpleGrantedAuthority> findUserAuthorities(String username){

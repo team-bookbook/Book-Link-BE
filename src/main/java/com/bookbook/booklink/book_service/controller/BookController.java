@@ -32,13 +32,12 @@ public class BookController implements BookApiDocs {
     ) {
         UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
 
-        log.info("[BookController] [traceId = {}, userId = {}] register book request received, isbn={}",
+        log.info("[BookController] [traceId = {}, userId = {}] find book request received, isbn={}",
                 traceId, userId, isbn);
-
 
         BookResponseDto book = bookService.getBook(isbn, traceId, userId);
 
-        log.info("[BookController] [traceId = {}, userId = {}] register book request success, book={}",
+        log.info("[BookController] [traceId = {}, userId = {}] find book request success, book={}",
                 traceId, userId, book);
 
         return ResponseEntity.ok()
@@ -65,7 +64,3 @@ public class BookController implements BookApiDocs {
     }
 
 }
-
-
-}
-    

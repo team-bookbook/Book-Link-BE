@@ -1,5 +1,6 @@
 package com.bookbook.booklink.book_service.controller.docs;
 
+import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
@@ -19,15 +20,27 @@ import java.util.UUID;
 public interface BookApiDocs {
 
     @Operation(
-            summary = "도서 등록",
-            description = "도서관에 새로운 도서를 등록합니다. " +
-                    "하나의 도서관당 동일 도서는 한 번만 등록 가능합니다."
+            summary = "도서 검색",
+            description = "도서를 검색합니다. " +
+                    "기존 DB에 없을 시 국립중앙도서관 api를 이용해 카테고리 제외한 정보를 반환합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, // todo : 발생하는 에러들 추가하기
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @GetMapping("/{isbn}")
     public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
             @PathVariable @NotNull(message = "조회할 도서의 ISBN 코드는 필수입니다.") String isbn,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "도서 등록",
+            description = "기존 DB에 없던 도서를 등록합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, // todo : 발생하는 에러들 추가하기
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+    @PostMapping
+    public ResponseEntity<BaseResponse<UUID>> registerBook(
+            @Valid @RequestBody BookRegisterDto bookRegisterDto,
             @RequestHeader("Trace-Id") String traceId
     );
 }

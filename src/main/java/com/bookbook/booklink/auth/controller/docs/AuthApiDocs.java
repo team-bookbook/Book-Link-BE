@@ -3,7 +3,7 @@ package com.bookbook.booklink.auth.controller.docs;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
-import com.bookbook.booklink.member.model.Member;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +23,6 @@ public interface AuthApiDocs {
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PostMapping("/logout")
-    public ResponseEntity<BaseResponse<Boolean>> logout(Member user);
+    public ResponseEntity<BaseResponse<Boolean>> logout(CustomUserDetails user);
 
 }

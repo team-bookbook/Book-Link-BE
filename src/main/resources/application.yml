@@ -19,3 +19,7 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+national-library:
+  api-url: "https://www.nl.go.kr/seoji/SearchApi.do"
+  cert-key: ${NATIONAL_LIBRARY_CERT_KEY}

@@ -27,14 +27,14 @@ public class LibraryBookService {
 
     @Transactional
     public UUID registerLibraryBook(LibraryBookRegisterDto bookRegisterDto, String traceId, UUID userId) {
-        log.info("[BookService] [traceId = {}, userId = {}] register library book initiate bookId={}", traceId, userId, bookRegisterDto.getId());
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] register library book initiate bookId={}", traceId, userId, bookRegisterDto.getId());
 
         // 멱등성 체크
-        String key = "book:register:" + traceId;
+        String key = "library-book:register:" + traceId;
         idempotencyService.checkIdempotency(key, 1,
                 () -> LockEvent.builder().key(key).build());
 
-        // register book
+        // find book
         Book book = bookRepository.findById(bookRegisterDto.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
@@ -51,7 +51,7 @@ public class LibraryBookService {
         LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);
         UUID bookId = savedLibraryBook.getId();
 
-        log.info("[BookService] [traceId = {}, userId = {}] register book success bookId={}", traceId, userId, bookId);
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] register book success bookId={}", traceId, userId, bookId);
 
         return bookId;
     }

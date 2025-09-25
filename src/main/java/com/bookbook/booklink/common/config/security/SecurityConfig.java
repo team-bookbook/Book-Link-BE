@@ -3,7 +3,7 @@ package com.bookbook.booklink.common.config.security;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.UserDetailsServiceImpl;
 import com.bookbook.booklink.common.jwt.JwtAuthenticationFilter;
 import com.bookbook.booklink.common.jwt.JwtAuthorizationFilter;
-import com.bookbook.booklink.common.jwt.RefreshTokenService;
+import com.bookbook.booklink.common.jwt.service.RefreshTokenService;
 import com.bookbook.booklink.common.jwt.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

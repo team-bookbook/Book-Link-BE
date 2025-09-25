@@ -1,4 +1,4 @@
-package com.bookbook.booklink.common.jwt;
+package com.bookbook.booklink.common.jwt.service;
 
 import com.bookbook.booklink.common.jwt.model.RefreshToken;
 import com.bookbook.booklink.common.jwt.repository.RefreshTokenRepository;
@@ -20,5 +20,9 @@ public class RefreshTokenService {
                 .token(token)
                 .build()
         );
+    }
+    @Transactional
+    public void logout(String email) {
+        refreshTokenRepository.deleteByEmail(email);
     }
 }

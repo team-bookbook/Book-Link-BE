@@ -31,6 +31,6 @@ public class BookResponseDto {
     @Schema(description = "도서 발행일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime publishedDate;
 
-    @Schema(description = "우리 데이터베이스에서 가져오면 true, national library에서 가져오면 false", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
-    private boolean hasFoundFromOurDatabase;
+    @Schema(description = "national library 에서 가져오면 true, 우리 데이터베이스에서 가져오면 false", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    private boolean foundInNationalLibrary;
 }

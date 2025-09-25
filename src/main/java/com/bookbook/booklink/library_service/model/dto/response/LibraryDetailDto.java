@@ -30,22 +30,22 @@ public class LibraryDetailDto {
     private Double stars;
 
     @Schema(description = "도서관이 받은 좋아요의 수", example = "15", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer like_count;
+    private Integer likeCount;
 
     @Schema(description = "도서관이 보유한 책의 수", example = "120", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer book_count;
+    private Integer bookCount;
 
     @Schema(description = "도서관 생성 일자", example = "2025-09-19T23:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Schema(description = "도서관 썸네일 URL", example = "https://example.com/thumbnail.jpg", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String thumbnail_url;
+    private String thumbnailUrl;
 
     @Schema(description = "영업 시작 시간", example = "09:00", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalTime start_time;
+    private LocalTime startTime;
 
     @Schema(description = "영업 종료 시간", example = "21:00", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalTime end_time;
+    private LocalTime endTime;
 
     public static LibraryDetailDto fromEntity(Library library) {
         return LibraryDetailDto.builder()
@@ -53,12 +53,12 @@ public class LibraryDetailDto {
                 .name(library.getName())
                 .description(library.getDescription())
                 .stars(library.getStars())
-                .like_count(library.getLike_count())
-                .book_count(library.getBook_count())
-                .created_at(library.getCreated_at())
-                .thumbnail_url(library.getThumbnail_url())
-                .start_time(library.getStart_time())
-                .end_time(library.getEnd_time())
+                .likeCount(library.getLikeCount())
+                .bookCount(library.getBookCount())
+                .createdAt(library.getCreatedAt())
+                .thumbnailUrl(library.getThumbnailUrl())
+                .startTime(library.getStartTime())
+                .endTime(library.getEndTime())
                 .build();
     }
 }

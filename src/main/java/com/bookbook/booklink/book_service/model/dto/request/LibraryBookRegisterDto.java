@@ -8,13 +8,13 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-@Schema(description = "도서 등록 요청 DTO")
+@Schema(description = "도서관별 도서 등록 요청 DTO")
 public class LibraryBookRegisterDto {
-    @Schema(description = "도서 ID", example = "마흔에 읽는 쇼펜하우어", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "도서 ID", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "도서 ID는 필수입니다.")
     UUID id;
 
-    @Schema(description = "보유 권수", example = "1000")
+    @Schema(description = "보유 권수", example = "2")
     @NotNull(message = "보유 권수는 필수입니다.")
     @Min(value = 0, message = "보유한 도서 개수는 양수여야 합니다.")
     Integer copies;

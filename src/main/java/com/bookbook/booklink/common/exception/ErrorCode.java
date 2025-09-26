@@ -80,6 +80,9 @@ public enum ErrorCode {
     @Schema(description = "존재하지 않는 도서입니다.")
     BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK_NOT_FOUND_400", "존재하지 않는 도서입니다."),
 
+    @Schema(description = "반납할 수 없는 상태입니다.")
+    ILLEGAL_BOOK_STATE(HttpStatus.BAD_REQUEST, "ILLEGAL_BOOK_STATE_400", "반납할 수 없는 상태입니다."),
+
     /*
      * Review
      */

@@ -1,5 +1,7 @@
 package com.bookbook.booklink.book_service.model;
 
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.member.model.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -71,7 +73,7 @@ public class Borrow {
 
     public void returnBook(LocalDateTime returnedAt, String imageUrl) {
         if (this.status != BorrowStatus.BORROWED && this.status != BorrowStatus.EXTENDED) {
-            throw new IllegalStateException("반납할 수 없는 상태입니다.");
+            throw new CustomException(ErrorCode.ILLEGAL_BOOK_STATE);
         }
         this.status = BorrowStatus.RETURNED;
         this.returnedAt = returnedAt;

@@ -72,8 +72,8 @@ public enum ErrorCode {
     LIBRARY_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIBRARY_NOT_FOUND_400", "해당 ID의 도서관이 존재하지 않습니다."),
 
     /*
-    * Book
-    */
+     * Book
+     */
     @Schema(description = "유효하지 않은 카테고리 코드입니다.")
     INVALID_CATEGORY_CODE(HttpStatus.BAD_REQUEST, "INVALID_CATEGORY_CODE_400", "유효하지 않은 카테고리 코드입니다."),
 
@@ -94,7 +94,25 @@ public enum ErrorCode {
      */
     @Schema(description = "존재하지 않는 리뷰입니다.")
     REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "REVIEW_NOT_FOUND_400", "존재하지 않는 리뷰입니다."),
-    ;
+
+
+    /*
+     * Notification
+     */
+    @Schema(description = "존재하지 않는 리뷰입니다.")
+    NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "NOTIFICATION_NOT_FOUND_400", "존재하지 않는 알림입니다."),
+
+    /*
+     * Point
+     */
+    POINT_NOT_FOUND(HttpStatus.BAD_REQUEST, "POINT_NOT_FOUND_400", "포인트가 없습니다."),
+    POINT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "POINT_NOT_ENOUGH_400", "포인트가 부족합니다."),
+
+
+    PAYMENT_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "PAYMENT_NOT_COMPLETED_400", "결제가 진행중입니다!"),
+    PAYMENT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "PAYMENT_ALREADY_EXISTS_400", "이미 결제요청된 건입니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PAYMENT_NOT_FOUND_400", "잘못된 결제 요청입니다."),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT_AMOUNT_MISMATCH_400", "잘못된 결제 요청입니다.");
 
     private final HttpStatus httpStatus;
     @Schema(description = "에러 코드", example = "UNKNOWN_ERROR_500", implementation = ErrorCode.class)

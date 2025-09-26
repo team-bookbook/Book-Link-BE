@@ -55,6 +55,9 @@ public enum ErrorCode {
     @Schema(description = "존재하지 않는 도서입니다.")
     BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK_NOT_FOUND_400", "존재하지 않는 도서입니다."),
 
+    @Schema(description = "존재하지 않는 도서관별 도서입니다.")
+    LIBRARY_BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIBRARY_BOOK_NOT_FOUND_400", "존재하지 않는 도서관별 도서입니다."),
+
     @Schema(description = "공공도서관 api 호출에 실패했습니다.")
     API_FALLBACK_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "API_FALLBACK_FAIL_500", "공공도서관 api 호출에 실패했습니다."),
 

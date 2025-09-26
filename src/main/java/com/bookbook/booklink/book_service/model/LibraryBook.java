@@ -1,6 +1,7 @@
 package com.bookbook.booklink.book_service.model;
 
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -94,6 +95,15 @@ public class LibraryBook {
 
     public void addCopy(LibraryBookCopy copy) {
         copiesList.add(copy);
+    }
+
+    public void update(LibraryBookUpdateDto updateBookDto) {
+        if (updateBookDto.getCopies() != null) {
+            copies = updateBookDto.getCopies();
+        }
+        if (updateBookDto.getDeposit() != null) {
+            deposit = updateBookDto.getDeposit();
+        }
     }
 
     public void updateAvailableBooks() {

@@ -95,6 +95,12 @@ public class LibraryBook {
 
     public void addCopy(LibraryBookCopy copy) {
         copiesList.add(copy);
+        copy.setLibraryBook(this);
+    }
+
+    public void removeCopy(LibraryBookCopy copy) {
+        copiesList.remove(copy);
+        copy.setLibraryBook(null); // orphanRemoval 덕분에 자동 삭제
     }
 
     public void updateAvailableBooks() {

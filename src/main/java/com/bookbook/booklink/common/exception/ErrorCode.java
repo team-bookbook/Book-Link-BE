@@ -50,7 +50,7 @@ public enum ErrorCode {
     DUPLICATE_REQUEST(HttpStatus.BAD_REQUEST, "DUPLICATE_REQUEST_400", "이미 처리중인 요청입니다."),
 
     /*
-    * JWT
+     * JWT
      */
     @Schema(description = "JWT 토큰이 유효하지 않습니다.")
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_401", "JWT 토큰이 유효하지 않습니다."),
@@ -112,7 +112,10 @@ public enum ErrorCode {
     PAYMENT_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "PAYMENT_NOT_COMPLETED_400", "결제가 진행중입니다!"),
     PAYMENT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "PAYMENT_ALREADY_EXISTS_400", "이미 결제요청된 건입니다."),
     PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PAYMENT_NOT_FOUND_400", "잘못된 결제 요청입니다."),
-    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT_AMOUNT_MISMATCH_400", "잘못된 결제 요청입니다.");
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT_AMOUNT_MISMATCH_400", "잘못된 결제 요청입니다."),
+    INVALID_API_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, "INVALID_API_TOKEN_500", "포트원 서버의 토큰이 유효하지 않습니다."),
+    PAYMENT_CANCEL_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT_CANCEL_FAILED_400", "결제 취소 요청이 실패했습니다."),
+    JSON_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "JSON_PARSING_ERROR_500", "JSON 파싱이 실패했습니다.");
 
     private final HttpStatus httpStatus;
     @Schema(description = "에러 코드", example = "UNKNOWN_ERROR_500", implementation = ErrorCode.class)

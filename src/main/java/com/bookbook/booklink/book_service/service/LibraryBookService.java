@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -58,50 +59,17 @@ public class LibraryBookService {
         return bookId;
     }
 
+    @Transactional
     public void updateLibraryBook(LibraryBookUpdateDto updateBookDto, String traceId, UUID userId) {
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book initiate libraryBookId={}", traceId, userId, updateBookDto.getId());
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book initiate updateBookDto={}", traceId, userId, updateBookDto);
 
         LibraryBook libraryBook = libraryBookRepository.findById(updateBookDto.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-        // 개수가 변경되었다면, 그에 맞게 librarybookcopies 변경해주어야 함
-        if (updateBookDto.getCopies() != null) updateCopies(libraryBook, updateBookDto.getCopies());
-        if (updateBookDto.getDeposit() != null) updateDeposit(libraryBook, updateBookDto.getDeposit());
+        if (updateBookDto.getCopies() != null) libraryBook.updateCopies(updateBookDto.getCopies());
+        if (updateBookDto.getDeposit() != null) libraryBook.updateDeposit(updateBookDto.getDeposit());
 
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBookId={}", traceId, userId, updateBookDto.getId());
-    }
-
-    private void updateCopies(LibraryBook libraryBook, int copies) {
-        // 개수 제거 - 현재 책이 대여중인 상태인지 확인
-        if (libraryBook.getCopies() > copies) {
-            if (libraryBook.getAvailableBooks() < libraryBook.getCopies() - copies) {
-                throw new CustomException(ErrorCode.CANNOT_REDUCE_COPIES_WHILE_BORROWED);
-            }
-            int i = 0;
-            for (LibraryBookCopy copy : libraryBook.getCopiesList()) {
-                if (i == copies) break;
-
-                if (copy.getStatus().equals(BookStatus.AVAILABLE)) {
-                    libraryBook.removeCopy(copy);
-                    i++;
-                }
-            }
-        } else {
-            int addedCopies = copies - libraryBook.getCopies();
-            for (int i = 0; i < addedCopies; i++) {
-                libraryBook.addCopy();
-            }
-        }
-
-        libraryBook.updateCopies(copies);
-
-        if (libraryBook.getCopies() != libraryBook.getCopiesList().size()) {
-            throw new  CustomException(ErrorCode.LIBRARY_BOOK_COPIES_MISMATCH);
-        }
-    }
-
-    private void updateDeposit(LibraryBook libraryBook, int deposit) {
-        libraryBook.updateDeposit(deposit);
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBook={}", traceId, userId, libraryBook);
     }
 }
     

@@ -92,11 +92,11 @@ public enum ErrorCode {
     @Schema(description = "이미 존재하는 도서입니다.")
     DUPLICATE_BOOK(HttpStatus.BAD_REQUEST, "DUPLICATE_BOOK_400", "이미 존재하는 도서입니다."),
 
-    @Schema(description = "대여 중인 도서가 있어 보유 권수를 줄일 수 없습니다.")
-    CANNOT_REDUCE_COPIES_WHILE_BORROWED(HttpStatus.BAD_REQUEST, "CANNOT_REDUCE_COPIES_400", "대여 중인 도서가 있어 보유 권수를 줄일 수 없습니다."),
-
     @Schema(description = "보유 권수와 도서 인스턴스 개수가 일치하지 않습니다.")
     LIBRARY_BOOK_COPIES_MISMATCH(HttpStatus.INTERNAL_SERVER_ERROR, "BOOK_INTERNAL_SERVER_ERROR_500", "보유 권수와 도서 인스턴스 개수가 일치하지 않습니다."),
+
+    @Schema(description = "삭제할 도서 개수가 충분하지 않습니다.")
+    NOT_ENOUGH_AVAILABLE_COPIES_TO_REMOVE(HttpStatus.BAD_REQUEST, "BOOK_BAD_REQUEST_400", "삭제할 도서 개수가 충분하지 않습니다."),
 
     /*
      * Review

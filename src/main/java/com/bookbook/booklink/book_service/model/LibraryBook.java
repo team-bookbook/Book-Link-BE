@@ -2,13 +2,12 @@ package com.bookbook.booklink.book_service.model;
 
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -23,6 +22,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @EntityListeners(AuditingEntityListener.class)
 public class LibraryBook {
 
@@ -48,7 +48,7 @@ public class LibraryBook {
     @Min(0)
     @Column(nullable = false)
     @Builder.Default
-    @Schema(description = "빌린 횟수", example = "14", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "누적 대여 횟수", example = "14", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer totalBorrowCount = 0;
 
     @Min(0)
@@ -98,20 +98,46 @@ public class LibraryBook {
         LibraryBookCopy copy = LibraryBookCopy.toEntity();
         copiesList.add(copy);
         copy.setLibraryBook(this);
+        copies++; // 기존 변수와 동기화
+        availableBooks++;
     }
 
     public void removeCopy(LibraryBookCopy copy) {
-        copiesList.remove(copy);
-        copy.setLibraryBook(null); // orphanRemoval 덕분에 자동 삭제
+        if (copiesList.remove(copy)) {
+            copy.setLibraryBook(null);
+            copies--;
+            if(!copy.getStatus().equals(BookStatus.AVAILABLE)) {
+                throw new CustomException(ErrorCode.DATABASE_ERROR);
+            }
+            availableBooks--;
+        }
     }
 
-    public void updateAvailableBooks() {
-        this.availableBooks = Math.max(0, copies - borrowedCount);
-    }
+    public void updateCopies(int targetCopies) {
+        int currentCopies = this.copies;
 
-    public void updateCopies(int copies) {
-        this.copies = copies;
-        updateAvailableBooks();
+        if (currentCopies > targetCopies) {
+            int toRemove = currentCopies - targetCopies;
+            List<LibraryBookCopy> removableCopies = copiesList.stream()
+                    .filter(c -> c.getStatus() == BookStatus.AVAILABLE)
+                    .limit(toRemove)
+                    .toList();
+
+            if (removableCopies.size() < toRemove) {
+                throw new CustomException(ErrorCode.NOT_ENOUGH_AVAILABLE_COPIES_TO_REMOVE);
+            }
+
+            removableCopies.forEach(this::removeCopy);
+        } else if (currentCopies < targetCopies) {
+            int toAdd = targetCopies - currentCopies;
+            for (int i = 0; i < toAdd; i++) {
+                addCopy();
+            }
+        }
+
+        if (copies != copiesList.size() || availableBooks + borrowedCount != copies) {
+            throw new  CustomException(ErrorCode.LIBRARY_BOOK_COPIES_MISMATCH);
+        }
     }
 
     public void updateDeposit(int deposit) {

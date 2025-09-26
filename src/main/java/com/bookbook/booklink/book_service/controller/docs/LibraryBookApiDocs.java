@@ -8,6 +8,7 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,18 @@ public interface LibraryBookApiDocs {
     @PatchMapping
     public ResponseEntity<BaseResponse<Void>> updateLibraryBook(
             @Valid @RequestBody LibraryBookUpdateDto updateBookDto,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "도서관별 도서 삭제",
+            description = "도서관에 등록된 도서를 삭제합니다."
+    )
+    @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, // todo : 에러 코드 추가
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+    @DeleteMapping("/{libraryBookId}")
+    public ResponseEntity<BaseResponse<Void>> deleteLibraryBook(
+            @PathVariable @NotNull(message = "삭제할 도서관별 도서의 id는 필수입니다.") UUID libraryBookId,
             @RequestHeader("Trace-Id") String traceId
     );
 }

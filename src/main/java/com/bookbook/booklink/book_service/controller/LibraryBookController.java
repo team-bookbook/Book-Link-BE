@@ -2,6 +2,7 @@ package com.bookbook.booklink.book_service.controller;
 
 import com.bookbook.booklink.book_service.controller.docs.LibraryBookApiDocs;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import jakarta.validation.Valid;
@@ -39,6 +40,24 @@ public class LibraryBookController implements LibraryBookApiDocs {
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(savedLibraryBookId));
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> updateLibraryBook(
+            @Valid @RequestBody LibraryBookUpdateDto updateBookDto,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
+
+        log.info("[BookController] [traceId = {}, userId = {}] update library book request received, libraryBookId={}",
+                traceId, userId, updateBookDto.getId());
+
+        bookService.updateLibraryBook(updateBookDto, traceId, userId);
+
+        log.info("[BookController] [traceId = {}, userId = {}] update library book request success, libraryBookId={}",
+                traceId, userId, updateBookDto.getId());
+
+        return ResponseEntity.ok(BaseResponse.success(null));
     }
 }
     

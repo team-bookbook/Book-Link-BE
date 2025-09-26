@@ -1,6 +1,7 @@
 package com.bookbook.booklink.book_service.controller.docs;
 
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
@@ -24,8 +25,20 @@ public interface LibraryBookApiDocs {
     @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, ErrorCode.DATABASE_ERROR,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PostMapping
-    public ResponseEntity<BaseResponse<UUID>> registerBook(
+    public ResponseEntity<BaseResponse<UUID>> registerBook( // todo : 함수 이름 변경 -> library book
             @Valid @RequestBody LibraryBookRegisterDto bookRegisterDto,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "도서관별 도서 수정",
+            description = "도서관에등록된 도서의 보증금, 보유 권수를 수정합니다."
+    )
+    @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, // todo 에러 코드 추가
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+    @PostMapping
+    public ResponseEntity<BaseResponse<Void>> updateLibraryBook(
+            @Valid @RequestBody LibraryBookUpdateDto updateBookDto,
             @RequestHeader("Trace-Id") String traceId
     );
 }

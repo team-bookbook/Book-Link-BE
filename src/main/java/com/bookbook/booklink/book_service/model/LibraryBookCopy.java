@@ -40,9 +40,30 @@ public class LibraryBookCopy {
     @Schema(description = "반납 예정일", example = "2025-09-29T12:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private LocalDateTime dueAt;
 
-    public static LibraryBookCopy toEntity(LibraryBook libraryBook) {
+    public static LibraryBookCopy createNewCopy(LibraryBook libraryBook) {
         return LibraryBookCopy.builder()
                 .libraryBook(libraryBook)
                 .build();
+    }
+
+    public void borrow(LocalDateTime borrowedAt, LocalDateTime dueAt) {
+        this.status = BookStatus.BORROWED;
+        this.borrowedAt = borrowedAt;
+        this.dueAt = dueAt;
+    }
+
+    public void returnBook() {
+        this.status = BookStatus.AVAILABLE;
+        this.borrowedAt = null;
+        this.dueAt = null;
+    }
+
+    public void extendBook(LocalDateTime extendedAt) {
+        this.status = BookStatus.EXTENDED;
+        this.dueAt = extendedAt;
+    }
+
+    public void overdueBook() {
+        this.status = BookStatus.OVERDUE;
     }
 }

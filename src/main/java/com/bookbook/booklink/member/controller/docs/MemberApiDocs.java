@@ -5,6 +5,7 @@ import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import com.bookbook.booklink.member.model.dto.request.SignUpReqDto;
+import com.bookbook.booklink.member.model.dto.request.UpdateReqDto;
 import com.bookbook.booklink.member.model.dto.response.ProfileResDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -36,10 +37,18 @@ public interface MemberApiDocs {
             security = {@SecurityRequirement(name = "bearer-key")}
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
-            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.USER_NOT_FOUND})
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<ProfileResDto>> getMyInfo(
             @AuthenticationPrincipal CustomUserDetails user
     );
 
+    @Operation(summary = "회원 정보 수정", description = "현재 로그인한 사용자의 정보를 수정합니다.")
+    @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
+            ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.USER_NOT_FOUND})
+    @PutMapping("/update")
+    public ResponseEntity<BaseResponse<ProfileResDto>> updateMyInfo(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @Valid @RequestBody UpdateReqDto reqDto
+    );
 }

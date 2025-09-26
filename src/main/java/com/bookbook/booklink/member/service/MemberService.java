@@ -6,6 +6,7 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.member.model.Member;
 import com.bookbook.booklink.member.model.dto.request.SignUpReqDto;
+import com.bookbook.booklink.member.model.dto.request.UpdateReqDto;
 import com.bookbook.booklink.member.model.dto.response.ProfileResDto;
 import com.bookbook.booklink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -93,6 +94,30 @@ public class MemberService {
     public ProfileResDto getMyProfile(UUID memberId) {
         Member member = getMemberOrThrow(memberId);
         return ProfileResDto.from(member);
+    }
+
+    /**
+     * 회원 프로필 수정
+     *
+     * <p>회원 ID를 통해 기존 회원 엔티티를 조회한 뒤,
+     * 요청 DTO(UpdateReqDto)에서 전달된 값으로 회원 정보를 업데이트합니다.
+     *
+     * <ul>
+     *   <li>닉네임, 주소, 전화번호, 프로필 이미지 등 기본 프로필 정보 수정 가능</li>
+     *   <li>존재하지 않는 회원 ID일 경우 {@link CustomException} with {@link ErrorCode#USER_NOT_FOUND} 발생</li>
+     *   <li>트랜잭션 내에서 동작하며 수정된 회원 엔티티는 DB에 즉시 반영됩니다.</li>
+     * </ul>
+     *
+     * @param memberId 수정할 회원의 고유 ID(UUID)
+     * @param reqDto   회원 수정 요청 DTO (닉네임, 주소, 전화번호, 프로필 이미지 포함)
+     * @return 수정이 완료된 회원 엔티티
+     * @throws CustomException 회원 ID가 존재하지 않을 경우 예외 발생
+     */
+    @Transactional
+    public Member updateProfile(UUID memberId, UpdateReqDto reqDto) {
+        Member member = getMemberOrThrow(memberId);
+        member.updateMemberInfo(reqDto);
+        return memberRepository.save(member);
     }
 }
     

@@ -4,6 +4,7 @@ import com.bookbook.booklink.member.code.Provider;
 import com.bookbook.booklink.member.code.Role;
 import com.bookbook.booklink.member.code.Status;
 import com.bookbook.booklink.member.model.dto.request.SignUpReqDto;
+import com.bookbook.booklink.member.model.dto.request.UpdateReqDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -123,6 +124,17 @@ public class Member {
                 .status(Status.ACTIVE)
                 .pointBalance(0)
                 .build();
+    }
+
+    /**
+     * 회원 정보 수정
+     * nickname, address, phone, profileImage 업데이트
+     */
+    public void updateMemberInfo(UpdateReqDto dto) {
+        this.nickname = dto.getNickname();
+        this.address = dto.getAddress();
+        this.phone = dto.getPhone();
+        this.profileImage = dto.getProfileImage();
     }
 }
     

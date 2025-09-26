@@ -31,6 +31,15 @@ public enum ErrorCode {
     @Schema(description = "데이터 제약 조건을 위반했습니다.")
     DATA_INTEGRITY_VIOLATION(HttpStatus.BAD_REQUEST, "DATA_INTEGRITY_VIOLATION_400", "데이터 제약 조건을 위반했습니다."),
 
+    @Schema(description = "비밀번호는 대/소문자·숫자·특수문자 각 1자 이상 포함, 공백 불가입니다.")
+    PASSWORD_POLICY_INVALID(HttpStatus.BAD_REQUEST, "PASSWORD_POLICY_INVALID_400", "비밀번호는 대/소문자·숫자·특수문자 각 1자 이상 포함, 공백 불가"),
+
+    @Schema(description = "이미 등록된 이메일입니다.")
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL_ALREADY_EXISTS_409", "이미 등록된 이메일입니다."),
+
+    @Schema(description = "사용자를 찾을 수 없습니다.")
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND_404", "사용자를 찾을 수 없습니다.."),
+
     /*
      * 예외처리 예시
      */
@@ -41,14 +50,30 @@ public enum ErrorCode {
     DUPLICATE_REQUEST(HttpStatus.BAD_REQUEST, "DUPLICATE_REQUEST_400", "이미 처리중인 요청입니다."),
 
     /*
+    * JWT
+     */
+    @Schema(description = "JWT 토큰이 유효하지 않습니다.")
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_401", "JWT 토큰이 유효하지 않습니다."),
+
+    @Schema(description = "JWT 토큰이 만료되었습니다.")
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "EXPIRED_TOKEN_401", "JWT 토큰이 만료되었습니다."),
+
+    @Schema(description = "RefreshToken이 유효하지 않습니다.")
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_REFRESH_TOKEN_401", "RefreshToken이 유효하지 않습니다."),
+
+    @Schema(description = "RefreshToken이 만료되었습니다.")
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "EXPIRED_REFRESH_TOKEN_401", "RefreshToken이 만료되었습니다."),
+
+
+    /*
      * Library
      */
     @Schema(description = "해당 ID의 도서관이 존재하지 않습니다.")
     LIBRARY_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIBRARY_NOT_FOUND_400", "해당 ID의 도서관이 존재하지 않습니다."),
 
     /*
-    * Book
-    */
+     * Book
+     */
     @Schema(description = "유효하지 않은 카테고리 코드입니다.")
     INVALID_CATEGORY_CODE(HttpStatus.BAD_REQUEST, "INVALID_CATEGORY_CODE_400", "유효하지 않은 카테고리 코드입니다."),
 
@@ -72,7 +97,25 @@ public enum ErrorCode {
      */
     @Schema(description = "존재하지 않는 리뷰입니다.")
     REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "REVIEW_NOT_FOUND_400", "존재하지 않는 리뷰입니다."),
-    ;
+
+
+    /*
+     * Notification
+     */
+    @Schema(description = "존재하지 않는 리뷰입니다.")
+    NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "NOTIFICATION_NOT_FOUND_400", "존재하지 않는 알림입니다."),
+
+    /*
+     * Point
+     */
+    POINT_NOT_FOUND(HttpStatus.BAD_REQUEST, "POINT_NOT_FOUND_400", "포인트가 없습니다."),
+    POINT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "POINT_NOT_ENOUGH_400", "포인트가 부족합니다."),
+
+
+    PAYMENT_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "PAYMENT_NOT_COMPLETED_400", "결제가 진행중입니다!"),
+    PAYMENT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "PAYMENT_ALREADY_EXISTS_400", "이미 결제요청된 건입니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PAYMENT_NOT_FOUND_400", "잘못된 결제 요청입니다."),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT_AMOUNT_MISMATCH_400", "잘못된 결제 요청입니다.");
 
     private final HttpStatus httpStatus;
     @Schema(description = "에러 코드", example = "UNKNOWN_ERROR_500", implementation = ErrorCode.class)

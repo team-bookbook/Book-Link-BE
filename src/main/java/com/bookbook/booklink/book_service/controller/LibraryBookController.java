@@ -24,7 +24,7 @@ public class LibraryBookController implements LibraryBookApiDocs {
     private final LibraryBookService bookService;
 
     @Override
-    public ResponseEntity<BaseResponse<UUID>> registerBook(
+    public ResponseEntity<BaseResponse<UUID>> registerLibraryBook(
             @Valid @RequestBody LibraryBookRegisterDto bookRegisterDto,
             @RequestHeader("Trace-Id") String traceId
     ) {

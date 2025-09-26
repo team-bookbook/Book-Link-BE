@@ -25,7 +25,7 @@ public interface LibraryBookApiDocs {
     @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, ErrorCode.DATABASE_ERROR,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PostMapping
-    public ResponseEntity<BaseResponse<UUID>> registerBook( // todo : 함수 이름 변경 -> library book
+    public ResponseEntity<BaseResponse<UUID>> registerLibraryBook(
             @Valid @RequestBody LibraryBookRegisterDto bookRegisterDto,
             @RequestHeader("Trace-Id") String traceId
     );

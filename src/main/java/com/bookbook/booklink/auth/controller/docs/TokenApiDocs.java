@@ -1,4 +1,4 @@
-package com.bookbook.booklink.login.controller.docs;
+package com.bookbook.booklink.auth.controller.docs;
 
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.ErrorCode;

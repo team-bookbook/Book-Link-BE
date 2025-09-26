@@ -1,4 +1,4 @@
-package com.bookbook.booklink.login.controller;
+package com.bookbook.booklink.auth.controller;
 
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.CustomException;
@@ -6,7 +6,7 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.model.RefreshToken;
 import com.bookbook.booklink.common.jwt.repository.RefreshTokenRepository;
 import com.bookbook.booklink.common.jwt.util.JWTUtil;
-import com.bookbook.booklink.login.controller.docs.TokenApiDocs;
+import com.bookbook.booklink.auth.controller.docs.TokenApiDocs;
 import com.bookbook.booklink.member.model.Member;
 import com.bookbook.booklink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

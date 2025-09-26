@@ -98,6 +98,9 @@ public enum ErrorCode {
     @Schema(description = "삭제할 도서 개수가 충분하지 않습니다.")
     NOT_ENOUGH_AVAILABLE_COPIES_TO_REMOVE(HttpStatus.BAD_REQUEST, "BOOK_BAD_REQUEST_400", "삭제할 도서 개수가 충분하지 않습니다."),
 
+    @Schema(description = "대여중인 도서가 있을 때는 삭제할 수 없습니다.")
+    CANNOT_DELETE_BORROWED_BOOK(HttpStatus.BAD_REQUEST, "BOOK_BAD_REQUEST_400", "대여중인 도서가 있을 때는 삭제할 수 없습니다."),
+
     /*
      * Review
      */

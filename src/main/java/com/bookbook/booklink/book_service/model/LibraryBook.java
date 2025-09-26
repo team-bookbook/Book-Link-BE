@@ -1,7 +1,6 @@
 package com.bookbook.booklink.book_service.model;
 
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
-import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -164,5 +163,10 @@ public class LibraryBook {
 
     public void updateDeposit(int deposit) {
         this.deposit = deposit;
+    }
+
+    public boolean hasBorrowedCopies() {
+        return getCopiesList().stream()
+                .anyMatch(copy -> copy.getStatus() != BookStatus.AVAILABLE);
     }
 }

@@ -1,9 +1,7 @@
 package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
-import com.bookbook.booklink.book_service.model.BookStatus;
 import com.bookbook.booklink.book_service.model.LibraryBook;
-import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
 import com.bookbook.booklink.book_service.repository.BookRepository;
@@ -17,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -70,6 +67,23 @@ public class LibraryBookService {
         if (updateBookDto.getDeposit() != null) libraryBook.updateDeposit(updateBookDto.getDeposit());
 
         log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBook={}", traceId, userId, libraryBook);
+    }
+
+    public void deleteLibraryBook(UUID libraryBookId, String traceId, UUID userId) {
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book initiate libraryBookId={}", traceId, userId, libraryBookId);
+
+        LibraryBook libraryBook = libraryBookRepository.findById(libraryBookId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+
+        boolean hasBorrowedCopies = libraryBook.hasBorrowedCopies();
+
+        if (hasBorrowedCopies) {
+            throw new CustomException(ErrorCode.CANNOT_DELETE_BORROWED_BOOK);
+        }
+
+        libraryBookRepository.delete(libraryBook);
+
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book success libraryBookId={}", traceId, userId, libraryBookId);
     }
 }
     

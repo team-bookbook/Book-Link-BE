@@ -36,7 +36,7 @@ public interface LibraryBookApiDocs {
     )
     @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, // todo 에러 코드 추가
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
-    @PostMapping
+    @PatchMapping
     public ResponseEntity<BaseResponse<Void>> updateLibraryBook(
             @Valid @RequestBody LibraryBookUpdateDto updateBookDto,
             @RequestHeader("Trace-Id") String traceId

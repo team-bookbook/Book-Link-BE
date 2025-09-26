@@ -2,12 +2,7 @@ package com.bookbook.booklink.review_service.model.dto.request;
 
 import com.bookbook.booklink.review_service.model.TargetType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 
 @Getter
@@ -20,7 +15,7 @@ public class ReviewCreateDto {
             example = "user-1234",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String reviewer_id;
+    private String reviewerId;
 
     @NotBlank(message = "리뷰 대상 ID는 필수입니다.")
     @Schema(
@@ -28,7 +23,7 @@ public class ReviewCreateDto {
             example = "510e8440-eb9b-11d4-aa16-424651640000",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String target_id;
+    private String targetId;
 
     @NotNull(message = "리뷰 대상 타입은 필수입니다.")
     @Schema(
@@ -36,7 +31,7 @@ public class ReviewCreateDto {
             example = "LIBRARY",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private TargetType target_type;
+    private TargetType targetType;
 
     @NotNull(message = "별점은 필수입니다.")
     @Min(value = 0, message = "별점은 최소 0점입니다.")

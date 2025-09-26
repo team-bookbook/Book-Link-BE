@@ -31,6 +31,15 @@ public enum ErrorCode {
     @Schema(description = "데이터 제약 조건을 위반했습니다.")
     DATA_INTEGRITY_VIOLATION(HttpStatus.BAD_REQUEST, "DATA_INTEGRITY_VIOLATION_400", "데이터 제약 조건을 위반했습니다."),
 
+    @Schema(description = "비밀번호는 대/소문자·숫자·특수문자 각 1자 이상 포함, 공백 불가입니다.")
+    PASSWORD_POLICY_INVALID(HttpStatus.BAD_REQUEST, "PASSWORD_POLICY_INVALID_400", "비밀번호는 대/소문자·숫자·특수문자 각 1자 이상 포함, 공백 불가"),
+
+    @Schema(description = "이미 등록된 이메일입니다.")
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "EMAIL_ALREADY_EXISTS_409", "이미 등록된 이메일입니다."),
+
+    @Schema(description = "사용자를 찾을 수 없습니다.")
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND_404", "사용자를 찾을 수 없습니다.."),
+
     /*
      * 예외처리 예시
      */
@@ -39,6 +48,22 @@ public enum ErrorCode {
 
     @Schema(description = "이미 처리중인 요청입니다.")
     DUPLICATE_REQUEST(HttpStatus.BAD_REQUEST, "DUPLICATE_REQUEST_400", "이미 처리중인 요청입니다."),
+
+    /*
+    * JWT
+     */
+    @Schema(description = "JWT 토큰이 유효하지 않습니다.")
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_401", "JWT 토큰이 유효하지 않습니다."),
+
+    @Schema(description = "JWT 토큰이 만료되었습니다.")
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "EXPIRED_TOKEN_401", "JWT 토큰이 만료되었습니다."),
+
+    @Schema(description = "RefreshToken이 유효하지 않습니다.")
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_REFRESH_TOKEN_401", "RefreshToken이 유효하지 않습니다."),
+
+    @Schema(description = "RefreshToken이 만료되었습니다.")
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "EXPIRED_REFRESH_TOKEN_401", "RefreshToken이 만료되었습니다."),
+
 
     /*
      * Library

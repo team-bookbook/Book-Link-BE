@@ -62,9 +62,36 @@ public class MemberService {
         return saveMember;
     }
 
+    /**
+     * 주어진 UUID로 Member 엔티티를 조회합니다.
+     * <p>
+     * DB에서 해당 ID의 Member가 존재하지 않을 경우 {@link CustomException}을 발생시킵니다.
+     * 이 메서드는 여러 서비스 계층에서 공통적으로 사용할 수 있는
+     * "회원 조회 유틸리티" 메서드 역할을 합니다.
+     *
+     * @param memberID 조회할 회원의 UUID
+     * @return Member 엔티티
+     * @throws CustomException {@link ErrorCode#USER_NOT_FOUND} - 회원이 존재하지 않는 경우
+     */
+    @Transactional(readOnly = true)
+    public Member getMemberOrThrow(UUID memberID){
+        return memberRepository.findById(memberID)
+                .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    /**
+     * 로그인한 사용자의 프로필 정보를 조회합니다.
+     * <p>
+     * 내부적으로 {@link #getMemberOrThrow(UUID)}를 호출하여 Member 엔티티를 가져온 뒤,
+     * {@link ProfileResDto} 형태로 변환하여 반환합니다.
+     *
+     * @param memberId 로그인한 회원의 UUID
+     * @return 프로필 응답 DTO ({@link ProfileResDto})
+     * @throws CustomException {@link ErrorCode#USER_NOT_FOUND} - 회원이 존재하지 않는 경우
+     */
+    @Transactional(readOnly = true)
     public ProfileResDto getMyProfile(UUID memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Member member = getMemberOrThrow(memberId);
         return ProfileResDto.from(member);
     }
 }

@@ -59,14 +59,24 @@ public class LibraryBookService {
     }
 
     public void updateLibraryBook(LibraryBookUpdateDto updateBookDto, String traceId, UUID userId) {
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book initiate bookId={}", traceId, userId, updateBookDto.getId());
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book initiate libraryBookId={}", traceId, userId, updateBookDto.getId());
 
         LibraryBook libraryBook = libraryBookRepository.findById(updateBookDto.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-        libraryBook.update(updateBookDto);
+        // 개수가 변경되었다면, 그에 맞게 librarybookcopies 변경해주어야 함
+        if (updateBookDto.getCopies() != null) updateCopies(libraryBook, updateBookDto.getCopies());
+        if (updateBookDto.getDeposit() != null) updateDeposit(libraryBook, updateBookDto.getDeposit());
 
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success bookId={}", traceId, userId, updateBookDto.getId());
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBookId={}", traceId, userId, updateBookDto.getId());
+    }
+
+    private void updateCopies(LibraryBook libraryBook, int copies) {
+        libraryBook.updateCopies(copies);
+    }
+
+    private void updateDeposit(LibraryBook libraryBook, int deposit) {
+        libraryBook.updateDeposit(deposit);
     }
 }
     

@@ -15,7 +15,7 @@ import java.util.UUID;
 @Schema(description = "도서관별 도서 수정 DTO")
 public class LibraryBookUpdateDto {
     @Schema(description = "도서관별 도서 ID", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "도서 ID는 필수입니다.")
+    @NotNull(message = "도서관별 도서 ID는 필수입니다.")
     UUID id;
 
     @Schema(description = "보유 권수", example = "3")

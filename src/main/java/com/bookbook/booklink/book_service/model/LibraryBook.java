@@ -97,16 +97,16 @@ public class LibraryBook {
         copiesList.add(copy);
     }
 
-    public void update(LibraryBookUpdateDto updateBookDto) {
-        if (updateBookDto.getCopies() != null) {
-            copies = updateBookDto.getCopies();
-        }
-        if (updateBookDto.getDeposit() != null) {
-            deposit = updateBookDto.getDeposit();
-        }
-    }
-
     public void updateAvailableBooks() {
         this.availableBooks = Math.max(0, copies - borrowedCount);
+    }
+
+    public void updateCopies(int copies) {
+        this.copies = copies;
+        updateAvailableBooks();
+    }
+
+    public void updateDeposit(int deposit) {
+        this.deposit = deposit;
     }
 }

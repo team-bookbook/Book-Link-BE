@@ -25,4 +25,6 @@ jwt:
   access-token-expiration: 3600000   # 1시간 (밀리초)
   refresh-token-expiration: 1209600000 # 14일 (밀리초)
 
-
+national-library:
+  api-url: "https://www.nl.go.kr/seoji/SearchApi.do"
+  cert-key: ${NATIONAL_LIBRARY_CERT_KEY}

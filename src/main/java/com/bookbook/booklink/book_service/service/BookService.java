@@ -1,21 +1,20 @@
 package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
-import com.bookbook.booklink.book_service.model.LibraryBook;
-import com.bookbook.booklink.book_service.model.LibraryBookCopy;
-import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
-import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
+import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
+import com.bookbook.booklink.book_service.model.dto.response.NationalLibraryResponseDto;
+import com.bookbook.booklink.book_service.repository.BookRepository;
 import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
-import com.bookbook.booklink.library_service.model.Library;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-import com.bookbook.booklink.book_service.repository.BookRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
@@ -24,38 +23,59 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
-    private final LibraryBookRepository libraryBookRepository;
+    private final NationalLibraryService nationalLibraryService;
+    private final ModelMapper modelMapper;
     private final IdempotencyService idempotencyService;
 
     @Transactional
-    public UUID registerLibraryBook(LibraryBookRegisterDto bookRegisterDto, String traceId, UUID userId) {
-        log.info("[BookService] [traceId = {}, userId = {}] register library book initiate bookId={}", traceId, userId, bookRegisterDto.getId());
+    public BookResponseDto getBook(String isbn, String traceId, UUID userId) {
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book initiate isbn={}", traceId, userId, isbn);
+
+        Book book = bookRepository.findByISBN(isbn);
+        if (book != null) {
+            BookResponseDto dto = modelMapper.map(book, BookResponseDto.class);
+            dto.setFoundInNationalLibrary(false);
+            log.info("[BookService] [traceId={}, userId={}] found bookId={}", traceId, userId, dto.getId());
+            return dto;
+        }
+
+        NationalLibraryResponseDto apiResponse;
+        try {
+            apiResponse = nationalLibraryService.searchBookByIsbn(isbn, traceId, userId);
+        } catch (Exception e) {
+            log.error("[BookService] [traceId={}, userId={}] API 호출 실패 isbn={}", traceId, userId, isbn, e);
+            throw new CustomException(ErrorCode.API_FALLBACK_FAIL);
+        }
+
+        if (apiResponse == null) {
+            throw new CustomException(ErrorCode.INVALID_ISBN_CODE);
+        }
+
+        BookResponseDto dto = apiResponse.toBookResponseDto();
+        dto.setFoundInNationalLibrary(true);
+        log.info("[LibraryBookService] [traceId = {}, userId = {}] get book success from nationalLibraryApi bookId={}, isbn={}", traceId, userId, null, dto.getISBN());
+        return dto;
+    }
+
+    @Transactional
+    public UUID saveBook(@Valid BookRegisterDto bookRegisterDto, String traceId, UUID userId) {
+        log.info("[BookService] [traceId = {}, userId = {}] get book initiate isbn={}", traceId, userId, bookRegisterDto.getISBN());
 
         // 멱등성 체크
         String key = "book:register:" + traceId;
         idempotencyService.checkIdempotency(key, 1,
                 () -> LockEvent.builder().key(key).build());
 
-        // register book
-        Book book = bookRepository.findById(bookRegisterDto.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-
-        // todo : library 추가(userId로 libraryId find)
-        LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book);
-
-        // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
-
-        for(int i = 0; i < bookRegisterDto.getCopies(); i++) {
-            LibraryBookCopy copy = LibraryBookCopy.toEntity(libraryBook);
-            libraryBook.addCopy(copy);
+        if (bookRepository.existsByISBN(bookRegisterDto.getISBN())) {
+            throw new CustomException(ErrorCode.DUPLICATE_BOOK);
         }
 
-        LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);
-        UUID bookId = savedLibraryBook.getId();
+        Book newBook = Book.toEntity(bookRegisterDto);
+        Book savedBook = bookRepository.save(newBook);
+        UUID bookId = savedBook.getId();
 
-        log.info("[BookService] [traceId = {}, userId = {}] register book success bookId={}", traceId, userId, bookId);
+        log.info("[BookService] [traceId = {}, userId = {}] get book success bookId={}", traceId, userId, bookId);
 
         return bookId;
     }
 }
-    

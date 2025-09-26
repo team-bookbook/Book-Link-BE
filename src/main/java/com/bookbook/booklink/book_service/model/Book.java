@@ -3,28 +3,24 @@ package com.bookbook.booklink.book_service.model;
 import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import org.hibernate.annotations.UuidGenerator;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Book {
     @Id
     @UuidGenerator
@@ -37,7 +33,7 @@ public class Book {
     @Column(nullable = false, length = 64)
     @Size(min = 1, max = 64)
     @Schema(description = "도서 이름", example = "마흔에 읽는 쇼펜하우어", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 64)
-    private String name;
+    private String title;
 
     @Column(nullable = false, length = 16)
     @Size(min = 1, max = 16)
@@ -71,19 +67,19 @@ public class Book {
     @Schema(description = "좋아요 수", example = "14", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer likeCount = 0;
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
-    @Schema(description = "도서 등록일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalDateTime createdAt;
+    @Schema(description = "도서 발행일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDateTime publishedDate;
 
-    public static Book toEntity(BookRegisterDto bookRegDto) {
+    public static Book toEntity(BookRegisterDto dto) {
         return Book.builder()
-                .name(bookRegDto.getName())
-                .author(bookRegDto.getAuthor())
-                .publisher(bookRegDto.getPublisher())
-                .category(BookCategory.getByCode(bookRegDto.getCategory()))
-                .ISBN(bookRegDto.getISBN())
-                .originalPrice(bookRegDto.getOriginalPrice())
+                .title(dto.getTitle())
+                .author(dto.getAuthor())
+                .ISBN(dto.getISBN())
+                .publisher(dto.getPublisher())
+                .originalPrice(dto.getOriginalPrice())
+                .publishedDate(dto.getPublishedDate().atStartOfDay())
+                .category(BookCategory.getByCode(dto.getCategory()))
                 .build();
     }
 }

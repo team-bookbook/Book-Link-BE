@@ -2,17 +2,19 @@ package com.bookbook.booklink.book_service.controller;
 
 import com.bookbook.booklink.book_service.controller.docs.BookApiDocs;
 import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
-import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
+import com.bookbook.booklink.book_service.service.BookService;
 import com.bookbook.booklink.common.exception.BaseResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
-import com.bookbook.booklink.book_service.service.BookService;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
@@ -24,22 +26,41 @@ public class BookController implements BookApiDocs {
     private final BookService bookService;
 
     @Override
-    public ResponseEntity<BaseResponse<UUID>> registerBook(
-            @Valid @RequestBody LibraryBookRegisterDto bookRegisterDto,
+    public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
+            @PathVariable @NotNull(message = "조회할 도서의 ISBN 코드는 필수입니다.") String isbn,
             @RequestHeader("Trace-Id") String traceId
-            ) {
+    ) {
         UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
 
-        log.info("[BookController] [traceId = {}, userId = {}] register book request received, bookId={}",
-                traceId, userId, bookRegisterDto.getId());
+        log.info("[BookController] [traceId = {}, userId = {}] find book request received, isbn={}",
+                traceId, userId, isbn);
 
-        UUID savedLibraryBookId = bookService.registerLibraryBook(bookRegisterDto, traceId, userId);
+        BookResponseDto book = bookService.getBook(isbn, traceId, userId);
 
-        log.info("[BookController] [traceId = {}, userId = {}] register book request success, libraryBookId={}",
-                traceId, userId, savedLibraryBookId);
+        log.info("[BookController] [traceId = {}, userId = {}] find book request success, book={}",
+                traceId, userId, book);
 
         return ResponseEntity.ok()
-                .body(BaseResponse.success(savedLibraryBookId));
+                .body(BaseResponse.success(book));
     }
+
+    @Override
+    public ResponseEntity<BaseResponse<UUID>> registerBook(
+            @Valid @RequestBody BookRegisterDto bookRegisterDto,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
+
+        log.info("[BookController] [traceId = {}, userId = {}] register book request received, isbn={}",
+                traceId, userId, bookRegisterDto.getISBN());
+
+
+        UUID savedBookId = bookService.saveBook(bookRegisterDto, traceId, userId);
+
+        log.info("[BookController] [traceId = {}, userId = {}] register book request success, book={}",
+                traceId, userId, savedBookId);
+
+        return ResponseEntity.ok(BaseResponse.success(savedBookId));
+    }
+
 }
-    

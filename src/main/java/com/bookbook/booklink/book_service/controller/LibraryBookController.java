@@ -30,12 +30,12 @@ public class LibraryBookController implements LibraryBookApiDocs {
     ) {
         UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
 
-        log.info("[BookController] [traceId = {}, userId = {}] register book request received, bookId={}",
+        log.info("[LibraryBookController] [traceId = {}, userId = {}] register book request received, bookId={}",
                 traceId, userId, bookRegisterDto.getId());
 
         UUID savedLibraryBookId = bookService.registerLibraryBook(bookRegisterDto, traceId, userId);
 
-        log.info("[BookController] [traceId = {}, userId = {}] register book request success, libraryBookId={}",
+        log.info("[LibraryBookController] [traceId = {}, userId = {}] register book request success, libraryBookId={}",
                 traceId, userId, savedLibraryBookId);
 
         return ResponseEntity.ok()
@@ -49,12 +49,12 @@ public class LibraryBookController implements LibraryBookApiDocs {
     ) {
         UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
 
-        log.info("[BookController] [traceId = {}, userId = {}] update library book request received, libraryBookId={}",
+        log.info("[LibraryBookController] [traceId = {}, userId = {}] update library book request received, libraryBookId={}",
                 traceId, userId, updateBookDto.getId());
 
         bookService.updateLibraryBook(updateBookDto, traceId, userId);
 
-        log.info("[BookController] [traceId = {}, userId = {}] update library book request success, libraryBookId={}",
+        log.info("[LibraryBookController] [traceId = {}, userId = {}] update library book request success, libraryBookId={}",
                 traceId, userId, updateBookDto.getId());
 
         return ResponseEntity.ok(BaseResponse.success(null));

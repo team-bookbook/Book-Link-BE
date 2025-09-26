@@ -29,6 +29,7 @@ public class LibraryBookCopy {
     @Schema(description = "도서관별 도서 정보")
     private LibraryBook libraryBook;
 
+    @Setter(AccessLevel.PACKAGE)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

@@ -4,6 +4,7 @@ import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.util.JsonParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -17,7 +18,9 @@ public class PortOneService {
 
     private final JsonParser jsonParser;
     private final RestTemplate restTemplate;
-    private final String apiSecret = "cy1DfVVwnQuyamL6VTnnZytALVoGkOxmVUFTLGi95KH07FKVmTDZODhtFjsAlvI0lx7LpchOHhAyUcv8";
+
+    @Value("${portOne.secret}")
+    private String apiSecret;
 
     /**
      * 액세스 토큰 발급

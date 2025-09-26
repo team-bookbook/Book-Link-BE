@@ -22,6 +22,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class LibraryBook {
 
@@ -93,7 +94,8 @@ public class LibraryBook {
                 .build();
     }
 
-    public void addCopy(LibraryBookCopy copy) {
+    public void addCopy() {
+        LibraryBookCopy copy = LibraryBookCopy.toEntity();
         copiesList.add(copy);
         copy.setLibraryBook(this);
     }

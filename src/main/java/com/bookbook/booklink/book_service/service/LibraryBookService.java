@@ -1,6 +1,7 @@
 package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
+import com.bookbook.booklink.book_service.model.BookStatus;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
@@ -46,7 +47,7 @@ public class LibraryBookService {
         // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
 
         for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
-            libraryBook.addCopy(LibraryBookCopy.toEntity());
+            libraryBook.addCopy();
         }
 
         LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);
@@ -71,7 +72,32 @@ public class LibraryBookService {
     }
 
     private void updateCopies(LibraryBook libraryBook, int copies) {
+        // 개수 제거 - 현재 책이 대여중인 상태인지 확인
+        if (libraryBook.getCopies() > copies) {
+            if (libraryBook.getAvailableBooks() < libraryBook.getCopies() - copies) {
+                throw new CustomException(ErrorCode.CANNOT_REDUCE_COPIES_WHILE_BORROWED);
+            }
+            int i = 0;
+            for (LibraryBookCopy copy : libraryBook.getCopiesList()) {
+                if (i == copies) break;
+
+                if (copy.getStatus().equals(BookStatus.AVAILABLE)) {
+                    libraryBook.removeCopy(copy);
+                    i++;
+                }
+            }
+        } else {
+            int addedCopies = copies - libraryBook.getCopies();
+            for (int i = 0; i < addedCopies; i++) {
+                libraryBook.addCopy();
+            }
+        }
+
         libraryBook.updateCopies(copies);
+
+        if (libraryBook.getCopies() != libraryBook.getCopiesList().size()) {
+            throw new  CustomException(ErrorCode.LIBRARY_BOOK_COPIES_MISMATCH);
+        }
     }
 
     private void updateDeposit(LibraryBook libraryBook, int deposit) {

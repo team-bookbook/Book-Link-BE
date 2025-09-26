@@ -58,7 +58,7 @@ public class BookService {
     }
 
     @Transactional
-    public UUID saveBook(@Valid BookRegisterDto bookRegisterDto, String traceId, UUID userId) {
+    public UUID saveBook(BookRegisterDto bookRegisterDto, String traceId, UUID userId) {
         log.info("[BookService] [traceId = {}, userId = {}] get book initiate isbn={}", traceId, userId, bookRegisterDto.getISBN());
 
         // 멱등성 체크

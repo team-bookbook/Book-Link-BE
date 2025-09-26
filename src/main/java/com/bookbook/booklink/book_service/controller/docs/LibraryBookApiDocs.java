@@ -32,9 +32,10 @@ public interface LibraryBookApiDocs {
 
     @Operation(
             summary = "도서관별 도서 수정",
-            description = "도서관에등록된 도서의 보증금, 보유 권수를 수정합니다."
+            description = "도서관에 등록된 도서의 보증금, 보유 권수를 수정합니다."
     )
-    @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, // todo 에러 코드 추가
+    @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, ErrorCode.BOOK_NOT_FOUND,
+            ErrorCode.NOT_ENOUGH_AVAILABLE_COPIES_TO_REMOVE, ErrorCode.LIBRARY_BOOK_COPIES_MISMATCH,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PatchMapping
     public ResponseEntity<BaseResponse<Void>> updateLibraryBook(

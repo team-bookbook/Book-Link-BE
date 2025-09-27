@@ -80,6 +80,9 @@ public enum ErrorCode {
     @Schema(description = "존재하지 않는 도서입니다.")
     BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK_NOT_FOUND_400", "존재하지 않는 도서입니다."),
 
+    @Schema(description = "존재하지 않는 도서관별 도서입니다.")
+    LIBRARY_BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIBRARY_BOOK_NOT_FOUND_400", "존재하지 않는 도서관별 도서입니다."),
+
     @Schema(description = "공공도서관 api 호출에 실패했습니다.")
     API_FALLBACK_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "API_FALLBACK_FAIL_500", "공공도서관 api 호출에 실패했습니다."),
 
@@ -89,6 +92,11 @@ public enum ErrorCode {
     @Schema(description = "이미 존재하는 도서입니다.")
     DUPLICATE_BOOK(HttpStatus.BAD_REQUEST, "DUPLICATE_BOOK_400", "이미 존재하는 도서입니다."),
 
+    @Schema(description = "보유 권수와 도서 인스턴스 개수가 일치하지 않습니다.")
+    LIBRARY_BOOK_COPIES_MISMATCH(HttpStatus.INTERNAL_SERVER_ERROR, "BOOK_INTERNAL_SERVER_ERROR_500", "보유 권수와 도서 인스턴스 개수가 일치하지 않습니다."),
+
+    @Schema(description = "삭제할 도서 개수가 충분하지 않습니다.")
+    NOT_ENOUGH_AVAILABLE_COPIES_TO_REMOVE(HttpStatus.BAD_REQUEST, "BOOK_BAD_REQUEST_400", "삭제할 도서 개수가 충분하지 않습니다."),
     @Schema(description = "반납할 수 없는 상태입니다.")
     ILLEGAL_BOOK_STATE(HttpStatus.BAD_REQUEST, "ILLEGAL_BOOK_STATE_400", "반납할 수 없는 상태입니다."),
 

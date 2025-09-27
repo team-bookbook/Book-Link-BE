@@ -12,6 +12,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class LibraryBookCopy {
 
     @Id
@@ -22,12 +23,13 @@ public class LibraryBookCopy {
     @Schema(description = "도서관이 소장한 책 한 권의 실제 인스턴스 ID (UUID)", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID id;
 
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_book_id", nullable = false)
     @Schema(description = "도서관별 도서 정보")
     private LibraryBook libraryBook;
 
+    @Setter(AccessLevel.PACKAGE)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
@@ -40,10 +42,8 @@ public class LibraryBookCopy {
     @Schema(description = "반납 예정일", example = "2025-09-29T12:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private LocalDateTime dueAt;
 
-    public static LibraryBookCopy createNewCopy(LibraryBook libraryBook) {
-        return LibraryBookCopy.builder()
-                .libraryBook(libraryBook)
-                .build();
+    public static LibraryBookCopy toEntity() {
+        return LibraryBookCopy.builder().build();
     }
 
     public void borrow(LocalDateTime borrowedAt, LocalDateTime dueAt) {

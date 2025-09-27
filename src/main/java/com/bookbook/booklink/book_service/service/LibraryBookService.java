@@ -12,6 +12,8 @@ import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
+import com.bookbook.booklink.library_service.model.Library;
+import com.bookbook.booklink.library_service.service.LibraryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ public class LibraryBookService {
     private final BookRepository bookRepository;
     private final LibraryBookRepository libraryBookRepository;
     private final IdempotencyService idempotencyService;
+    private final LibraryService libraryService;
 
     @Transactional
     public UUID registerLibraryBook(LibraryBookRegisterDto bookRegisterDto, String traceId, UUID userId) {
@@ -41,9 +44,11 @@ public class LibraryBookService {
         Book book = bookRepository.findById(bookRegisterDto.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-        // todo : library 추가(userId로 libraryId find)
+        // find library
+        Library library = libraryService.findById(userId);
+
         // todo : 에러났을 때 멱등성 체크 풀기
-        LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book);
+        LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
 
         // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
 

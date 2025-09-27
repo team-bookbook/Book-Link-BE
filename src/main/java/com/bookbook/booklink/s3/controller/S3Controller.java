@@ -19,13 +19,11 @@ public class S3Controller implements S3ApiDocs {
 
     private final S3PresignedUrlService s3PresignedUrlService;
 
-    @Value("${s3.url-duration}")
+    @Value("${spring.cloud.aws.s3.url-duration}")
     private long urlDuration;
 
-    @Value("${s3.bucket-name}")
+    @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
-
-    private final String ROOT = "library-book-images/";
 
     @Override
     public ResponseEntity<BaseResponse<String>> getPresignedUrl(
@@ -33,6 +31,7 @@ public class S3Controller implements S3ApiDocs {
             @RequestHeader("Trace-Id") String traceId
     ) {
         // 5분 동안 유효
+        String ROOT = "library-book-images/";
         URL url = s3PresignedUrlService.generatePresignedUrl(
                 bucketName,
                 ROOT + fileName,

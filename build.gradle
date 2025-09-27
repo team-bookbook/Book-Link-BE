@@ -49,6 +49,7 @@ dependencies {
 
     implementation 'org.modelmapper:modelmapper:3.1.0'
 
+    implementation 'software.amazon.awssdk:s3:2.26.0'
 }
 
 tasks.named('test') {

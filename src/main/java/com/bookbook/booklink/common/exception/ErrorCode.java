@@ -89,6 +89,9 @@ public enum ErrorCode {
     @Schema(description = "이미 존재하는 도서입니다.")
     DUPLICATE_BOOK(HttpStatus.BAD_REQUEST, "DUPLICATE_BOOK_400", "이미 존재하는 도서입니다."),
 
+    @Schema(description = "반납할 수 없는 상태입니다.")
+    ILLEGAL_BOOK_STATE(HttpStatus.BAD_REQUEST, "ILLEGAL_BOOK_STATE_400", "반납할 수 없는 상태입니다."),
+
     /*
      * Review
      */

@@ -1,6 +1,5 @@
 package com.bookbook.booklink.member.model.dto.response;
 
-import com.bookbook.booklink.member.model.dto.request.SignUpRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpResponseDto {
+public class SignUpResDto {
     //TODO
     // jwt토큰 발급 시 회원가입 완료 후 바로 토큰 브라우저에 응답하도록 추가
     private UUID id;
@@ -22,8 +21,8 @@ public class SignUpResponseDto {
     private String nickname;
     private String profileImage;
 
-    public static SignUpResponseDto from(SignUpResponseDto dto) {
-        return SignUpResponseDto.builder()
+    public static SignUpResDto from(SignUpResDto dto) {
+        return SignUpResDto.builder()
                 .id(dto.getId())
                 .email(dto.getEmail())
                 .name(dto.getName())

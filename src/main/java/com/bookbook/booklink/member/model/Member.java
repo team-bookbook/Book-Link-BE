@@ -3,7 +3,8 @@ package com.bookbook.booklink.member.model;
 import com.bookbook.booklink.member.code.Provider;
 import com.bookbook.booklink.member.code.Role;
 import com.bookbook.booklink.member.code.Status;
-import com.bookbook.booklink.member.model.dto.request.SignUpRequestDto;
+import com.bookbook.booklink.member.model.dto.request.SignUpReqDto;
+import com.bookbook.booklink.member.model.dto.request.UpdateReqDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -109,7 +110,7 @@ public class Member {
     @Schema(description = "프로필 이미지 URL", example = "https://example.com/profile.jpg", maxLength = 500)
     private String profileImage;
 
-    public static Member ofLocalSignup(SignUpRequestDto req, String encodedPassword) {
+    public static Member ofLocalSignup(SignUpReqDto req, String encodedPassword) {
         return Member.builder()
                 .email(req.getEmail())
                 .password(encodedPassword)
@@ -123,6 +124,17 @@ public class Member {
                 .status(Status.ACTIVE)
                 .pointBalance(0)
                 .build();
+    }
+
+    /**
+     * 회원 정보 수정
+     * nickname, address, phone, profileImage 업데이트
+     */
+    public void updateMemberInfo(UpdateReqDto dto) {
+        this.nickname = dto.getNickname();
+        this.address = dto.getAddress();
+        this.phone = dto.getPhone();
+        this.profileImage = dto.getProfileImage();
     }
 }
     

@@ -10,11 +10,11 @@ import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
@@ -58,7 +58,7 @@ public class BookService {
     }
 
     @Transactional
-    public UUID saveBook(@Valid BookRegisterDto bookRegisterDto, String traceId, UUID userId) {
+    public UUID saveBook(BookRegisterDto bookRegisterDto, String traceId, UUID userId) {
         log.info("[BookService] [traceId = {}, userId = {}] get book initiate isbn={}", traceId, userId, bookRegisterDto.getISBN());
 
         // 멱등성 체크

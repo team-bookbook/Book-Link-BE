@@ -71,11 +71,6 @@ public class Book {
     @Schema(description = "도서 발행일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime publishedDate;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    @Schema(description = "도서를 보유한 도서관별 정보")
-    private List<LibraryBook> libraryBooks = new ArrayList<>();
-
     public static Book toEntity(BookRegisterDto dto) {
         return Book.builder()
                 .title(dto.getTitle())

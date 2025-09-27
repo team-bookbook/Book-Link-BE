@@ -26,10 +26,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class LibraryBookService {
-    private final BookRepository bookRepository;
     private final LibraryBookRepository libraryBookRepository;
     private final IdempotencyService idempotencyService;
     private final LibraryService libraryService;
+    private final BookService bookService;
 
     @Transactional
     public UUID registerLibraryBook(LibraryBookRegisterDto bookRegisterDto, String traceId, UUID userId) {
@@ -40,11 +40,8 @@ public class LibraryBookService {
         idempotencyService.checkIdempotency(key, 1,
                 () -> LockEvent.builder().key(key).build());
 
-        // find book
-        Book book = bookRepository.findById(bookRegisterDto.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-
-        // find library
+        // find book & library
+        Book book = bookService.findById(bookRegisterDto.getId());
         Library library = libraryService.findById(userId);
 
         // todo : 에러났을 때 멱등성 체크 풀기

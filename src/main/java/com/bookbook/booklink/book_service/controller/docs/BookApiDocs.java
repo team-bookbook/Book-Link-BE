@@ -1,16 +1,17 @@
 package com.bookbook.booklink.book_service.controller.docs;
 
 import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
-import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -29,6 +30,7 @@ public interface BookApiDocs {
     @GetMapping("/{isbn}")
     public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
             @PathVariable @NotNull(message = "조회할 도서의 ISBN 코드는 필수입니다.") String isbn,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
 
@@ -41,6 +43,7 @@ public interface BookApiDocs {
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> registerBook(
             @Valid @RequestBody BookRegisterDto bookRegisterDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
 }

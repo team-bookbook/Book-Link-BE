@@ -10,6 +10,7 @@ import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
@@ -77,5 +78,10 @@ public class BookService {
         log.info("[BookService] [traceId = {}, userId = {}] get book success bookId={}", traceId, userId, bookId);
 
         return bookId;
+    }
+
+    public Book findById(UUID id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
     }
 }

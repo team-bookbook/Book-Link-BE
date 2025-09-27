@@ -103,11 +103,9 @@ public class Library {
 
     // todo: User와 1:1 연결 필요
 
-/*
     @OneToMany(mappedBy = "library", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "도서관이 소장하고 있는 도서들")
     private List<LibraryBook> libraryBooks = new ArrayList<>();
-*/
 
     public static Library toEntity(LibraryRegDto libraryRegDto) {
         return Library.builder()

@@ -2,6 +2,7 @@ package com.bookbook.booklink.s3.controller;
 
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.s3.controller.docs.S3ApiDocs;
+import com.bookbook.booklink.s3.service.S3PresignedUrlService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,7 @@ public class S3Controller implements S3ApiDocs {
         String ROOT = "library-book-images/";
         URL url = s3PresignedUrlService.generatePresignedUrl(
                 bucketName,
-                ROOT + fileName,
+                traceId + ROOT + fileName,
                 Duration.ofMillis(urlDuration)
         );
 

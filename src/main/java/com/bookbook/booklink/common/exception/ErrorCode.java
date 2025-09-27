@@ -100,6 +100,9 @@ public enum ErrorCode {
     @Schema(description = "반납할 수 없는 상태입니다.")
     ILLEGAL_BOOK_STATE(HttpStatus.BAD_REQUEST, "ILLEGAL_BOOK_STATE_400", "반납할 수 없는 상태입니다."),
 
+    @Schema(description = "대여중인 도서가 있을 때는 삭제할 수 없습니다.")
+    CANNOT_DELETE_BORROWED_BOOK(HttpStatus.BAD_REQUEST, "BOOK_BAD_REQUEST_400", "대여중인 도서가 있을 때는 삭제할 수 없습니다."),
+
     /*
      * Review
      */

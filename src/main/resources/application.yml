@@ -31,3 +31,7 @@ portOne:
 national-library:
   api-url: "https://www.nl.go.kr/seoji/SearchApi.do"
   cert-key: ${NATIONAL_LIBRARY_CERT_KEY}
+
+s3:
+  url-duration: 5 * 60 * 1000 # 5분
+  bucket-name: "your-bucket-name"

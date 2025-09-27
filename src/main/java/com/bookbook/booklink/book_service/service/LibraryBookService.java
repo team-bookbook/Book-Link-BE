@@ -69,20 +69,14 @@ public class LibraryBookService {
         log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBook={}", traceId, userId, libraryBook);
     }
 
+    @Transactional
     public void deleteLibraryBook(UUID libraryBookId, String traceId, UUID userId) {
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book initiate libraryBookId={}", traceId, userId, libraryBookId);
 
         LibraryBook libraryBook = libraryBookRepository.findById(libraryBookId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
-        boolean hasBorrowedCopies = libraryBook.hasBorrowedCopies();
-
-        if (hasBorrowedCopies) {
-            throw new CustomException(ErrorCode.CANNOT_DELETE_BORROWED_BOOK);
-        }
-
-        libraryBookRepository.delete(libraryBook);
-
+        libraryBook.softDelete();
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book success libraryBookId={}", traceId, userId, libraryBookId);
     }
 }

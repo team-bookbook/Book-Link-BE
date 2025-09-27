@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Getter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
+@SQLRestriction("deleted_at IS NULL") // 조회 시 deleted at이 null인 것만 검색
 public class LibraryBook {
 
     @Id
@@ -65,6 +67,10 @@ public class LibraryBook {
     @Column(nullable = false, updatable = false)
     @Schema(description = "도서 등록일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createdAt;
+
+    @Column
+    @Schema(description = "도서 삭제일", example = "2025-09-25T12:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private LocalDateTime deletedAt;
 
 /*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_id", nullable = false)
@@ -165,7 +171,14 @@ public class LibraryBook {
         this.deposit = deposit;
     }
 
-    public boolean hasBorrowedCopies() {
+    public void softDelete() {
+        if (hasBorrowedCopies()) {
+            throw new CustomException(ErrorCode.CANNOT_DELETE_BORROWED_BOOK);
+        }
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    private boolean hasBorrowedCopies() {
         return getCopiesList().stream()
                 .anyMatch(copy -> copy.getStatus() != BookStatus.AVAILABLE);
     }

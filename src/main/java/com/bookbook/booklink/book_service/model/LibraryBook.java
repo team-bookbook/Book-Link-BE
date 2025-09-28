@@ -3,6 +3,7 @@ package com.bookbook.booklink.book_service.model;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.library_service.model.Library;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -72,10 +73,10 @@ public class LibraryBook {
     @Schema(description = "도서 삭제일", example = "2025-09-25T12:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private LocalDateTime deletedAt;
 
-/*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_id", nullable = false)
     @Schema(description = "이 도서를 소장한 도서관")
-    private Library library;*/
+    private Library library;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_id", nullable = false)
@@ -88,14 +89,14 @@ public class LibraryBook {
     private List<LibraryBookCopy> copiesList = new ArrayList<>();
 
     public static LibraryBook toEntity(LibraryBookRegisterDto libraryBookRegisterDto, Book book
-//            , Library library
+            , Library library
     ) {
         return LibraryBook.builder()
                 .copies(libraryBookRegisterDto.getCopies())
                 .availableBooks(libraryBookRegisterDto.getCopies())
                 .deposit(libraryBookRegisterDto.getDeposit())
                 .book(book)
-//                .library(library)
+                .library(library)
                 .build();
     }
 

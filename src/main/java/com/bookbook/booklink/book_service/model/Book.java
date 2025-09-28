@@ -51,8 +51,8 @@ public class Book {
     @Schema(description = "카테고리", example = "GENERALITIES", requiredMode = Schema.RequiredMode.REQUIRED)
     private BookCategory category;
 
-    @Column(nullable = false, unique = true, length = 13)
-    @Schema(description = "ISBN 코드", example = "9791192300818", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Column(unique = true, length = 13)
+    @Schema(description = "ISBN 코드", example = "9791192300818", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Size(min = 13, max = 13)
     private String ISBN;
 

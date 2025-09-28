@@ -5,11 +5,13 @@ import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -28,6 +30,7 @@ public interface LibraryBookApiDocs {
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> registerLibraryBook(
             @Valid @RequestBody LibraryBookRegisterDto bookRegisterDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
 
@@ -40,6 +43,7 @@ public interface LibraryBookApiDocs {
     @PatchMapping
     public ResponseEntity<BaseResponse<Void>> updateLibraryBook(
             @Valid @RequestBody LibraryBookUpdateDto updateBookDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
 

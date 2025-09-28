@@ -5,11 +5,13 @@ import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.book_service.service.BookService;
 import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,9 +30,10 @@ public class BookController implements BookApiDocs {
     @Override
     public ResponseEntity<BaseResponse<BookResponseDto>> getBook(
             @PathVariable @NotNull(message = "조회할 도서의 ISBN 코드는 필수입니다.") String isbn,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
-        UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
+        UUID userId = customUserDetails.getMember().getId();
 
         log.info("[BookController] [traceId = {}, userId = {}] find book request received, isbn={}",
                 traceId, userId, isbn);
@@ -47,9 +50,10 @@ public class BookController implements BookApiDocs {
     @Override
     public ResponseEntity<BaseResponse<UUID>> registerBook(
             @Valid @RequestBody BookRegisterDto bookRegisterDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
-        UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
+        UUID userId = customUserDetails.getMember().getId();
 
         log.info("[BookController] [traceId = {}, userId = {}] register book request received, isbn={}",
                 traceId, userId, bookRegisterDto.getISBN());

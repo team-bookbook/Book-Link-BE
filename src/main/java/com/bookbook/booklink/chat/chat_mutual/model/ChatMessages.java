@@ -1,21 +1,23 @@
-package com.bookbook.booklink.chat.chat_mut.model;
+package com.bookbook.booklink.chat.chat_mutual.model;
 
-import com.bookbook.booklink.chat.chat_mut.code.MessageStatus;
-import com.bookbook.booklink.chat.chat_mut.code.MessageType;
-import com.bookbook.booklink.chat.chat_mut.code.RoomType;
+import com.bookbook.booklink.chat.chat_mutual.code.MessageStatus;
+import com.bookbook.booklink.chat.chat_mutual.code.MessageType;
+import com.bookbook.booklink.chat.chat_mutual.code.RoomType;
+import com.bookbook.booklink.chat.chat_mutual.model.dto.request.MessageReqDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
-import org.w3c.dom.Text;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +30,7 @@ public class ChatMessages {
 
     @Lob
     @Schema(description = "메시지 본문", example = "안녕하세요!")
-    private Text text;
+    private String text;
 
     @Schema(description = "첨부 파일 경로", example = "https://s3.bucket.com/file.png")
     private String fileUrl;
@@ -60,6 +62,19 @@ public class ChatMessages {
     private UUID sendId;
 
     @Schema(description = "소속 채팅방 ID")
-    private UUID chatID;
+    private UUID chatId;
 
+    public static ChatMessages saveMessage(MessageReqDto dto) {
+        return ChatMessages.builder()
+                .chatId(dto.getChatId())
+                .sendId(dto.getSenderId())
+                .text(dto.getText())
+                .fileUrl(dto.getFileUrl())
+                .sentAt(LocalDateTime.now())
+                .status(MessageStatus.SENT)
+                .type(MessageType.TEXT)
+                .isDeleted(false)
+                .roomType(RoomType.SINGLE)
+                .build();
+    }
 }

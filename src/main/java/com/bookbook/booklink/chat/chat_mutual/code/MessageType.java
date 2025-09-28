@@ -1,6 +1,4 @@
-package com.bookbook.booklink.chat.chat_mut.code;
-
-import io.swagger.v3.oas.annotations.media.Schema;
+package com.bookbook.booklink.chat.chat_mutual.code;
 
 /**
  * 메시지의 콘텐츠 종류를 정의합니다.

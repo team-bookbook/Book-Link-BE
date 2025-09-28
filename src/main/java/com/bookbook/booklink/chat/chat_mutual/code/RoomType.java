@@ -1,4 +1,4 @@
-package com.bookbook.booklink.chat.chat_mut.code;
+package com.bookbook.booklink.chat.chat_mutual.code;
 
 /**
  * 어떤 채팅방인지에 대한 상태를 정의합니다.

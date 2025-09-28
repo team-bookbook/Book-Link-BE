@@ -1,4 +1,4 @@
-package com.bookbook.booklink.chat.chat_mut.code;
+package com.bookbook.booklink.chat.chat_mutual.code;
 
 /**
  * 메시지의 현재 상태(전송 및 수신 흐름)를 정의합니다.

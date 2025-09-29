@@ -2,7 +2,7 @@ package com.bookbook.booklink.book_service.model;
 
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
-import com.bookbook.booklink.member.model.Member;
+import com.bookbook.booklink.auth_service.model.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -5,7 +5,7 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import com.bookbook.booklink.common.jwt.service.RefreshTokenService;
 import com.bookbook.booklink.common.jwt.util.JWTUtil;
-import com.bookbook.booklink.auth.model.dto.request.LoginRequest;
+import com.bookbook.booklink.auth_service.model.dto.request.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

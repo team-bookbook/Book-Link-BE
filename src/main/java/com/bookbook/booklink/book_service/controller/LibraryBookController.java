@@ -7,11 +7,13 @@ import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +63,23 @@ public class LibraryBookController implements LibraryBookApiDocs {
         log.info("[LibraryBookController] [traceId = {}, userId = {}] update library book request success, libraryBookId={}",
                 traceId, userId, updateBookDto.getId());
 
+        return ResponseEntity.ok(BaseResponse.success(null));
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> deleteLibraryBook(
+            @PathVariable @NotNull(message = "삭제할 도서관별 도서의 id는 필수입니다.") UUID libraryBookId,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
+
+        log.info("[LibraryBookController] [traceId = {}, userId = {}] delete library book request received, libraryBookId={}",
+                traceId, userId, libraryBookId);
+
+        bookService.deleteLibraryBook(libraryBookId, traceId, userId);
+
+        log.info("[LibraryBookController] [traceId = {}, userId = {}] delete library book request success, libraryBookId={}",
+                traceId, userId, libraryBookId);
         return ResponseEntity.ok(BaseResponse.success(null));
     }
 }

@@ -4,7 +4,6 @@ import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
-import com.bookbook.booklink.book_service.repository.BookRepository;
 import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
 import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
@@ -15,8 +14,10 @@ import com.bookbook.booklink.library_service.service.LibraryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -80,6 +81,11 @@ public class LibraryBookService {
 
         libraryBook.softDelete();
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book success libraryBookId={}", traceId, userId, libraryBookId);
+    }
+
+
+    public List<LibraryBook> findTop5Books(UUID libraryId) {
+        return libraryBookRepository.findTop5BooksByLibraryOrderByLikeCount(libraryId, PageRequest.of(0, 5));
     }
 }
     

@@ -1,6 +1,6 @@
 package com.bookbook.booklink.common.jwt.CustomUserDetail;
 
-import com.bookbook.booklink.member.model.Member;
+import com.bookbook.booklink.auth_service.model.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

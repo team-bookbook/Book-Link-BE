@@ -22,7 +22,7 @@ public class LibraryBookListDto {
     private final String libraryName;
 
     // 책 개수
-    private final int totalCount;
+    private final int copies;
 
     // 현재 대여 중인 사람 수
     private final int borrowedCount;

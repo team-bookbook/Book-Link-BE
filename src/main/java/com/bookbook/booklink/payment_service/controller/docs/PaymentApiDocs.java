@@ -1,7 +1,7 @@
 package com.bookbook.booklink.payment_service.controller.docs;
 
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.payment_service.model.dto.request.PaymentInitDto;
 import com.bookbook.booklink.payment_service.model.dto.response.PaymentResDto;

@@ -24,7 +24,7 @@ spring:
     aws:
       s3:
         bucket: ${AWS_BUCKET_NAME}
-        url-duration: 5 * 60 * 1000 # 5분
+        url-duration: 300000 # 5분 (밀리초)
       credentials:
         access-key: ${AWS_ACCESS_KEY}
         secret-key: ${AWS_SECRET_KEY}

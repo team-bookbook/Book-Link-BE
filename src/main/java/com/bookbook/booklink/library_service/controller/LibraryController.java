@@ -100,10 +100,11 @@ public class LibraryController implements LibraryApiDocs {
     @Override
     public ResponseEntity<BaseResponse<List<LibraryDetailDto>>> getLibraries(
             @RequestParam Double lat,
-            @RequestParam Double lng
+            @RequestParam Double lng,
+            @RequestParam(required = false) String name
     ) {
 
-        List<LibraryDetailDto> result = libraryService.getLibraries(lat, lng);
+        List<LibraryDetailDto> result = libraryService.getLibraries(lat, lng, name);
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(result));

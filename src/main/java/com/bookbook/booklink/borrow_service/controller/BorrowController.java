@@ -1,5 +1,6 @@
 package com.bookbook.booklink.borrow_service.controller;
 
+import com.bookbook.booklink.borrow_service.controller.docs.BorrowApiDocs;
 import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
@@ -19,10 +20,10 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/borrow")
-public class BorrowController {
+public class BorrowController implements BorrowApiDocs {
     private final BorrowService borrowService;
 
+    @Override
     public ResponseEntity<BaseResponse<UUID>> borrowBook(
             @Valid @RequestBody BorrowRequestDto borrowRequestDto,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,

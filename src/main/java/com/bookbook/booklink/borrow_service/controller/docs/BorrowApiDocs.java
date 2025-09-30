@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.UUID;
 
-@Tag(name = "Book API", description = "도서 등록/조회/수정 관련 API")
-@RequestMapping("/api/book")
+@Tag(name = "Borrow API", description = "도서 대여 관련 API")
+@RequestMapping("/api/borrow")
 public interface BorrowApiDocs {
 
     @Operation(

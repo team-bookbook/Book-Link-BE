@@ -4,12 +4,14 @@ import com.bookbook.booklink.book_service.controller.docs.LibraryBookApiDocs;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookSearchReqDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
+import com.bookbook.booklink.book_service.model.dto.response.LibraryBookDetailResDto;
 import com.bookbook.booklink.book_service.model.dto.response.LibraryBookListDto;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.dto.PageResponse;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,6 +99,21 @@ public class LibraryBookController implements LibraryBookApiDocs {
         return ResponseEntity.ok(
                 BaseResponse.success(response)
         );
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<LibraryBookDetailResDto>> getLibraryBookDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @NotBlank(message = "도서관별 도서 아이디는 필수입니다.") @PathVariable String libraryBookId,
+            @Valid @ModelAttribute LibraryBookSearchReqDto request
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        LibraryBookDetailResDto response = libraryBookService.getLibraryBookDetail(libraryBookId, userId);
+
+        return ResponseEntity.ok(BaseResponse.success(
+                response
+        ));
     }
 }
     

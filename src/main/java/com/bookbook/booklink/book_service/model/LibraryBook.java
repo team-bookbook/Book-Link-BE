@@ -194,4 +194,13 @@ public class LibraryBook {
         return getCopiesList().stream()
                 .anyMatch(copy -> copy.getStatus() != BookStatus.AVAILABLE);
     }
+
+    public void updatePreviewImages(List<String> previewImages) {
+        previewImageList.forEach(img -> img.setLibraryBook(null));
+        previewImageList.clear();
+
+        if (previewImages != null) {
+            previewImages.forEach(this::addImage);
+        }
+    }
 }

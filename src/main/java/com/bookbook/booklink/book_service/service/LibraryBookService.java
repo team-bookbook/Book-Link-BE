@@ -40,7 +40,7 @@ public class LibraryBookService {
 
         // find book & library
         Book book = bookService.findById(bookRegisterDto.getId());
-        Library library = libraryService.findById(userId);
+        Library library = libraryService.findById(UUID.fromString("4831bbeb-7a06-4095-a3a5-2b523dfcc644"));
 
         // todo : 에러났을 때 멱등성 체크 풀기
         LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
@@ -71,6 +71,9 @@ public class LibraryBookService {
 
         if (updateBookDto.getCopies() != null) libraryBook.updateCopies(updateBookDto.getCopies());
         if (updateBookDto.getDeposit() != null) libraryBook.updateDeposit(updateBookDto.getDeposit());
+        if (updateBookDto.getPreviewImages() != null) {
+            libraryBook.updatePreviewImages(updateBookDto.getPreviewImages());
+        }
 
         log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBook={}", traceId, userId, libraryBook);
     }

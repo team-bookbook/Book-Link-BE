@@ -66,10 +66,8 @@ public class Borrow {
                 .build();
     }
 
-    public void borrow(LocalDateTime borrowedAt, LocalDateTime dueAt) {
+    public void setBorrowed() {
         this.status = BorrowStatus.BORROWED;
-        this.borrowedAt = borrowedAt;
-        this.dueAt = dueAt;
     }
 
     public void returnBook(LocalDateTime returnedAt, String imageUrl) {

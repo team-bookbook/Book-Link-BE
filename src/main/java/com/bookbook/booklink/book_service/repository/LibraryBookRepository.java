@@ -18,7 +18,6 @@ public interface LibraryBookRepository extends JpaRepository<LibraryBook, UUID> 
         JOIN book b ON lb.book_id = b.id
         JOIN library l ON lb.library_id = l.id
         WHERE lb.deleted_at IS NULL
-          AND l.deleted_at IS NULL
           AND (:bookName IS NULL OR b.title LIKE %:bookName%)
           AND (6371 * acos(cos(radians(:lat)) * cos(radians(l.latitude)) *
                cos(radians(l.longitude) - radians(:lng)) +

@@ -104,8 +104,8 @@ public class LibraryBookService {
 
         // 도서관 3km 이내 도서관별 도서 검색, 정렬은 등록일 기준 최신순, 도서관 많이빌린 순, 거리순
         Sort sort = switch (request.getSortType()) {
-            case LATEST -> Sort.by(Sort.Direction.DESC, "createdAt");
-            case MOST_BORROWED -> Sort.by(Sort.Direction.DESC, "borrowedCount");
+            case LATEST -> Sort.by(Sort.Direction.DESC, "created_at");
+            case MOST_BORROWED -> Sort.by(Sort.Direction.DESC, "borrowed_count");
             default -> Sort.unsorted(); // DISTANCE는 NativeQuery에서 계산 필요
         };
 

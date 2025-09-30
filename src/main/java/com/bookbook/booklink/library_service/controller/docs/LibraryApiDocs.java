@@ -1,7 +1,8 @@
 package com.bookbook.booklink.library_service.controller.docs;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +32,8 @@ public interface LibraryApiDocs {
     @PostMapping
     ResponseEntity<BaseResponse<UUID>> registerLibrary(
             @Valid @RequestBody LibraryRegDto libraryRegDto,
-            @RequestHeader("Trace-Id") String traceId
+            @RequestHeader("Trace-Id") String traceId,
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -42,7 +45,8 @@ public interface LibraryApiDocs {
     @PutMapping
     ResponseEntity<BaseResponse<UUID>> updateLibrary(
             @Valid @RequestBody LibraryUpdateDto libraryUpdateDto,
-            @RequestHeader("Trace-Id") String traceId
+            @RequestHeader("Trace-Id") String traceId,
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -53,8 +57,9 @@ public interface LibraryApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @DeleteMapping("/{id}")
     ResponseEntity<BaseResponse<Boolean>> deleteLibrary(
-            @PathVariable @NotNull UUID id,
-            @RequestHeader("Trace-Id") String traceId
+            @PathVariable @NotNull(message = "수정할 도서관의 ID는 필수입니다.") UUID id,
+            @RequestHeader("Trace-Id") String traceId,
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -65,7 +70,7 @@ public interface LibraryApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.LIBRARY_NOT_FOUND})
     @GetMapping("/{id}")
     ResponseEntity<BaseResponse<LibraryDetailDto>> getLibrary(
-            @PathVariable @NotNull UUID id
+            @PathVariable @NotNull(message = "조회할 도서관의 ID는 필수입니다.") UUID id
     );
 
     @Operation(
@@ -77,6 +82,7 @@ public interface LibraryApiDocs {
     @GetMapping
     ResponseEntity<BaseResponse<List<LibraryDetailDto>>> getLibraries(
             @RequestParam Double lat,
-            @RequestParam Double lng
+            @RequestParam Double lng,
+            @RequestParam(required = false) String name
     );
 }

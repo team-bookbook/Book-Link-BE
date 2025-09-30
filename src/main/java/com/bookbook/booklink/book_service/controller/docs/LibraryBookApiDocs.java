@@ -1,14 +1,18 @@
 package com.bookbook.booklink.book_service.controller.docs;
 
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.request.LibraryBookSearchReqDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
+import com.bookbook.booklink.book_service.model.dto.response.LibraryBookListDto;
+import com.bookbook.booklink.common.dto.PageResponse;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,6 +59,18 @@ public interface LibraryBookApiDocs {
     @DeleteMapping("/{libraryBookId}")
     public ResponseEntity<BaseResponse<Void>> deleteLibraryBook(
             @PathVariable @NotNull(message = "삭제할 도서관별 도서의 id는 필수입니다.") UUID libraryBookId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "내 주변 3km 이내 도서 목록 조회 및 검색",
+            description = "위치 기반으로 도서 리스트 반환합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR})
+    @GetMapping
+    public ResponseEntity<BaseResponse<PageResponse<LibraryBookListDto>>> getLibraryBookList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @Valid @ModelAttribute LibraryBookSearchReqDto request
     );
 }

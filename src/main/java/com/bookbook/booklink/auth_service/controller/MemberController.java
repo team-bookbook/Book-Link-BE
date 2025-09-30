@@ -1,6 +1,6 @@
 package com.bookbook.booklink.auth_service.controller;
 
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import com.bookbook.booklink.auth_service.controller.docs.MemberApiDocs;
 import com.bookbook.booklink.auth_service.model.Member;

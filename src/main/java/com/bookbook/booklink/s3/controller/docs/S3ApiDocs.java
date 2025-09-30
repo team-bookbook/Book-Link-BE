@@ -2,7 +2,7 @@ package com.bookbook.booklink.s3.controller.docs;
 
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
-import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.s3.model.dto.response.PresignedUrlRespDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +22,7 @@ public interface S3ApiDocs {
     )
     @ApiErrorResponses({ /* todo : 에러 추가 */})
     @GetMapping("/presigned-url")
-    public ResponseEntity<BaseResponse<String>> getPresignedUrl(
+    public ResponseEntity<BaseResponse<PresignedUrlRespDto>> getPresignedUrl(
             @RequestParam @NotNull(message = "저장할 이미지 이름은 필수입니다.") String fileName,
             @RequestHeader("Trace-Id") String traceId
     );

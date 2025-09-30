@@ -2,6 +2,7 @@ package com.bookbook.booklink.s3.controller;
 
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.s3.controller.docs.S3ApiDocs;
+import com.bookbook.booklink.s3.model.dto.response.PresignedUrlRespDto;
 import com.bookbook.booklink.s3.service.S3PresignedUrlService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +28,25 @@ public class S3Controller implements S3ApiDocs {
     private String bucketName;
 
     @Override
-    public ResponseEntity<BaseResponse<String>> getPresignedUrl(
+    public ResponseEntity<BaseResponse<PresignedUrlRespDto>> getPresignedUrl(
             @RequestParam @NotNull(message = "저장할 이미지 이름은 필수입니다.") String fileName,
             @RequestHeader("Trace-Id") String traceId
     ) {
         // 5분 동안 유효
         String ROOT = "library-book-images/";
+        String key = traceId + "/" + ROOT + fileName;
         URL url = s3PresignedUrlService.generatePresignedUrl(
                 bucketName,
-                traceId + ROOT + fileName,
+                key,
                 Duration.ofMillis(urlDuration)
         );
 
         return ResponseEntity.ok()
-                .body(BaseResponse.success(url.toString()));
+                .body(BaseResponse.success(
+                        PresignedUrlRespDto.builder()
+                                .url(url.toString())
+                                .key(key)
+                                .build()
+                ));
     }
 }

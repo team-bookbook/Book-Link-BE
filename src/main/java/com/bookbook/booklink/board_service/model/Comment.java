@@ -1,5 +1,6 @@
 package com.bookbook.booklink.board_service.model;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.board_service.model.dto.request.CommentCreateDto;
 import com.bookbook.booklink.board_service.model.dto.request.CommentUpdateDto;
 import jakarta.persistence.*;
@@ -47,7 +48,9 @@ public class Comment {
     private Integer likeCount = 0;
 
     // 작성자
-    private UUID memberId;
+    private UUID writerId;
+
+    private String writerName;
 
     // 대댓글수
     @Builder.Default
@@ -66,10 +69,11 @@ public class Comment {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> children = new ArrayList<>();
 
-    public static Comment toEntity(CommentCreateDto commentCreateDto, UUID memberId, Comment parent) {
+    public static Comment toEntity(CommentCreateDto commentCreateDto, Member member, Comment parent) {
         return Comment.builder()
                 .content(commentCreateDto.getContent())
-                .memberId(memberId)
+                .writerName(member.getName())
+                .writerId(member.getId())
                 .parent(parent)
                 .build();
     }
@@ -81,5 +85,12 @@ public class Comment {
     public void comment() {
         this.commentCount++;
     }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void like() {
+        this.likeCount++;
+    }
 }
-    

@@ -46,7 +46,7 @@ public class BoardService {
 
         idempotencyService.checkIdempotency(key, 1,
                 () -> LockEvent.builder().key(key).build());
-        
+
         Board existingBoard = getBoardById(boardUpdateDto.getBoardId());
 
         existingBoard.update(boardUpdateDto);
@@ -90,6 +90,12 @@ public class BoardService {
     public void likeBoard(UUID boardId) {
         Board board = getBoardById(boardId);
         board.like();
+        boardRepository.save(board);
+    }
+
+    public void commentBoard(UUID boardId) {
+        Board board = getBoardById(boardId);
+        board.comment();
         boardRepository.save(board);
     }
 

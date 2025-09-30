@@ -132,7 +132,10 @@ public enum ErrorCode {
     JSON_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "JSON_PARSING_ERROR_500", "JSON 파싱이 실패했습니다."),
 
 
-    BOARD_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOARD_NOT_FOUND_400", "게시글을 찾을 수 없습니다.");
+    BOARD_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOARD_NOT_FOUND_400", "게시글을 찾을 수 없습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "COMMENT_NOT_FOUND_400", "댓글을 찾을 수 없습니다."),
+    PARENT_COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PARENT_COMMENT_NOT_FOUND_400", "상위 댓글을 찾을 수 없습니다."),
+    TOO_MANY_PARENT(HttpStatus.BAD_REQUEST, "TOO_MANY_PARENT_400", "상위 댓글은 하나여야합니다.");
 
     private final HttpStatus httpStatus;
     @Schema(description = "에러 코드", example = "UNKNOWN_ERROR_500", implementation = ErrorCode.class)

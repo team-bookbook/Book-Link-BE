@@ -10,8 +10,9 @@ import java.util.UUID;
 
 @Getter
 @Builder
+@Schema(description = "도서 상세 조회를 위한 도서 응답 DTO")
 public class BookDetailDto {
-    @Schema(description = "도서 고유 ID (UUID)", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "도서 고유 ID (UUID)", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID id;
     @Schema(description = "도서 이름", example = "마흔에 읽는 쇼펜하우어", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 64)
     private String title;

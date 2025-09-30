@@ -69,9 +69,10 @@ public class LibraryBookController implements LibraryBookApiDocs {
     @Override
     public ResponseEntity<BaseResponse<Void>> deleteLibraryBook(
             @PathVariable @NotNull(message = "삭제할 도서관별 도서의 id는 필수입니다.") UUID libraryBookId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
-        UUID userId = UUID.randomUUID(); // todo : 실제 인증 정보에서 추출
+        UUID userId = customUserDetails.getMember().getId();
 
         log.info("[LibraryBookController] [traceId = {}, userId = {}] delete library book request received, libraryBookId={}",
                 traceId, userId, libraryBookId);

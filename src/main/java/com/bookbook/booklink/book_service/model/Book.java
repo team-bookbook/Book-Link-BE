@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,26 +31,30 @@ public class Book {
     @Column(nullable = false, length = 64)
     @Size(min = 1, max = 64)
     @Schema(description = "도서 이름", example = "마흔에 읽는 쇼펜하우어", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 64)
+    @Getter
     private String title;
 
     @Column(nullable = false, length = 16)
     @Size(min = 1, max = 16)
     @Schema(description = "저자명", example = "강용수", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 16)
+    @Getter
     private String author;
 
     @Column(nullable = false, length = 16)
     @Size(min = 1, max = 16)
     @Schema(description = "출판사", example = "유노북스", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 16)
+    @Getter
     private String publisher;
 
     @Column(nullable = false)
     @NotNull
     @Enumerated(EnumType.STRING)
     @Schema(description = "카테고리", example = "GENERALITIES", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Getter
     private BookCategory category;
 
-    @Column(nullable = false, unique = true, length = 13)
-    @Schema(description = "ISBN 코드", example = "9791192300818", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Column(unique = true, length = 13)
+    @Schema(description = "ISBN 코드", example = "9791192300818", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Size(min = 13, max = 13)
     private String ISBN;
 

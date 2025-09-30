@@ -1,8 +1,8 @@
 package com.bookbook.booklink.common.jwt.CustomUserDetail;
 
 
-import com.bookbook.booklink.member.model.Member;
-import com.bookbook.booklink.member.repository.MemberRepository;
+import com.bookbook.booklink.auth_service.model.Member;
+import com.bookbook.booklink.auth_service.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

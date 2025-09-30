@@ -1,5 +1,7 @@
 package com.bookbook.booklink.library_service.service;
 
+import com.bookbook.booklink.auth_service.model.Member;
+import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
@@ -38,11 +40,14 @@ public class LibraryService {
      *
      * @param libraryRegDto Library 등록 정보 DTO
      * @param traceId       요청 멱등성 체크용 ID (클라이언트 전달)
-     * @param userId        요청 사용자 ID
+     * @param member        요청 사용자
      * @return 등록된 Library ID
      */
     @Transactional
-    public UUID registerLibrary(LibraryRegDto libraryRegDto, String traceId, UUID userId) {
+    public UUID registerLibrary(LibraryRegDto libraryRegDto, String traceId, Member member) {
+
+        UUID userId = member.getId();
+
         log.info("[LibraryService] [traceId={}, userId={}] register library initiate, name={}",
                 traceId, userId, libraryRegDto.getName());
 
@@ -53,7 +58,7 @@ public class LibraryService {
                 () -> LockEvent.builder().key(key).build());
 
         // Library 엔티티 생성 후 DB 저장
-        Library newLibrary = Library.toEntity(libraryRegDto);
+        Library newLibrary = Library.toEntity(libraryRegDto, member);
         Library savedLibrary = save(newLibrary);
 
         log.info("[LibraryService] [traceId={}, userId={}] register library success, name={}",
@@ -128,10 +133,11 @@ public class LibraryService {
      * @return 변환된 dto
      */
     @Transactional(readOnly = true)
-    public LibraryDetailDto getLibrary(UUID libraryId) {
+    public LibraryDetailDto getLibrary(UUID libraryId, List<LibraryBook> top5List) {
 
         Library library = findById(libraryId);
-        return LibraryDetailDto.fromEntity(library);
+
+        return LibraryDetailDto.fromEntity(library, top5List);
     }
 
     /**

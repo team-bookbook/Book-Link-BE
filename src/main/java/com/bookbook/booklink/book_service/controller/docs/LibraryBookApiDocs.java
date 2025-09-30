@@ -5,10 +5,13 @@ import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -27,6 +30,7 @@ public interface LibraryBookApiDocs {
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> registerLibraryBook(
             @Valid @RequestBody LibraryBookRegisterDto bookRegisterDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
 
@@ -34,12 +38,24 @@ public interface LibraryBookApiDocs {
             summary = "도서관별 도서 수정",
             description = "도서관에 등록된 도서의 보증금, 보유 권수를 수정합니다."
     )
-    @ApiErrorResponses({ErrorCode.INVALID_CATEGORY_CODE, ErrorCode.BOOK_NOT_FOUND,
-            ErrorCode.NOT_ENOUGH_AVAILABLE_COPIES_TO_REMOVE, ErrorCode.LIBRARY_BOOK_COPIES_MISMATCH,
+    @ApiErrorResponses({ErrorCode.BOOK_NOT_FOUND, ErrorCode.NOT_ENOUGH_AVAILABLE_COPIES_TO_REMOVE, ErrorCode.LIBRARY_BOOK_COPIES_MISMATCH,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PatchMapping
     public ResponseEntity<BaseResponse<Void>> updateLibraryBook(
             @Valid @RequestBody LibraryBookUpdateDto updateBookDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "도서관별 도서 삭제",
+            description = "도서관에 등록된 도서를 삭제합니다."
+    )
+    @ApiErrorResponses({ErrorCode.CANNOT_DELETE_BORROWED_BOOK})
+    @DeleteMapping("/{libraryBookId}")
+    public ResponseEntity<BaseResponse<Void>> deleteLibraryBook(
+            @PathVariable @NotNull(message = "삭제할 도서관별 도서의 id는 필수입니다.") UUID libraryBookId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
 }

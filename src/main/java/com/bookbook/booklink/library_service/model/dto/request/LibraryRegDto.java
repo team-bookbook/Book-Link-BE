@@ -1,9 +1,7 @@
 package com.bookbook.booklink.library_service.model.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import org.hibernate.validator.constraints.URL;
 
@@ -32,6 +30,16 @@ public class LibraryRegDto {
 
     @Schema(description = "도서관 운영 종료 시간 (HH:mm 형식)", type = "string", format = "partial-time", example = "21:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private LocalTime endTime;
+
+    @DecimalMin(value = "-90.0")
+    @DecimalMax(value = "90.0")
+    @Schema(description = "도서관 위도", example = "37.497923", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Double latitude;
+
+    @DecimalMin(value = "-180.0")
+    @DecimalMax(value = "180.0")
+    @Schema(description = "도서관 경도", example = "127.027612", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Double longitude;
 
     @AssertTrue(message = "영업 시작 시간은 종료 시간보다 빨라야 합니다.")
     public boolean isValidOperatingHours() {

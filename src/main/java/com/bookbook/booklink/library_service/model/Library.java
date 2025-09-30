@@ -1,5 +1,6 @@
 package com.bookbook.booklink.library_service.model;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
@@ -101,23 +102,23 @@ public class Library {
     @Schema(description = "영업 종료 시간", example = "21:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalTime endTime;
 
-    // todo: User와 1:1 연결 필요
+    @OneToOne
+    @JoinColumn(name = "member_id", nullable = false, unique = true)
+    private Member member;
 
-/*
     @OneToMany(mappedBy = "library", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "도서관이 소장하고 있는 도서들")
     private List<LibraryBook> libraryBooks = new ArrayList<>();
-*/
 
-    public static Library toEntity(LibraryRegDto libraryRegDto) {
+    public static Library toEntity(LibraryRegDto libraryRegDto, Member member) {
         return Library.builder()
                 .name(libraryRegDto.getName())
                 .description(libraryRegDto.getDescription())
-                .latitude(13.241400)
-                .longitude(15.414000)   // todo: User에서 위치정보 가져와서 위도 경도 변환해서 넣어야함
+                .latitude(libraryRegDto.getLatitude())
+                .longitude(libraryRegDto.getLongitude())
                 .startTime(libraryRegDto.getStartTime())
                 .endTime(libraryRegDto.getEndTime())
-                //todo: User 연결 추가
+                .member(member)
                 .thumbnailUrl(libraryRegDto.getThumbnailUrl())
                 .build();
     }

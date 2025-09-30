@@ -88,18 +88,12 @@ public class LibraryBookController implements LibraryBookApiDocs {
     @Override
     public ResponseEntity<BaseResponse<PageResponse<LibraryBookListDto>>> getLibraryBookList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @Valid @ModelAttribute LibraryBookSearchReqDto request,
-            @RequestHeader("Trace-Id") String traceId
+            @Valid @ModelAttribute LibraryBookSearchReqDto request
     ) {
         UUID userId = customUserDetails.getMember().getId();
 
-        log.info("[LibraryBookController] [traceId = {}, userId = {}] get library book list request received, request={}",
-                traceId, userId, request);
+        PageResponse<LibraryBookListDto> response = libraryBookService.getLibraryBookList(request, userId);
 
-        PageResponse<LibraryBookListDto> response = libraryBookService.getLibraryBookList(request, userId, traceId);
-
-        log.info("[LibraryBookController] [traceId = {}, userId = {}] get library book list request success, response={}",
-                traceId, userId, response);
         return ResponseEntity.ok(
                 BaseResponse.success(response)
         );

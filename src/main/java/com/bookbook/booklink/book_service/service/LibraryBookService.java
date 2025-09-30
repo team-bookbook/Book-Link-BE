@@ -95,9 +95,7 @@ public class LibraryBookService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<LibraryBookListDto> getLibraryBookList(LibraryBookSearchReqDto request, UUID userId, String traceId) {
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] get library book list initiate request={}", traceId, userId, request);
-
+    public PageResponse<LibraryBookListDto> getLibraryBookList(LibraryBookSearchReqDto request, UUID userId) {
         int page = request.getPage();
         int size = request.getSize();
         Double lat = request.getLatitude();
@@ -147,8 +145,6 @@ public class LibraryBookService {
                             .build();
                 })
                 .toList();
-
-        log.info("[LibraryBookService] [traceId = {}, userId = {}] get library book list success libraryBookList(dto)={}", traceId, userId, dtoList);
 
         return PageResponse.<LibraryBookListDto>builder()
                 .totalElements(libraryBooks.getTotalElements())

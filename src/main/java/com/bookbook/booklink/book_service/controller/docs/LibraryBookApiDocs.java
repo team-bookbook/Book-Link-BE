@@ -71,7 +71,6 @@ public interface LibraryBookApiDocs {
     @GetMapping
     public ResponseEntity<BaseResponse<PageResponse<LibraryBookListDto>>> getLibraryBookList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @Valid @ModelAttribute LibraryBookSearchReqDto request,
-            @RequestHeader("Trace-Id") String traceId
+            @Valid @ModelAttribute LibraryBookSearchReqDto request
     );
 }

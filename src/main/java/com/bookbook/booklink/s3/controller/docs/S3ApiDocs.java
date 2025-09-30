@@ -1,7 +1,7 @@
 package com.bookbook.booklink.s3.controller.docs;
 
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.s3.model.dto.response.PresignedUrlRespDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,6 +1,6 @@
 package com.bookbook.booklink.s3.controller;
 
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.s3.controller.docs.S3ApiDocs;
 import com.bookbook.booklink.s3.model.dto.response.PresignedUrlRespDto;
 import com.bookbook.booklink.s3.service.S3PresignedUrlService;

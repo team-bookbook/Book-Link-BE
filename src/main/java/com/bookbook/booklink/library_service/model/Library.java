@@ -130,4 +130,8 @@ public class Library {
         this.startTime = libraryUpdateDto.getStartTime();
         this.endTime = libraryUpdateDto.getEndTime();
     }
+
+    public void addBook() {
+        bookCount++;
+    }
 }

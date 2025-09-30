@@ -2,7 +2,7 @@ package com.bookbook.booklink.library_service.controller.docs;
 
 import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
@@ -82,6 +82,7 @@ public interface LibraryApiDocs {
     @GetMapping
     ResponseEntity<BaseResponse<List<LibraryDetailDto>>> getLibraries(
             @RequestParam Double lat,
-            @RequestParam Double lng
+            @RequestParam Double lng,
+            @RequestParam(required = false) String name
     );
 }

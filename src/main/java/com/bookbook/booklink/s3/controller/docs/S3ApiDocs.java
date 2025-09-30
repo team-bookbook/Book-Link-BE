@@ -20,7 +20,7 @@ public interface S3ApiDocs {
             summary = "presigned-url 요청",
             description = "s3에서 presigned-url 요청해서 이미지를 저장할 url 경로를 반환합니다."
     )
-    @ApiErrorResponses({ /* todo : 에러 추가 */})
+    @ApiErrorResponses({})
     @GetMapping("/presigned-url")
     public ResponseEntity<BaseResponse<PresignedUrlRespDto>> getPresignedUrl(
             @RequestParam @NotNull(message = "저장할 이미지 이름은 필수입니다.") String fileName,

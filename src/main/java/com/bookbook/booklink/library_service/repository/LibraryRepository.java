@@ -15,9 +15,10 @@ public interface LibraryRepository extends JpaRepository<Library, UUID> {
     @Query(value = "SELECT * FROM library " +
             "WHERE (6371 * acos(cos(radians(:lat)) * cos(radians(latitude)) * " +
             "cos(radians(longitude) - radians(:lon)) + " +
-            "sin(radians(:lat)) * sin(radians(latitude)))) < 3",
+            "sin(radians(:lat)) * sin(radians(latitude)))) < 3 " +
+            "AND (:name IS NULL OR name LIKE %:name%)",
             nativeQuery = true)
-    List<Library> findNearbyLibraries(@Param("lat") Double lat, @Param("lon") Double lon);
+    List<Library> findNearbyLibraries(@Param("lat") Double lat, @Param("lon") Double lon, @Param("name") String name);
 
 }
     

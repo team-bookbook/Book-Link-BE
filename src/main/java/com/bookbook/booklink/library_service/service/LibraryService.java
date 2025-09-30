@@ -148,9 +148,9 @@ public class LibraryService {
      * @return 현재위치로부터 3km 이내의 도서관 정보 리스트
      */
     @Transactional(readOnly = true)
-    public List<LibraryDetailDto> getLibraries(Double lat, Double lng) {
+    public List<LibraryDetailDto> getLibraries(Double lat, Double lng, String name) {
 
-        List<Library> libraries = libraryRepository.findNearbyLibraries(lat, lng);
+        List<Library> libraries = libraryRepository.findNearbyLibraries(lat, lng, name);
 
         return libraries.stream().map(LibraryDetailDto::fromEntity).toList();
     }

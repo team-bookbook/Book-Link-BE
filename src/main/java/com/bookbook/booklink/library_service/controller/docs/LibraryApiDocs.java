@@ -82,6 +82,7 @@ public interface LibraryApiDocs {
     @GetMapping
     ResponseEntity<BaseResponse<List<LibraryDetailDto>>> getLibraries(
             @RequestParam Double lat,
-            @RequestParam Double lng
+            @RequestParam Double lng,
+            @RequestParam(required = false) String name
     );
 }

@@ -79,7 +79,7 @@ public interface LibraryBookApiDocs {
             summary = "도서 상세 조회",
             description = "도서관에 등록된 도서의 상세 정보를 조회합니다."
     )
-    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /* todo: 에러 코드 추가*/})
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BOOK_NOT_FOUND})
     @GetMapping("/{libraryBookId}")
     public ResponseEntity<BaseResponse<LibraryBookDetailResDto>> getLibraryBookDetail(
             @NotNull(message = "도서관별 도서 아이디는 필수입니다.") @PathVariable UUID libraryBookId

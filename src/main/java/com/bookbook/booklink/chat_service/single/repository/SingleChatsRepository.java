@@ -11,7 +11,5 @@ import java.util.UUID;
 public interface SingleChatsRepository extends JpaRepository<SingleChats, UUID> {
     // 두 유저간의 채팅방이 이미 있는지 확인
     Optional<SingleChats> findByUser1IdAndUser2Id(UUID user1Id, UUID user2Id);
-
-    Optional<SingleChats> findByUser2IdAndUser1Id(UUID user2Id, UUID user1Id);
 }
     

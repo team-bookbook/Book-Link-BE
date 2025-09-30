@@ -38,9 +38,10 @@ public class ChatMessages {
     @Schema(description = "전송 시각")
     private LocalDateTime sentAt;
 
+    @Builder.Default
     @Column(nullable = false)
     @Schema(description = "삭제 여부", example = "false")
-    private Boolean isDeleted;
+    private Boolean isDeleted=false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -58,7 +59,7 @@ public class ChatMessages {
     private RoomType roomType;
 
     @Schema(description = "보낸 유저 ID")
-    private UUID sendId;
+    private UUID senderId;
 
     @Schema(description = "소속 채팅방 ID")
     private UUID chatId;
@@ -70,12 +71,10 @@ public class ChatMessages {
         // 1. 먼저 메시지 엔티티 생성
         ChatMessages message = ChatMessages.builder()
                 .chatId(dto.getChatId())
-                .sendId(dto.getSenderId())
+                .senderId(dto.getSenderId())
                 .text(dto.getText())
-                .sentAt(LocalDateTime.now())
                 .status(MessageStatus.SENT)
                 .type(MessageType.TEXT)
-                .isDeleted(false)
                 .roomType(RoomType.SINGLE)
                 .build();
         // 2. 첨부파일 있으면 엔티티로 변환 후 message에 연결

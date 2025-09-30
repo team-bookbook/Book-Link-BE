@@ -47,4 +47,10 @@ public class ChatMessagesService {
         return MessageResDto.fromEntity(saved);
     }
 
+    @Transactional
+    public ChatMessages saveMessagesEntity(MessageReqDto dto) {
+        ChatMessages chatMessages = ChatMessages.saveMessage(dto);
+        return chatMessagesRepository.save(chatMessages);
+    }
+
 }

@@ -7,9 +7,11 @@ import com.bookbook.booklink.chat_service.single.model.dto.response.SingleRoomRe
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public interface SingleChatApiDocs {
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
-    @PostMapping("/room")
+    @PostMapping("/rooms")
     public ResponseEntity<BaseResponse<SingleRoomResDto>> createOrGetRoom(
             @RequestBody SingleRoomReqDto dto
     );
@@ -38,6 +40,7 @@ public interface SingleChatApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PostMapping("/sendMessage")
     public ResponseEntity<BaseResponse<MessageResDto>> sendMessage(
+            @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody MessageReqDto dto);
 
     @Operation(
@@ -46,7 +49,7 @@ public interface SingleChatApiDocs {
     )
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
-    @GetMapping("/{chatId}")
+    @GetMapping("/rooms/{chatId}/messages")
     public ResponseEntity<BaseResponse<List<MessageResDto>>> getMessages(
             @PathVariable UUID chatId);
 }

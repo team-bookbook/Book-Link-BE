@@ -44,7 +44,7 @@ public class MessageResDto {
     public static MessageResDto fromEntity(ChatMessages entity) {
         return MessageResDto.builder()
                 .chatId(entity.getChatId())
-                .senderId(entity.getSendId())
+                .senderId(entity.getSenderId())
                 .text(entity.getText())
                 .sentAt(entity.getSentAt())
                 .status(entity.getStatus())

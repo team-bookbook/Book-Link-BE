@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user1Id", "user2Id"})
+)
 @Getter
 @Builder
 @NoArgsConstructor
@@ -46,12 +49,23 @@ public class SingleChats {
     @Schema(description = "참여자 2 ID", example = "7fa85f64-5717-4562-b3fc-2c963f66afa6")
     private UUID user2Id;
 
-    public static SingleChats createChatRoom(UUID user1Id, UUID user2Id) {
+    public static SingleChats createNormalized(UUID a, UUID b) {
+        UUID u1 = a.compareTo(b) <= 0 ? a : b;
+        UUID u2 = a.compareTo(b) <= 0 ? b : a;
         return SingleChats.builder()
-                .user1Id(user1Id)
-                .user2Id(user2Id)
+                .user1Id(u1)
+                .user2Id(u2)
                 .status(ChatStatus.ACTIVE)
                 .build();
+    }
+
+    public boolean hasMember(UUID memberId) {
+        return memberId.equals(user1Id) || memberId.equals(user2Id);
+    }
+
+    public void updateLastMessage(String message, LocalDateTime sentAt) {
+        this.lastMessage = message;
+        this.lastSentAt = sentAt;
     }
 }
     

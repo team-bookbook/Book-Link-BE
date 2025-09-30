@@ -94,6 +94,7 @@ public class LibraryBookService {
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book success libraryBookId={}", traceId, userId, libraryBookId);
     }
 
+    @Transactional(readOnly = true)
     public PageResponse<LibraryBookListDto> getLibraryBookList(LibraryBookSearchReqDto request, UUID userId, String traceId) {
         log.info("[LibraryBookService] [traceId = {}, userId = {}] get library book list initiate request={}", traceId, userId, request);
 

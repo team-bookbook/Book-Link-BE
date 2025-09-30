@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,6 +17,7 @@ public class LibraryBookDetailDto {
     private final Integer deposit;
     private final Integer borrowedCount;
 
+    private final List<String> previewImages;
     private final LocalDate expectedReturnDate;
     private final UUID borrowId;
     private final String borrowedStatus; // todo : 추후 enum 변경

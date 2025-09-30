@@ -14,6 +14,7 @@ import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.library_service.model.Library;
+import com.bookbook.booklink.library_service.model.dto.response.LibraryBookListProjection;
 import com.bookbook.booklink.library_service.service.LibraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,62 +99,40 @@ public class LibraryBookService {
     public PageResponse<LibraryBookListDto> getLibraryBookList(LibraryBookSearchReqDto request, UUID userId) {
         int page = request.getPage();
         int size = request.getSize();
+        int offset = page * size;
         Double lat = request.getLatitude();
         Double lng = request.getLongitude();
 
-        // 도서관 3km 이내 도서관별 도서 검색, 정렬은 등록일 기준 최신순, 도서관 많이빌린 순, 거리순
-        Sort sort = switch (request.getSortType()) {
-            case LATEST -> Sort.by(Sort.Direction.DESC, "created_at");
-            case MOST_BORROWED -> Sort.by(Sort.Direction.DESC, "borrowed_count");
-            default -> Sort.unsorted(); // DISTANCE는 NativeQuery에서 계산 필요
-        };
+        List<LibraryBookListProjection> projections =
+                libraryBookRepository.findLibraryBooksBySearch(lat, lng, request.getBookName(), request.getSortType().toString(), size, offset);
 
-        Pageable pageable = PageRequest.of(page, size, sort);
+        long total = libraryBookRepository.countLibraryBooksBySearch(lat, lng, request.getBookName());
 
-        Page<LibraryBook> libraryBooks = libraryBookRepository.findLibraryBooksBySearch(lat, lng, request.getBookName(), pageable);
-        log.info("조회 성공 libraryBooks = {}", libraryBooks);
 
-        List<LibraryBookListDto> dtoList = libraryBooks.stream()
-                .map(entity -> {
-                    boolean rentedOut = entity.getCopies().equals(entity.getBorrowedCount());
-
-                    LocalDate expectedReturn = null;
-
-                    if (rentedOut) {
-                        LocalDateTime latestDueAt = LocalDateTime.MIN;
-                        for (LibraryBookCopy copy : entity.getCopiesList()) {
-                            if (copy.getDueAt() == null) {
-                                throw new CustomException(ErrorCode.DATABASE_ERROR);
-                            }
-                            if (copy.getDueAt().isAfter(latestDueAt)) {
-                                latestDueAt = copy.getDueAt();
-                            }
-                        }
-                        expectedReturn = latestDueAt.toLocalDate();
-                    }
-
-                    return LibraryBookListDto.builder()
-                            .libraryName(entity.getLibrary().getName())
-                            /*.imageUrl(entity.getImageUrl())*/ // todo 이미지 추가
-                            .copies(entity.getCopies())
-                            .borrowedCount(entity.getBorrowedCount())
-                            .deposit(entity.getDeposit())
-                            .rentedOut(rentedOut)
-                            .expectedReturnDate(expectedReturn)
-                            .title(entity.getBook().getTitle())
-                            .author(entity.getBook().getAuthor())
-                            .build();
-                })
+        List<LibraryBookListDto> dtoList = projections.stream()
+                .map(p -> LibraryBookListDto.builder()
+                        .id(p.getId())
+                        .title(p.getTitle())
+                        .author(p.getAuthor())
+                        .libraryName(p.getLibraryName())
+                        .distance(p.getDistance())
+                        .copies(p.getCopies())
+                        .borrowedCount(p.getBorrowedCount())
+                        .deposit(p.getDeposit())
+                        .rentedOut(p.getRentedOut() != null && p.getRentedOut() == 1)
+                        .expectedReturnDate(p.getExpectedReturnDate())
+                        .imageUrl(p.getImageUrl())
+                        .build())
                 .toList();
 
         return PageResponse.<LibraryBookListDto>builder()
-                .totalElements(libraryBooks.getTotalElements())
-                .totalPages(libraryBooks.getTotalPages())
-                .currentPage(libraryBooks.getNumber())
-                .pageSize(libraryBooks.getSize())
+                .totalElements(total)
+                .totalPages((int) Math.ceil((double) total / size))
+                .currentPage(page)
+                .pageSize(size)
                 .content(dtoList)
-                .hasNext(libraryBooks.hasNext())
-                .hasPrevious(libraryBooks.hasPrevious())
+                .hasNext(offset + dtoList.size() < total)
+                .hasPrevious(page > 0)
                 .build();
     }
 

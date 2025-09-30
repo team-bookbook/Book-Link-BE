@@ -60,6 +60,8 @@ public class LibraryBookService {
             libraryBook.addCopy();
         }
 
+        library.addBook();
+
         LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);
         UUID bookId = savedLibraryBook.getId();
 

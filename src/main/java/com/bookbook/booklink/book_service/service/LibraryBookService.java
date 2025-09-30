@@ -50,6 +50,9 @@ public class LibraryBookService {
         for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
             libraryBook.addCopy();
         }
+        for(String url : bookRegisterDto.getPreviewImages()) {
+            libraryBook.addImage(url);
+        }
 
         LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);
         UUID bookId = savedLibraryBook.getId();

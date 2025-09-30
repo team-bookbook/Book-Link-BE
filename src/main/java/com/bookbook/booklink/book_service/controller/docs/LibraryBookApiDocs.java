@@ -67,7 +67,7 @@ public interface LibraryBookApiDocs {
             summary = "내 주변 3km 이내 도서 목록 조회 및 검색",
             description = "위치 기반으로 도서 리스트 반환합니다."
     )
-    @ApiErrorResponses({/* todo : 사용중인 에러코드 추가 */})
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR})
     @GetMapping
     public ResponseEntity<BaseResponse<PageResponse<LibraryBookListDto>>> getLibraryBookList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,

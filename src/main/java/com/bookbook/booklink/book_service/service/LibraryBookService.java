@@ -2,21 +2,31 @@ package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.LibraryBook;
+import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
+import com.bookbook.booklink.book_service.model.dto.request.LibraryBookSearchReqDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
+import com.bookbook.booklink.book_service.model.dto.response.LibraryBookListDto;
 import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
+import com.bookbook.booklink.common.dto.PageResponse;
 import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.library_service.model.Library;
+import com.bookbook.booklink.library_service.model.dto.response.LibraryBookListProjection;
 import com.bookbook.booklink.library_service.service.LibraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +50,7 @@ public class LibraryBookService {
 
         // find book & library
         Book book = bookService.findById(bookRegisterDto.getId());
-        Library library = libraryService.findById(userId);
+        Library library = libraryService.findByUserId(userId);
 
         // todo : 에러났을 때 멱등성 체크 풀기
         LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
@@ -50,6 +60,8 @@ public class LibraryBookService {
         for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
             libraryBook.addCopy();
         }
+
+        library.addBook();
 
         LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);
         UUID bookId = savedLibraryBook.getId();
@@ -83,6 +95,46 @@ public class LibraryBookService {
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book success libraryBookId={}", traceId, userId, libraryBookId);
     }
 
+    @Transactional(readOnly = true)
+    public PageResponse<LibraryBookListDto> getLibraryBookList(LibraryBookSearchReqDto request, UUID userId) {
+        int page = request.getPage();
+        int size = request.getSize();
+        int offset = page * size;
+        Double lat = request.getLatitude();
+        Double lng = request.getLongitude();
+
+        List<LibraryBookListProjection> projections =
+                libraryBookRepository.findLibraryBooksBySearch(lat, lng, request.getBookName(), request.getSortType().toString(), size, offset);
+
+        long total = libraryBookRepository.countLibraryBooksBySearch(lat, lng, request.getBookName());
+
+
+        List<LibraryBookListDto> dtoList = projections.stream()
+                .map(p -> LibraryBookListDto.builder()
+                        .id(p.getId())
+                        .title(p.getTitle())
+                        .author(p.getAuthor())
+                        .libraryName(p.getLibraryName())
+                        .distance(p.getDistance())
+                        .copies(p.getCopies())
+                        .borrowedCount(p.getBorrowedCount())
+                        .deposit(p.getDeposit())
+                        .rentedOut(p.getRentedOut() != null && p.getRentedOut() == 1)
+                        .expectedReturnDate(p.getExpectedReturnDate())
+                        .imageUrl(p.getImageUrl())
+                        .build())
+                .toList();
+
+        return PageResponse.<LibraryBookListDto>builder()
+                .totalElements(total)
+                .totalPages((int) Math.ceil((double) total / size))
+                .currentPage(page)
+                .pageSize(size)
+                .content(dtoList)
+                .hasNext(offset + dtoList.size() < total)
+                .hasPrevious(page > 0)
+                .build();
+    }
 
     /**
      * 특정 도서관의 Top 5 도서 목록을 반환하는 메서드

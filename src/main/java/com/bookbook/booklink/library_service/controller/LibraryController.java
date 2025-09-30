@@ -1,9 +1,9 @@
 package com.bookbook.booklink.library_service.controller;
 
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
-import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.library_service.controller.docs.LibraryApiDocs;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;
@@ -100,10 +100,11 @@ public class LibraryController implements LibraryApiDocs {
     @Override
     public ResponseEntity<BaseResponse<List<LibraryDetailDto>>> getLibraries(
             @RequestParam Double lat,
-            @RequestParam Double lng
+            @RequestParam Double lng,
+            @RequestParam(required = false) String name
     ) {
 
-        List<LibraryDetailDto> result = libraryService.getLibraries(lat, lng);
+        List<LibraryDetailDto> result = libraryService.getLibraries(lat, lng, name);
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(result));

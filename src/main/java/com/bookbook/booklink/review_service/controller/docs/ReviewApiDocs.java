@@ -2,7 +2,7 @@ package com.bookbook.booklink.review_service.controller.docs;
 
 
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;

@@ -1,6 +1,6 @@
 package com.bookbook.booklink.point_service.controller;
 
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.point_service.controller.docs.PointApiDocs;
 import com.bookbook.booklink.point_service.model.dto.request.PointUseDto;
 import com.bookbook.booklink.point_service.model.dto.response.PointBalanceDto;

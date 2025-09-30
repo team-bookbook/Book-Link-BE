@@ -1,6 +1,6 @@
 package com.bookbook.booklink.notification_service.controller;
 
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.notification_service.controller.docs.NotificationApiDocs;
 import com.bookbook.booklink.notification_service.model.dto.response.NotificationResDto;
 import com.bookbook.booklink.notification_service.service.NotificationService;

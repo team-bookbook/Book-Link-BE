@@ -49,7 +49,7 @@ public class LibraryBookService {
         // todo : 에러났을 때 멱등성 체크 풀기
         LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
 
-        // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
+        // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인 o
 
         library.addBook();
 

@@ -103,13 +103,10 @@ public class LibraryBookController implements LibraryBookApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<LibraryBookDetailResDto>> getLibraryBookDetail(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @NotBlank(message = "도서관별 도서 아이디는 필수입니다.") @PathVariable String libraryBookId,
+            @NotBlank(message = "도서관별 도서 아이디는 필수입니다.") @PathVariable UUID libraryBookId,
             @Valid @ModelAttribute LibraryBookSearchReqDto request
     ) {
-        UUID userId = customUserDetails.getMember().getId();
-
-        LibraryBookDetailResDto response = libraryBookService.getLibraryBookDetail(libraryBookId, userId);
+        LibraryBookDetailResDto response = libraryBookService.getLibraryBookDetail(libraryBookId);
 
         return ResponseEntity.ok(BaseResponse.success(
                 response

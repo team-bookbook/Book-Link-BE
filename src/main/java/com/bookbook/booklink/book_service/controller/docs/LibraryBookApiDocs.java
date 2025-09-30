@@ -82,8 +82,7 @@ public interface LibraryBookApiDocs {
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR /* todo: 에러 코드 추가*/})
     @GetMapping("/{libraryBookId}")
     public ResponseEntity<BaseResponse<LibraryBookDetailResDto>> getLibraryBookDetail(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @NotBlank(message = "도서관별 도서 아이디는 필수입니다.") @PathVariable String libraryBookId,
+            @NotBlank(message = "도서관별 도서 아이디는 필수입니다.") @PathVariable UUID libraryBookId,
             @Valid @ModelAttribute LibraryBookSearchReqDto request
     );
 }

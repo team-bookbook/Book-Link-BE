@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface LibraryBookRepository extends JpaRepository<LibraryBook, UUID> {
@@ -30,6 +31,13 @@ public interface LibraryBookRepository extends JpaRepository<LibraryBook, UUID> 
             @Param("bookName") String bookName,
             Pageable pageable
     );
+
+    @Query("SELECT lb " +
+            "FROM LibraryBook lb " +
+            "JOIN FETCH lb.book b " +
+            "WHERE lb.library.id = :libraryId " +
+            "ORDER BY b.likeCount DESC")
+    List<LibraryBook> findTop5BooksByLibraryOrderByLikeCount(@Param("libraryId") UUID libraryId, Pageable pageable);
 
 }
     

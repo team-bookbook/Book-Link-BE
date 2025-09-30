@@ -15,7 +15,6 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.service.LibraryService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -118,9 +118,9 @@ public class LibraryBookService {
 
                     LocalDate expectedReturn = null;
 
-                    if(rentedOut) {
+                    if (rentedOut) {
                         LocalDateTime latestDueAt = LocalDateTime.MIN;
-                        for(LibraryBookCopy copy : entity.getCopiesList()) {
+                        for (LibraryBookCopy copy : entity.getCopiesList()) {
                             if (copy.getDueAt() == null) {
                                 throw new CustomException(ErrorCode.DATABASE_ERROR);
                             }
@@ -156,6 +156,17 @@ public class LibraryBookService {
                 .hasNext(libraryBooks.hasNext())
                 .hasPrevious(libraryBooks.hasPrevious())
                 .build();
+    }
+
+    /**
+     * 특정 도서관의 Top 5 도서 목록을 반환하는 메서드
+     *
+     * @param libraryId 조회할 도서관의 ID
+     * @return 해당 도서관의 가장 인기가 많은 도서 5개 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<LibraryBook> findTop5Books(UUID libraryId) {
+        return libraryBookRepository.findTop5BooksByLibraryOrderByLikeCount(libraryId, PageRequest.of(0, 5));
     }
 }
     

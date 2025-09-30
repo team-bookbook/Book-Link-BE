@@ -51,10 +51,6 @@ public class LibraryBookService {
 
         // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
 
-        for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
-            libraryBook.addCopy();
-        }
-
         library.addBook();
 
         LibraryBook savedLibraryBook = libraryBookRepository.save(libraryBook);

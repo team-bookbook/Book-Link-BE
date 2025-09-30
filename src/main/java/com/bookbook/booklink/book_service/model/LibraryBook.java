@@ -91,13 +91,18 @@ public class LibraryBook {
     public static LibraryBook toEntity(LibraryBookRegisterDto libraryBookRegisterDto, Book book
             , Library library
     ) {
-        return LibraryBook.builder()
-                .copies(libraryBookRegisterDto.getCopies())
-                .availableBooks(libraryBookRegisterDto.getCopies())
+        LibraryBook libraryBook = LibraryBook.builder()
+                .copies(0)
+                .availableBooks(0)
                 .deposit(libraryBookRegisterDto.getDeposit())
                 .book(book)
                 .library(library)
                 .build();
+
+        for (int i = 0; i < libraryBookRegisterDto.getCopies(); i++) {
+            libraryBook.addCopy();
+        }
+        return libraryBook;
     }
 
     public void addCopy() {

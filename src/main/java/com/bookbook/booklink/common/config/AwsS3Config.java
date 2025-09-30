@@ -1,14 +1,23 @@
 package com.bookbook.booklink.common.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Configuration
 public class AwsS3Config {
+
+    @Value("${spring.cloud.aws.credentials.access-key}")
+    private String accessKey;
+
+    @Value("${spring.cloud.aws.credentials.secret-key}")
+    private String secretKey;
 
     /**
      * S3Presigner를 빈으로 생성합니다.
@@ -26,7 +35,9 @@ public class AwsS3Config {
     public S3Presigner s3Presigner() {
         return S3Presigner.builder()
                 .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(DefaultCredentialsProvider.create()) // 환경변수에서 자동으로 key 찾아서 사용
+                .credentialsProvider(StaticCredentialsProvider.create(
+                        AwsBasicCredentials.create(accessKey, secretKey)
+                ))
                 .build();
     }
 }

@@ -25,7 +25,8 @@ public interface BorrowApiDocs {
             summary = "도서 대여",
             description = "도서를 대여합니다."
     )
-    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, /*todo : 에러 코드 추가*/})
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BOOK_NOT_FOUND,
+            ErrorCode.USER_NOT_FOUND, ErrorCode.N0T_AVAILABLE_COPY})
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> borrowBook(
             @Valid @RequestBody BorrowRequestDto borrowRequestDto,

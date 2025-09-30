@@ -3,7 +3,7 @@ package com.bookbook.booklink.book_service.controller.docs;
 import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;

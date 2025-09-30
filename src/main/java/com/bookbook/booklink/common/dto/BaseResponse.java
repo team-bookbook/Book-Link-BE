@@ -1,6 +1,8 @@
-package com.bookbook.booklink.common.exception;
+package com.bookbook.booklink.common.dto;
 
 
+import com.bookbook.booklink.common.exception.ErrorCode;
+import com.bookbook.booklink.common.exception.ErrorInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

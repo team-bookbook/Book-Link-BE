@@ -1,6 +1,6 @@
 package com.bookbook.booklink.review_service.controller;
 
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.review_service.controller.docs.ReviewApiDocs;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;

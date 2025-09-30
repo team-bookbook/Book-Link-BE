@@ -20,5 +20,9 @@ public interface LibraryRepository extends JpaRepository<Library, UUID> {
             nativeQuery = true)
     List<Library> findNearbyLibraries(@Param("lat") Double lat, @Param("lon") Double lon, @Param("name") String name);
 
+    @Query(value = "SELECT * FROM library " +
+    "WHERE member_id = :userId ",
+    nativeQuery = true)
+    Library findByMemberId(@Param("userId") UUID userId);
 }
     

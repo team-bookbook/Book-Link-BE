@@ -4,7 +4,7 @@ import com.bookbook.booklink.book_service.controller.docs.BookApiDocs;
 import com.bookbook.booklink.book_service.model.dto.request.BookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
 import com.bookbook.booklink.book_service.service.BookService;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

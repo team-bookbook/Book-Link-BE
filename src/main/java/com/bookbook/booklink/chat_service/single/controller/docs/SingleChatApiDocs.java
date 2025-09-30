@@ -5,7 +5,7 @@ import com.bookbook.booklink.chat_service.chat_mutual.model.dto.response.Message
 import com.bookbook.booklink.chat_service.single.model.dto.request.SingleRoomReqDto;
 import com.bookbook.booklink.chat_service.single.model.dto.response.SingleRoomResDto;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

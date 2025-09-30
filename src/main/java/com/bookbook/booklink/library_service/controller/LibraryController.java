@@ -1,9 +1,9 @@
 package com.bookbook.booklink.library_service.controller;
 
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
-import com.bookbook.booklink.common.exception.BaseResponse;
 import com.bookbook.booklink.library_service.controller.docs.LibraryApiDocs;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryRegDto;
 import com.bookbook.booklink.library_service.model.dto.request.LibraryUpdateDto;

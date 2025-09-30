@@ -6,7 +6,7 @@ import com.bookbook.booklink.chat_service.single.controller.docs.SingleChatApiDo
 import com.bookbook.booklink.chat_service.single.model.dto.request.SingleRoomReqDto;
 import com.bookbook.booklink.chat_service.single.model.dto.response.SingleRoomResDto;
 import com.bookbook.booklink.chat_service.single.service.SingleChatsService;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

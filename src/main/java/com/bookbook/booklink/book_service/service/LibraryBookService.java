@@ -4,7 +4,6 @@ import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
-import com.bookbook.booklink.book_service.repository.BookRepository;
 import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
 import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
@@ -12,11 +11,13 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.service.LibraryService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -80,6 +81,18 @@ public class LibraryBookService {
 
         libraryBook.softDelete();
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book success libraryBookId={}", traceId, userId, libraryBookId);
+    }
+
+
+    /**
+     * 특정 도서관의 Top 5 도서 목록을 반환하는 메서드
+     *
+     * @param libraryId 조회할 도서관의 ID
+     * @return 해당 도서관의 가장 인기가 많은 도서 5개 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<LibraryBook> findTop5Books(UUID libraryId) {
+        return libraryBookRepository.findTop5BooksByLibraryOrderByLikeCount(libraryId, PageRequest.of(0, 5));
     }
 }
     

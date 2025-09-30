@@ -55,6 +55,7 @@ public interface LibraryBookApiDocs {
     @DeleteMapping("/{libraryBookId}")
     public ResponseEntity<BaseResponse<Void>> deleteLibraryBook(
             @PathVariable @NotNull(message = "삭제할 도서관별 도서의 id는 필수입니다.") UUID libraryBookId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
 }

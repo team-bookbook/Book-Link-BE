@@ -88,6 +88,11 @@ public class LibraryBook {
     @Schema(description = "도서관이 보유한 각 권 개별 도서")
     private List<LibraryBookCopy> copiesList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "libraryBook", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @Schema(description = "미리보기 이미지 목록")
+    private List<PreviewImage> previewImageList = new ArrayList<>();
+
     public static LibraryBook toEntity(LibraryBookRegisterDto libraryBookRegisterDto, Book book
             , Library library
     ) {
@@ -117,6 +122,12 @@ public class LibraryBook {
             }
             availableBooks--;
         }
+    }
+
+    public void addImage(String url) {
+        PreviewImage image = PreviewImage.toEntity(url);
+        previewImageList.add(image);
+        image.setLibraryBook(this);
     }
 
 /* todo : 대출 로직 등록 할 때 추가 수정

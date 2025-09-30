@@ -65,6 +65,7 @@ public class ChatMessages {
     private UUID chatId;
 
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<MessageAttachments> attachments = new ArrayList<>();
 
     public static ChatMessages saveMessage(MessageReqDto dto) {
@@ -76,6 +77,7 @@ public class ChatMessages {
                 .status(MessageStatus.SENT)
                 .type(MessageType.TEXT)
                 .roomType(RoomType.SINGLE)
+                .sentAt(LocalDateTime.now())
                 .build();
         // 2. 첨부파일 있으면 엔티티로 변환 후 message에 연결
         if (dto.getAttachments() != null) {

@@ -50,10 +50,11 @@ public class MessageResDto {
                 .status(entity.getStatus())
                 .type(entity.getType())
                 .attachments(
-                        entity.getAttachments().stream().map(
-                                a ->
-                                        new FileAttachmentDto(a.getFileName(), a.getFilePath(), a.getFileSize())
-                        ).toList()
+                        entity.getAttachments() == null ?
+                                List.of() :
+                                entity.getAttachments().stream()
+                                        .map(a -> new FileAttachmentDto(a.getFileName(), a.getFilePath(), a.getFileSize()))
+                                        .toList()
                 )
                 .build();
     }

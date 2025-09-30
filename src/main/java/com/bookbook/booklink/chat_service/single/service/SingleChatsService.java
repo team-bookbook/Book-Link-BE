@@ -68,10 +68,10 @@ public class SingleChatsService {
 
         // senderId 강제 세팅
         MessageReqDto safeDto = new MessageReqDto(chatId, senderId, dto.getText(), dto.getAttachments());
-
         ChatMessages saved = chatMessagesService.saveMessagesEntity(safeDto);
 
         room.updateLastMessage(saved.getText(), saved.getSentAt());
+        singleChatsRepository.save(room);
 
         return MessageResDto.fromEntity(saved);
     }

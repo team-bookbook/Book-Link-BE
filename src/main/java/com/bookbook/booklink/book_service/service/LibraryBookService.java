@@ -16,6 +16,7 @@ import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.model.dto.response.LibraryBookListProjection;
 import com.bookbook.booklink.library_service.service.LibraryService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -75,8 +76,7 @@ public class LibraryBookService {
     public void updateLibraryBook(LibraryBookUpdateDto updateBookDto, String traceId, UUID userId) {
         log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book initiate updateBookDto={}", traceId, userId, updateBookDto);
 
-        LibraryBook libraryBook = libraryBookRepository.findById(updateBookDto.getId())
-                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+        LibraryBook libraryBook = getLibraryBookOrThrow(updateBookDto.getId());
 
         if (updateBookDto.getCopies() != null) libraryBook.updateCopies(updateBookDto.getCopies());
         if (updateBookDto.getDeposit() != null) libraryBook.updateDeposit(updateBookDto.getDeposit());
@@ -88,8 +88,7 @@ public class LibraryBookService {
     public void deleteLibraryBook(UUID libraryBookId, String traceId, UUID userId) {
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book initiate libraryBookId={}", traceId, userId, libraryBookId);
 
-        LibraryBook libraryBook = libraryBookRepository.findById(libraryBookId)
-                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+        LibraryBook libraryBook = getLibraryBookOrThrow(libraryBookId);
 
         libraryBook.softDelete();
         log.info("[LibraryBookService] [traceId = {}, userId = {}] delete library book success libraryBookId={}", traceId, userId, libraryBookId);
@@ -145,6 +144,25 @@ public class LibraryBookService {
     @Transactional(readOnly = true)
     public List<LibraryBook> findTop5Books(UUID libraryId) {
         return libraryBookRepository.findTop5BooksByLibraryOrderByLikeCount(libraryId, PageRequest.of(0, 5));
+    }
+
+    public LibraryBook getLibraryBookOrThrow(UUID libraryBookId) {
+        return libraryBookRepository.findById(libraryBookId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+    }
+
+    public LibraryBookCopy getLibraryBookCopy(UUID libraryBookId) {
+        LibraryBook libraryBook = getLibraryBookOrThrow(libraryBookId);
+        LibraryBookCopy libraryBookCopy = null;
+        for(LibraryBookCopy copy : libraryBook.getCopiesList()) {
+            if (copy.getStatus().toString().equals("AVAILABLE")) {
+                libraryBookCopy = copy;
+            }
+        }
+        if(libraryBookCopy == null) {
+            throw new CustomException(ErrorCode.DATABASE_ERROR);
+        }
+        return libraryBookCopy;
     }
 }
     

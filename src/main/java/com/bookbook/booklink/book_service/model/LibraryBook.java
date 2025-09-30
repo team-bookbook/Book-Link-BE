@@ -119,18 +119,16 @@ public class LibraryBook {
         }
     }
 
-/* todo : 대출 로직 등록 할 때 추가 수정
+    public void borrowCopy(LibraryBookCopy copy, LocalDateTime borrowedAt, LocalDateTime dueAt) {
+        if (copy.getStatus() != BookStatus.AVAILABLE) throw new CustomException(ErrorCode.N0T_AVAILABLE_COPY);
 
-    public void borrowCopy(LibraryBookCopy copy) {
-        if (!copiesList.contains(copy)) throw new IllegalArgumentException("Copy does not belong to this library book");
-        if (copy.getStatus() != BookStatus.AVAILABLE) throw new IllegalStateException("Copy is not available");
-
-        copy.setStatus(BookStatus.BORROWED);
+        copy.borrow(borrowedAt, dueAt);
         availableBooks--;
         borrowedCount++;
         totalBorrowCount++;
     }
 
+    /* todo : 대출 로직 등록 할 때 추가 수정
     public void returnCopy(LibraryBookCopy copy) {
         if (!copiesList.contains(copy)) throw new IllegalArgumentException("Copy does not belong to this library book");
         if (copy.getStatus() == BookStatus.AVAILABLE) throw new IllegalStateException("Copy is already available");

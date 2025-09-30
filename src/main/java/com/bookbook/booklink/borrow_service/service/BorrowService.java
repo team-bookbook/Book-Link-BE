@@ -1,12 +1,65 @@
 package com.bookbook.booklink.borrow_service.service;
 
-import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
+import com.bookbook.booklink.auth_service.model.Member;
+import com.bookbook.booklink.auth_service.service.MemberService;
+import com.bookbook.booklink.book_service.model.LibraryBook;
+import com.bookbook.booklink.book_service.model.LibraryBookCopy;
+import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
+import com.bookbook.booklink.book_service.service.LibraryBookService;
+import com.bookbook.booklink.borrow_service.model.Borrow;
+import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.borrow_service.repository.BorrowRepository;
+import com.bookbook.booklink.point_service.model.TransactionType;
+import com.bookbook.booklink.point_service.model.dto.request.PointUseDto;
+import com.bookbook.booklink.point_service.service.PointService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BorrowService {
     private final BorrowRepository borrowRepository;
+    private final MemberService memberService;
+    private final LibraryBookService libraryBookService;
+    private final PointService pointService;
+
+    @Transactional
+    public UUID borrowBook(UUID userId, String traceId, BorrowRequestDto borrowRequestDto) {
+        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book initiate borrowRequestDto={}", traceId, userId, borrowRequestDto);
+
+        UUID libraryBookId = borrowRequestDto.getLibraryBookId();
+        LocalDateTime borrowedAt = LocalDateTime.now();
+        LocalDateTime dueAt = borrowRequestDto.getExpectedReturnDate();
+
+        LibraryBook libraryBook = libraryBookService.getLibraryBookOrThrow(libraryBookId);
+        LibraryBookCopy copy = libraryBookService.getLibraryBookCopy(libraryBookId);
+        Member member = memberService.getMemberOrThrow(userId);
+
+        Borrow borrow = Borrow.createBorrow(copy, member, borrowedAt, dueAt);
+        libraryBook.borrowCopy(copy, borrowedAt, dueAt);
+
+        int deposit = copy.getLibraryBook().getDeposit();
+        if (deposit > 0) {
+            PointUseDto dto = PointUseDto.builder()
+                    .amount(deposit)
+                    .type(TransactionType.USE)
+                    .build();
+            pointService.usePoint(dto, UUID.fromString(traceId), userId);
+        }
+
+        // todo : 1대1 채팅창 open
+
+        Borrow savedBorrow = borrowRepository.save(borrow);
+        UUID borrowId = savedBorrow.getId();
+
+        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book success borrowId={}", traceId, userId, borrowId);
+        return borrowId;
+    }
 }
     

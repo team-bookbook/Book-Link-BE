@@ -49,7 +49,7 @@ public class LibraryBookService {
 
         // find book & library
         Book book = bookService.findById(bookRegisterDto.getId());
-        Library library = libraryService.findById(userId);
+        Library library = libraryService.findByUserId(userId);
 
         // todo : 에러났을 때 멱등성 체크 풀기
         LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);

@@ -175,4 +175,8 @@ public class LibraryService {
         return libraryRepository.findById(libraryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.LIBRARY_NOT_FOUND));
     }
+
+    public Library findByUserId(UUID userId) {
+        return libraryRepository.findByMemberId(userId);
+    }
 }

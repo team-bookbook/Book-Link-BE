@@ -2,7 +2,7 @@ package com.bookbook.booklink.auth_service.controller;
 
 import com.bookbook.booklink.auth_service.controller.docs.AuthApiDocs;
 import com.bookbook.booklink.auth_service.service.AuthService;
-import com.bookbook.booklink.common.exception.BaseResponse;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

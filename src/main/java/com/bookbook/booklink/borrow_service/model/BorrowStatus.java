@@ -1,4 +1,4 @@
-package com.bookbook.booklink.book_service.model;
+package com.bookbook.booklink.borrow_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

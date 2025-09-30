@@ -1,5 +1,6 @@
 package com.bookbook.booklink.book_service.model;
 
+import com.bookbook.booklink.borrow_service.model.BorrowStatus;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.auth_service.model.Member;

@@ -1,7 +1,6 @@
 package com.bookbook.booklink.borrow_service.controller;
 
-import com.bookbook.booklink.book_service.model.dto.response.BookResponseDto;
-import com.bookbook.booklink.borrow_service.controller.docs.BorrowRequestDto;
+import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -37,8 +36,8 @@ public class BorrowController {
         UUID borrowId = borrowService.borrowBook(userId, traceId, borrowRequestDto);
 
         log.info("[BorrowController] [traceId = {}, userId = {}] borrow book request success, borrowId={}",
-                traceId, userId, null);
-        return ResponseEntity.ok(BaseResponse.success(null));
+                traceId, userId, borrowId);
+        return ResponseEntity.ok(BaseResponse.success(borrowId));
     }
 }
     

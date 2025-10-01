@@ -47,7 +47,7 @@ public interface BorrowApiDocs {
             summary = "대여 확정 수락",
             description = "대여 확정 요청을 수락합니다."
     )
-    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
     @PatchMapping("/borrow-accept")
     public ResponseEntity<BaseResponse<Void>> acceptBorrowConfirmation(
             @RequestParam UUID borrowId,

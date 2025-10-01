@@ -71,6 +71,12 @@ public class BorrowService {
         Borrow borrow = borrowRepository.findById(borrowId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BORROW_NOT_FOUND));
 
+        UUID memberId = borrow.getMember().getId();
+        UUID libraryOwnerId = borrow.getLibraryBookCopy().getLibraryBook().getLibrary().getMember().getId();
+        if (!userId.equals(memberId) && !userId.equals(libraryOwnerId)) {
+            throw new CustomException(ErrorCode.BORROW_FORBIDDEN);
+        }
+
         borrow.setBorrowed();
 
         log.info("[BorrowService] [traceId = {}, userId = {}] accept borrow confirm success borrowId={}", traceId, userId, borrowId);

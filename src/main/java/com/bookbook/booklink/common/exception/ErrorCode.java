@@ -112,6 +112,8 @@ public enum ErrorCode {
     @Schema(description = "존재하지 않는 대여 기록입니다.")
     BORROW_NOT_FOUND(HttpStatus.BAD_REQUEST, "BORROW_NOT_FOUND_400", "존재하지 않는 대여 기록입니다."),
 
+    @Schema(description = "해당 대여 기록에 접근할 수 없는 유저입니다.")
+    BORROW_FORBIDDEN(HttpStatus.FORBIDDEN, "BORROW_FORBIDDEN_400", "해당 대여 기록에 접근할 수 없는 유저입니다."),
     /*
      * Review
      */

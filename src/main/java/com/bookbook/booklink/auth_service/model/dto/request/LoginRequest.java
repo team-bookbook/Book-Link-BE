@@ -11,9 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LoginRequest {
 
-    @Schema(description = "사용자 이메일", example = "test@test.com")
+    @Schema(description = "사용자 이메일", example = "test1@example.com")
     private String email;
 
-    @Schema(description = "사용자 비밀번호", example = "ghdrlfehd@gmail.com")
+    @Schema(description = "사용자 비밀번호", example = "Piltopgkm@1818")
     private String password;
 }

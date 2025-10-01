@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @ToString
@@ -27,4 +28,7 @@ public class LibraryBookUpdateDto {
     @Schema(description = "보증금", example = "1000")
     @Min(value = 0, message = "보증금 가격은 양수여야 합니다.")
     Integer deposit;
+
+    @Schema(description = "미리보기 이미지(null 이면 수정 x, 값이 있으면 기존 이미지 전체 교체)", example = "[https://bookbook-booklink.s3.ap-northeast-2.amazonaws.com/doinlkxjoi-di9u09/library-book-images/image.jpg]")
+    List<String> previewImages;
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -14,13 +15,16 @@ public class LibraryBookRegisterDto {
     @NotNull(message = "도서 ID는 필수입니다.")
     UUID id;
 
-    @Schema(description = "보유 권수", example = "2")
+    @Schema(description = "보유 권수", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "보유 권수는 필수입니다.")
     @Min(value = 0, message = "보유한 도서 개수는 양수여야 합니다.")
     Integer copies;
 
-    @Schema(description = "보증금", example = "1000")
+    @Schema(description = "보증금", example = "1000", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "보증금 가격은 필수입니다.")
     @Min(value = 0, message = "보증금 가격은 양수여야 합니다.")
     Integer deposit;
+
+    @Schema(description = "이미지 url 목록", example = "[https://bookbook-booklink.s3.ap-northeast-2.amazonaws.com/doinlkxjoi-di9u09/library-book-images/image.jpg]", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    List<String> previewImages;
 }

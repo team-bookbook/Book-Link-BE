@@ -48,8 +48,13 @@ public class LibraryBookService {
 
         // todo : 에러났을 때 멱등성 체크 풀기
         LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
-
-        // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인 o
+      
+        for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
+            libraryBook.addCopy();
+        }
+        for(String url : bookRegisterDto.getPreviewImages()) {
+            libraryBook.addImage(url);
+        }
 
         library.addBook();
 
@@ -70,6 +75,9 @@ public class LibraryBookService {
 
         if (updateBookDto.getCopies() != null) libraryBook.updateCopies(updateBookDto.getCopies());
         if (updateBookDto.getDeposit() != null) libraryBook.updateDeposit(updateBookDto.getDeposit());
+        if (updateBookDto.getPreviewImages() != null) {
+            libraryBook.updatePreviewImages(updateBookDto.getPreviewImages());
+        }
 
         log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBook={}", traceId, userId, libraryBook);
     }

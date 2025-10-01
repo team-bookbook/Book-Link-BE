@@ -36,7 +36,7 @@ public interface BorrowApiDocs {
             description = "대여 확정 요청 채팅을 전송합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
-    @PostMapping
+    @PostMapping("borrow-accept")
     public ResponseEntity<BaseResponse<Void>> requestBorrowConfirmation(
             @RequestParam UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,

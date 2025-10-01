@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -30,6 +27,18 @@ public interface BorrowApiDocs {
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> borrowBook(
             @Valid @RequestBody BorrowRequestDto borrowRequestDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "대여 확정 요청",
+            description = "대여 확정 요청 채팅을 전송합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PostMapping
+    public ResponseEntity<BaseResponse<Void>> requestBorrowConfirmation(
+            @RequestParam UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );

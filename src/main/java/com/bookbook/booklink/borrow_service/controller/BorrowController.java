@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import com.bookbook.booklink.borrow_service.service.BorrowService;
 
@@ -39,6 +36,24 @@ public class BorrowController implements BorrowApiDocs {
         log.info("[BorrowController] [traceId = {}, userId = {}] borrow book request success, borrowId={}",
                 traceId, userId, borrowId);
         return ResponseEntity.ok(BaseResponse.success(borrowId));
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> requestBorrowConfirmation(
+            @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] borrow confirm request received, borrowId={}",
+                traceId, userId, borrowId);
+
+        // todo 대여 확정을 요청하는 채팅 전송
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] borrow confirm request success, borrowId={}",
+                traceId, userId, borrowId);
+        return ResponseEntity.ok(BaseResponse.success(null));
     }
 }
     

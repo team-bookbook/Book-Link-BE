@@ -2,11 +2,10 @@ package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.LibraryBook;
-import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookSearchReqDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
-import com.bookbook.booklink.book_service.model.dto.response.LibraryBookListDto;
+import com.bookbook.booklink.book_service.model.dto.response.*;
 import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
 import com.bookbook.booklink.common.dto.PageResponse;
 import com.bookbook.booklink.common.event.LockEvent;
@@ -19,15 +18,10 @@ import com.bookbook.booklink.library_service.service.LibraryService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,11 +49,12 @@ public class LibraryBookService {
 
         // todo : 에러났을 때 멱등성 체크 풀기
         LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
-
-        // todo : 1:N 유저 맵핑 후, 해당 유저가 해당 ISBN 코드로 책을 등록한 적 있는지 확인
-
+      
         for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
             libraryBook.addCopy();
+        }
+        for(String url : bookRegisterDto.getPreviewImages()) {
+            libraryBook.addImage(url);
         }
 
         library.addBook();
@@ -80,6 +75,9 @@ public class LibraryBookService {
 
         if (updateBookDto.getCopies() != null) libraryBook.updateCopies(updateBookDto.getCopies());
         if (updateBookDto.getDeposit() != null) libraryBook.updateDeposit(updateBookDto.getDeposit());
+        if (updateBookDto.getPreviewImages() != null) {
+            libraryBook.updatePreviewImages(updateBookDto.getPreviewImages());
+        }
 
         log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBook={}", traceId, userId, libraryBook);
     }
@@ -163,6 +161,51 @@ public class LibraryBookService {
             throw new CustomException(ErrorCode.DATABASE_ERROR);
         }
         return libraryBookCopy;
+    }
+  
+    @Transactional(readOnly = true)
+    public LibraryBookDetailResDto getLibraryBookDetail(UUID libraryBookId) {
+        LibraryBook libraryBook = libraryBookRepository.findById(libraryBookId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+        Book book = libraryBook.getBook();
+        Library library = libraryBook.getLibrary();
+
+        LibraryDto libraryDto = LibraryDto.builder()
+                .id(library.getId())
+                .name(library.getName())
+                .latitude(library.getLatitude())
+                .longitude(library.getLongitude())
+                .build();
+        BookDetailDto bookDetailDto = BookDetailDto.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .publisher(book.getPublisher())
+                .category(book.getCategory())
+                .ISBN(book.getISBN())
+                .originalPrice(book.getOriginalPrice())
+                .publishedDate(book.getPublishedDate().toLocalDate())
+                .build();
+        LibraryBookDetailDto libraryBookDetailDto = LibraryBookDetailDto.builder()
+                .id(libraryBook.getId())
+                .copies(libraryBook.getCopies())
+                .deposit(libraryBook.getDeposit())
+                .borrowedCount(libraryBook.getBorrowedCount())
+                .borrowedStatus(LibraryBookStatus.AVAILABLE.toString())
+                /* .previewImages(libraryBook.getPreviewImageList()) */ // todo : image 관련 merge 되고 추가
+                .build();
+
+        // todo : libraryBook 의 대여 상태 판별
+        // 대여 예약 : 예상 반납 기한 리턴
+        // 대여 중 : 대여 id, 대여 상태, 반납 예정 일자 리턴
+        // 예약 중 : 예약 id, 예상 반납 기한 리턴
+
+
+        return LibraryBookDetailResDto.builder()
+                .bookDetailDto(bookDetailDto)
+                .libraryBookDetailDto(libraryBookDetailDto)
+                .libraryDto(libraryDto)
+                .build();
     }
 }
     

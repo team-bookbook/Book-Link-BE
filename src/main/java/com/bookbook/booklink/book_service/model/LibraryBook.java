@@ -88,16 +88,26 @@ public class LibraryBook {
     @Schema(description = "도서관이 보유한 각 권 개별 도서")
     private List<LibraryBookCopy> copiesList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "libraryBook", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @Schema(description = "미리보기 이미지 목록")
+    private List<PreviewImage> previewImageList = new ArrayList<>();
+
     public static LibraryBook toEntity(LibraryBookRegisterDto libraryBookRegisterDto, Book book
             , Library library
     ) {
-        return LibraryBook.builder()
-                .copies(libraryBookRegisterDto.getCopies())
-                .availableBooks(libraryBookRegisterDto.getCopies())
+        LibraryBook libraryBook = LibraryBook.builder()
+                .copies(0)
+                .availableBooks(0)
                 .deposit(libraryBookRegisterDto.getDeposit())
                 .book(book)
                 .library(library)
                 .build();
+
+        for (int i = 0; i < libraryBookRegisterDto.getCopies(); i++) {
+            libraryBook.addCopy();
+        }
+        return libraryBook;
     }
 
     public void addCopy() {
@@ -118,7 +128,12 @@ public class LibraryBook {
             availableBooks--;
         }
     }
-
+    public void addImage(String url) {
+        PreviewImage image = PreviewImage.toEntity(url);
+        previewImageList.add(image);
+        image.setLibraryBook(this);
+    }
+  
     public void borrowCopy(LibraryBookCopy copy, LocalDateTime borrowedAt, LocalDateTime dueAt) {
         if (copy.getStatus() != BookStatus.AVAILABLE) throw new CustomException(ErrorCode.N0T_AVAILABLE_COPY);
 
@@ -180,5 +195,14 @@ public class LibraryBook {
     private boolean hasBorrowedCopies() {
         return getCopiesList().stream()
                 .anyMatch(copy -> copy.getStatus() != BookStatus.AVAILABLE);
+    }
+
+    public void updatePreviewImages(List<String> previewImages) {
+        previewImageList.forEach(img -> img.setLibraryBook(null));
+        previewImageList.clear();
+
+        if (previewImages != null) {
+            previewImages.forEach(this::addImage);
+        }
     }
 }

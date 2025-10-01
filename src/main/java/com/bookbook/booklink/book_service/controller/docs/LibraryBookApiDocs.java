@@ -3,16 +3,17 @@ package com.bookbook.booklink.book_service.controller.docs;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookSearchReqDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;
+import com.bookbook.booklink.book_service.model.dto.response.LibraryBookDetailResDto;
 import com.bookbook.booklink.book_service.model.dto.response.LibraryBookListDto;
+import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.dto.PageResponse;
 import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -72,5 +73,15 @@ public interface LibraryBookApiDocs {
     public ResponseEntity<BaseResponse<PageResponse<LibraryBookListDto>>> getLibraryBookList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @ModelAttribute LibraryBookSearchReqDto request
+    );
+
+    @Operation(
+            summary = "도서 상세 조회",
+            description = "도서관에 등록된 도서의 상세 정보를 조회합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BOOK_NOT_FOUND})
+    @GetMapping("/{libraryBookId}")
+    public ResponseEntity<BaseResponse<LibraryBookDetailResDto>> getLibraryBookDetail(
+            @NotNull(message = "도서관별 도서 아이디는 필수입니다.") @PathVariable UUID libraryBookId
     );
 }

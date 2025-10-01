@@ -132,7 +132,19 @@ public enum ErrorCode {
     PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT_AMOUNT_MISMATCH_400", "잘못된 결제 요청입니다."),
     INVALID_API_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, "INVALID_API_TOKEN_500", "포트원 서버의 토큰이 유효하지 않습니다."),
     PAYMENT_CANCEL_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT_CANCEL_FAILED_400", "결제 취소 요청이 실패했습니다."),
-    JSON_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "JSON_PARSING_ERROR_500", "JSON 파싱이 실패했습니다.");
+    JSON_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "JSON_PARSING_ERROR_500", "JSON 파싱이 실패했습니다."),
+
+
+    BOARD_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOARD_NOT_FOUND_400", "게시글을 찾을 수 없습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "COMMENT_NOT_FOUND_400", "댓글을 찾을 수 없습니다."),
+    PARENT_COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PARENT_COMMENT_NOT_FOUND_400", "상위 댓글을 찾을 수 없습니다."),
+    TOO_MANY_PARENT(HttpStatus.BAD_REQUEST, "TOO_MANY_PARENT_400", "상위 댓글은 하나여야합니다."),
+    BOARD_ALREADY_LIKES(HttpStatus.BAD_REQUEST, "BOARD_ALREADY_LIKES_400", "이미 좋아요를 누른 게시글입니다."),
+    BOARD_NOT_LIKED(HttpStatus.BAD_REQUEST, "BOARD_NOT_LIKED_400", "좋아요를 누르지 않은 게시글입니다."),
+    COMMENT_ALREADY_LIKES(HttpStatus.BAD_REQUEST, "COMMENT_ALREADY_LIKES_400", "이미 좋아요를 누른 댓글입니다."),
+    COMMENT_NOT_LIKED(HttpStatus.BAD_REQUEST, "COMMENT_NOT_LIKED_400", "좋아요를 누르지 않은 댓글입니다."),
+    COMMENT_DELETED(HttpStatus.BAD_REQUEST, "COMMENT_DELETED_400", "삭제된 댓글입니다."),
+    BOARD_DELETED(HttpStatus.BAD_REQUEST, "BOARD_DELETED_400", "삭제된 게시글 입니다");
 
     private final HttpStatus httpStatus;
     @Schema(description = "에러 코드", example = "UNKNOWN_ERROR_500", implementation = ErrorCode.class)

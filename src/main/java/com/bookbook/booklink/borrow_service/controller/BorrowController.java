@@ -1,0 +1,44 @@
+package com.bookbook.booklink.borrow_service.controller;
+
+import com.bookbook.booklink.borrow_service.controller.docs.BorrowApiDocs;
+import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
+import com.bookbook.booklink.common.dto.BaseResponse;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import lombok.RequiredArgsConstructor;
+import com.bookbook.booklink.borrow_service.service.BorrowService;
+
+import java.util.UUID;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+public class BorrowController implements BorrowApiDocs {
+    private final BorrowService borrowService;
+
+    @Override
+    public ResponseEntity<BaseResponse<UUID>> borrowBook(
+            @Valid @RequestBody BorrowRequestDto borrowRequestDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] borrow book request received, borrowRequestDto={}",
+                traceId, userId, borrowRequestDto);
+
+        UUID borrowId = borrowService.borrowBook(userId, traceId, borrowRequestDto);
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] borrow book request success, borrowId={}",
+                traceId, userId, borrowId);
+        return ResponseEntity.ok(BaseResponse.success(borrowId));
+    }
+}
+    

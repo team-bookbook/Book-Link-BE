@@ -103,6 +103,9 @@ public enum ErrorCode {
     @Schema(description = "대여중인 도서가 있을 때는 삭제할 수 없습니다.")
     CANNOT_DELETE_BORROWED_BOOK(HttpStatus.BAD_REQUEST, "BOOK_BAD_REQUEST_400", "대여중인 도서가 있을 때는 삭제할 수 없습니다."),
 
+    @Schema(description = "책이 대여가능한 상태가 아닙니다.")
+    N0T_AVAILABLE_COPY(HttpStatus.INTERNAL_SERVER_ERROR, "COPY_INTERNAL_SERVER_ERROR_500", "책이 대여가능한 상태가 아닙니다."),
+
     /*
      * Review
      */

@@ -1,5 +1,6 @@
-package com.bookbook.booklink.book_service.model;
+package com.bookbook.booklink.borrow_service.model;
 
+import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.auth_service.model.Member;
@@ -32,9 +33,9 @@ public class Borrow {
     @Column(nullable = false)
     @Builder.Default
     @Schema(description = "현재 대출 상태", example = "BORROWED", requiredMode = Schema.RequiredMode.REQUIRED)
-    private BorrowStatus status = BorrowStatus.BORROWED;
+    private BorrowStatus status = BorrowStatus.REQUESTED;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @Schema(description = "대여일", example = "2025-09-22T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime borrowedAt;
 
@@ -42,10 +43,10 @@ public class Borrow {
     @Schema(description = "반납 예정일", example = "2025-09-29T12:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime dueAt;
 
-    @Column(nullable = true)
     @Schema(description = "실제 반납일", example = "2025-09-30T12:00:00", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private LocalDateTime returnedAt;
 
+    @Schema(description = "반납 이미지", example = "반납 이미지", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -65,10 +66,8 @@ public class Borrow {
                 .build();
     }
 
-    public void borrow(LocalDateTime borrowedAt, LocalDateTime dueAt) {
+    public void setBorrowed() {
         this.status = BorrowStatus.BORROWED;
-        this.borrowedAt = borrowedAt;
-        this.dueAt = dueAt;
     }
 
     public void returnBook(LocalDateTime returnedAt, String imageUrl) {

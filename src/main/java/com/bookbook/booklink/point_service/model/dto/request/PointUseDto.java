@@ -4,9 +4,11 @@ import com.bookbook.booklink.point_service.model.TransactionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @Schema(description = "포인트 사용 요청 DTO - 회원의 포인트 사용(차감)을 위한 데이터 전송 객체")
 public class PointUseDto {
 

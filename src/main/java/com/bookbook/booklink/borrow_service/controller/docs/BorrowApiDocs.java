@@ -42,4 +42,16 @@ public interface BorrowApiDocs {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
+
+    @Operation(
+            summary = "대여 확정 수락",
+            description = "대여 확정 요청을 수락합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PatchMapping("/borrow-accept")
+    public ResponseEntity<BaseResponse<Void>> acceptBorrowConfirmation(
+            @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
 }

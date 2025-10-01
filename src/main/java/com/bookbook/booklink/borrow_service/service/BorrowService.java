@@ -9,6 +9,8 @@ import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.borrow_service.model.Borrow;
 import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.borrow_service.repository.BorrowRepository;
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.point_service.model.TransactionType;
 import com.bookbook.booklink.point_service.model.dto.request.PointUseDto;
 import com.bookbook.booklink.point_service.service.PointService;
@@ -60,6 +62,19 @@ public class BorrowService {
 
         log.info("[BorrowService] [traceId = {}, userId = {}] borrow book success borrowId={}", traceId, userId, borrowId);
         return borrowId;
+    }
+
+    @Transactional
+    public void acceptBorrowConfirm(UUID userId, String traceId, UUID borrowId) {
+        log.info("[BorrowService] [traceId = {}, userId = {}] accept borrow confirm initiate borrowId={}", traceId, userId, borrowId);
+
+        Borrow borrow = borrowRepository.findById(borrowId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BORROW_NOT_FOUND));
+
+        borrow.setBorrowed();
+
+        log.info("[BorrowService] [traceId = {}, userId = {}] accept borrow confirm success borrowId={}", traceId, userId, borrowId);
+
     }
 }
     

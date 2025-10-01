@@ -107,6 +107,12 @@ public enum ErrorCode {
     N0T_AVAILABLE_COPY(HttpStatus.INTERNAL_SERVER_ERROR, "COPY_INTERNAL_SERVER_ERROR_500", "책이 대여가능한 상태가 아닙니다."),
 
     /*
+    * Borrow
+    */
+    @Schema(description = "존재하지 않는 대여 기록입니다.")
+    BORROW_NOT_FOUND(HttpStatus.BAD_REQUEST, "BORROW_NOT_FOUND_400", "존재하지 않는 대여 기록입니다."),
+
+    /*
      * Review
      */
     @Schema(description = "존재하지 않는 리뷰입니다.")

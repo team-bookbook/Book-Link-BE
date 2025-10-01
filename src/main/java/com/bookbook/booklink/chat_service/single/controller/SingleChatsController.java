@@ -7,8 +7,10 @@ import com.bookbook.booklink.chat_service.single.model.dto.request.SingleRoomReq
 import com.bookbook.booklink.chat_service.single.model.dto.response.SingleRoomResDto;
 import com.bookbook.booklink.chat_service.single.service.SingleChatsService;
 import com.bookbook.booklink.common.dto.BaseResponse;
+import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,10 +35,13 @@ public class SingleChatsController implements SingleChatApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<MessageResDto>> sendMessage(
+            @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody MessageReqDto dto
     ) {
-        MessageResDto reponse = singleChatsService.saveChatMessages(dto);
-        return ResponseEntity.ok(BaseResponse.success(reponse));
+        System.out.println(user.getMember().getId());
+        MessageResDto response =
+                singleChatsService.saveChatMessages(user.getMember().getId(),dto);
+        return ResponseEntity.ok(BaseResponse.success(response));
     }
 
     @Override

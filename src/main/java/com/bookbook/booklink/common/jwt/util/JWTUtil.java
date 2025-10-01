@@ -1,6 +1,7 @@
 package com.bookbook.booklink.common.jwt.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -62,6 +63,14 @@ public class JWTUtil {
             return expiration.before(new Date());
         } catch (ExpiredJwtException e) {
             return true;
+        }
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            return !isExpired(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
         }
     }
 }

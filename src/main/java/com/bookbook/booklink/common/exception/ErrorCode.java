@@ -64,7 +64,13 @@ public enum ErrorCode {
     @Schema(description = "RefreshToken이 만료되었습니다.")
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "EXPIRED_REFRESH_TOKEN_401", "RefreshToken이 만료되었습니다."),
 
-
+    /*
+     * Chatting
+     */
+    CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT_ROOM_NOT_FOUND_400", "채팅방이 존재하지 않습니다."),
+    CHAT_ROOM_FORBIDDEN(HttpStatus.FORBIDDEN, "CHAT_ROOM_FORBIDDEN_400", "채팅방 참여자가 아닙니다."),
+    CHAT_ROOM_CREATE_CONFLICT(HttpStatus.CONFLICT, "CHAT_ROOM_CREATE_CONFLICT_400", "동일한 채팅방이 이미 존재합니다."),
+    MESSAGE_SENDER_MISMATCH(HttpStatus.BAD_REQUEST, "MESSAGE_SENDER_MISMATCH_400", "보내는 사용자 정보가 유효하지 않습니다."),
     /*
      * Library
      */

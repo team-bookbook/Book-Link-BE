@@ -68,11 +68,11 @@ public class ChatMessages {
     @Builder.Default
     private List<MessageAttachments> attachments = new ArrayList<>();
 
-    public static ChatMessages saveMessage(MessageReqDto dto) {
+    public static ChatMessages saveMessage(UUID senderId, MessageReqDto dto) {
         // 1. 먼저 메시지 엔티티 생성
         ChatMessages message = ChatMessages.builder()
                 .chatId(dto.getChatId())
-                .senderId(dto.getSenderId())
+                .senderId(senderId)
                 .text(dto.getText())
                 .status(MessageStatus.SENT)
                 .type(MessageType.TEXT)

@@ -30,26 +30,9 @@ public class ChatMessagesService {
                 .map(MessageResDto::fromEntity)
                 .toList();
     }
-
-    /**
-     * 새로운 채팅 메시지를 저장합니다.
-     * <p>
-     * - 요청 DTO를 엔티티로 변환하여 저장합니다. <br>
-     * - 저장된 엔티티를 응답 DTO로 변환하여 반환합니다.
-     *
-     * @param dto 메시지 요청 DTO
-     * @return 저장된 메시지 응답 DTO
-     */
     @Transactional
-    public MessageResDto saveMessages(MessageReqDto dto) {
-        ChatMessages chatMessages = ChatMessages.saveMessage(dto);
-        ChatMessages saved = chatMessagesRepository.save(chatMessages);
-        return MessageResDto.fromEntity(saved);
-    }
-
-    @Transactional
-    public ChatMessages saveMessagesEntity(MessageReqDto dto) {
-        ChatMessages chatMessages = ChatMessages.saveMessage(dto);
+    public ChatMessages saveMessagesEntity(UUID senderId,MessageReqDto dto) {
+        ChatMessages chatMessages = ChatMessages.saveMessage(senderId,dto);
         return chatMessagesRepository.save(chatMessages);
     }
 

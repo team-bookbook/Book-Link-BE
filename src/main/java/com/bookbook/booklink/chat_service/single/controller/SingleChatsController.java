@@ -38,9 +38,10 @@ public class SingleChatsController implements SingleChatApiDocs {
             @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody MessageReqDto dto
     ) {
-        MessageResDto reponse =
-                singleChatsService.saveChatMessages(dto.getChatId(), user.getMember().getId(), dto);
-        return ResponseEntity.ok(BaseResponse.success(reponse));
+        System.out.println(user.getMember().getId());
+        MessageResDto response =
+                singleChatsService.saveChatMessages(user.getMember().getId(),dto);
+        return ResponseEntity.ok(BaseResponse.success(response));
     }
 
     @Override

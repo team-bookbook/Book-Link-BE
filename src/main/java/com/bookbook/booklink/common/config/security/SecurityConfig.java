@@ -56,6 +56,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/member/signup", "/api/login", "/api/token/reissue").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
+                        .requestMatchers(
+                                "/chat-test.html", "/ws/**", "/favicon.ico",
+                                "/css/**", "/js/**", "/images/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilter(jwtAuthenticationFilter)

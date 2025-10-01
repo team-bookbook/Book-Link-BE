@@ -49,26 +49,20 @@ public class SingleChatsService {
     }
 
 
-    /**
-     * 새로운 메시지를 저장합니다.
-     * <p>
-     * - 내부적으로 {@link ChatMessagesService#saveMessages(MessageReqDto)} 호출합니다.
-     *
-     * @param dto 메시지 요청 DTO
-     * @return 저장된 메시지 응답 DTO
-     */
-    @Transactional
-    public MessageResDto saveChatMessages(UUID chatId, UUID senderId, MessageReqDto dto) {
-        SingleChats room = singleChatsRepository.findById(chatId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
+    @Transactional
+    public MessageResDto saveChatMessages(UUID senderId, MessageReqDto dto) {
+        System.out.println("📩 saveChatMessages 호출됨: senderId=" + senderId + ", chatId=" + dto.getChatId());
+        SingleChats room = singleChatsRepository.findById(dto.getChatId())
+                .orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+        System.out.println("✅ room 조회 성공: roomId=" + room.getId());
         if (!room.hasMember(senderId)) {
+            System.out.println("❌ senderId가 room 멤버 아님!");
             throw new CustomException(ErrorCode.CHAT_ROOM_FORBIDDEN);
         }
 
-        // senderId 강제 세팅
-        MessageReqDto safeDto = new MessageReqDto(chatId, senderId, dto.getText(), dto.getAttachments());
-        ChatMessages saved = chatMessagesService.saveMessagesEntity(safeDto);
+        ChatMessages saved = chatMessagesService.saveMessagesEntity(senderId,dto);
+        System.out.println("💾 message 저장됨: id=" + saved.getId());
 
         room.updateLastMessage(saved.getText(), saved.getSentAt());
         singleChatsRepository.save(room);

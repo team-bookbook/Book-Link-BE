@@ -66,4 +66,16 @@ public interface BorrowApiDocs {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
+
+    @Operation(
+            summary = "반납 확정 요청",
+            description = "반납 확정 요청 채팅을 전송합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PostMapping("return-accept")
+    public ResponseEntity<BaseResponse<Void>> requestReturnBookConfirmation(
+            @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
 }

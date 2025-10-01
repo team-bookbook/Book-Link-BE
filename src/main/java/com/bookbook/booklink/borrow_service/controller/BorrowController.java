@@ -56,6 +56,7 @@ public class BorrowController implements BorrowApiDocs {
         return ResponseEntity.ok(BaseResponse.success(null));
     }
 
+    @Override
     public ResponseEntity<BaseResponse<Void>> acceptBorrowConfirmation(
             @RequestParam UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -73,6 +74,7 @@ public class BorrowController implements BorrowApiDocs {
         return ResponseEntity.ok(BaseResponse.success(null));
     }
 
+    @Override
     public ResponseEntity<BaseResponse<Void>> suspendBorrow(
             @RequestParam UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -89,6 +91,25 @@ public class BorrowController implements BorrowApiDocs {
                 traceId, userId, borrowId);
         return ResponseEntity.ok(BaseResponse.success(null));
 
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> requestReturnBookConfirmation(
+            @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] return book accept request received, borrowId={}",
+                traceId, userId, borrowId);
+
+        // todo 책 반납 확정 요청
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] return book accept request success, borrowId={}",
+                traceId, userId, borrowId);
+
+        return ResponseEntity.ok(BaseResponse.success(null));
     }
 }
     

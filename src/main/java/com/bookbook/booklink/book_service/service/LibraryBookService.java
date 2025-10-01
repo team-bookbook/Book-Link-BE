@@ -60,6 +60,9 @@ public class LibraryBookService {
         for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
             libraryBook.addCopy();
         }
+        for(String url : bookRegisterDto.getPreviewImages()) {
+            libraryBook.addImage(url);
+        }
 
         library.addBook();
 
@@ -80,6 +83,9 @@ public class LibraryBookService {
 
         if (updateBookDto.getCopies() != null) libraryBook.updateCopies(updateBookDto.getCopies());
         if (updateBookDto.getDeposit() != null) libraryBook.updateDeposit(updateBookDto.getDeposit());
+        if (updateBookDto.getPreviewImages() != null) {
+            libraryBook.updatePreviewImages(updateBookDto.getPreviewImages());
+        }
 
         log.info("[LibraryBookService] [traceId = {}, userId = {}] update library book success libraryBook={}", traceId, userId, libraryBook);
     }

@@ -72,5 +72,23 @@ public class BorrowController implements BorrowApiDocs {
                 traceId, userId, borrowId);
         return ResponseEntity.ok(BaseResponse.success(null));
     }
+
+    public ResponseEntity<BaseResponse<Void>> suspendBorrow(
+            @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] suspend borrow received, borrowId={}",
+                traceId, userId, borrowId);
+
+        borrowService.suspendBorrow(userId, traceId, borrowId);
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] accept borrow success, borrowId={}",
+                traceId, userId, borrowId);
+        return ResponseEntity.ok(BaseResponse.success(null));
+
+    }
 }
     

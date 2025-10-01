@@ -114,6 +114,10 @@ public enum ErrorCode {
 
     @Schema(description = "해당 대여 기록에 접근할 수 없는 유저입니다.")
     BORROW_FORBIDDEN(HttpStatus.FORBIDDEN, "BORROW_FORBIDDEN_400", "해당 대여 기록에 접근할 수 없는 유저입니다."),
+
+    @Schema(description = "대여 중지가 불가능한 상태입니다.")
+    INVALID_BORROW_STATUS(HttpStatus.BAD_REQUEST, "BORROW_INVALID_STATUS_400", "대여 중지가 불가능한 상태입니다."),
+
     /*
      * Review
      */

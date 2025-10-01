@@ -7,6 +7,7 @@ import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.borrow_service.model.Borrow;
+import com.bookbook.booklink.borrow_service.model.BorrowStatus;
 import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.borrow_service.repository.BorrowRepository;
 import com.bookbook.booklink.common.exception.CustomException;
@@ -80,6 +81,29 @@ public class BorrowService {
         borrow.setBorrowed();
 
         log.info("[BorrowService] [traceId = {}, userId = {}] accept borrow confirm success borrowId={}", traceId, userId, borrowId);
+
+    }
+
+    @Transactional
+    public void suspendBorrow(UUID userId, String traceId, UUID borrowId) {
+        log.info("[BorrowService] [traceId = {}, userId = {}] suspend borrow initiate borrowId={}", traceId, userId, borrowId);
+
+        Borrow borrow = borrowRepository.findById(borrowId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BORROW_NOT_FOUND));
+
+        if (!borrow.getStatus().equals(BorrowStatus.REQUESTED)) {
+            throw new CustomException(ErrorCode.INVALID_BORROW_STATUS);
+        }
+
+        UUID memberId = borrow.getMember().getId();
+        UUID libraryOwnerId = borrow.getLibraryBookCopy().getLibraryBook().getLibrary().getMember().getId();
+        if (!userId.equals(memberId) && !userId.equals(libraryOwnerId)) {
+            throw new CustomException(ErrorCode.BORROW_FORBIDDEN);
+        }
+
+        borrow.suspendBorrow();
+
+        log.info("[BorrowService] [traceId = {}, userId = {}] suspend borrow success borrowId={}", traceId, userId, borrowId);
 
     }
 }

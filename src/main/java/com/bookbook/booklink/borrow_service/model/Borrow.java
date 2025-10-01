@@ -88,4 +88,9 @@ public class Borrow {
     public void overdueBook() {
         this.status = BorrowStatus.OVERDUE;
     }
+
+    public void suspendBorrow() {
+        this.status = BorrowStatus.SUSPENDED;
+        this.libraryBookCopy.returnBook();
+    }
 }

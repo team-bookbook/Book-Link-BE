@@ -54,4 +54,16 @@ public interface BorrowApiDocs {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
+
+    @Operation(
+            summary = "대여 중단",
+            description = "대여를 중단합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
+    @PatchMapping("/borrow-suspend")
+    public ResponseEntity<BaseResponse<Void>> suspendBorrow(
+            @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
 }

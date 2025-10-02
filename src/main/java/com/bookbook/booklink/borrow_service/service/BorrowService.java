@@ -91,7 +91,9 @@ public class BorrowService {
         Borrow borrow = borrowRepository.findById(borrowId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BORROW_NOT_FOUND));
 
-        if (!borrow.getStatus().equals(BorrowStatus.REQUESTED)) {
+        if (!(borrow.getStatus().equals(BorrowStatus.BORROWED)
+                || borrow.getStatus().equals(BorrowStatus.EXTENDED)
+                || borrow.getStatus().equals(BorrowStatus.OVERDUE))) {
             throw new CustomException(ErrorCode.INVALID_BORROW_STATUS);
         }
 
@@ -105,6 +107,33 @@ public class BorrowService {
 
         log.info("[BorrowService] [traceId = {}, userId = {}] suspend borrow success borrowId={}", traceId, userId, borrowId);
 
+    }
+
+    @Transactional
+    public void acceptReturnBookConfirm(UUID borrowId, String imageUrl, UUID userId, String traceId) {
+        log.info("[BorrowService] [traceId = {}, userId = {}] return book confirm accept initiate borrowId={}", traceId, userId, borrowId);
+
+        Borrow borrow = borrowRepository.findById(borrowId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BORROW_NOT_FOUND));
+
+        if (!(borrow.getStatus().equals(BorrowStatus.BORROWED)
+        || borrow.getStatus().equals(BorrowStatus.EXTENDED)
+        || borrow.getStatus().equals(BorrowStatus.OVERDUE))) {
+            throw new CustomException(ErrorCode.INVALID_BORROW_STATUS);
+        }
+
+        UUID libraryOwnerId = borrow.getLibraryBookCopy().getLibraryBook().getLibrary().getMember().getId();
+        if (!userId.equals(libraryOwnerId)) {
+            throw new CustomException(ErrorCode.BORROW_FORBIDDEN);
+        }
+
+        LibraryBookCopy copy = borrow.getLibraryBookCopy();
+        LibraryBook libraryBook = copy.getLibraryBook();
+
+        borrow.returnBook(LocalDateTime.now(), imageUrl);
+        libraryBook.returnCopy(copy);
+
+        log.info("[BorrowService] [traceId = {}, userId = {}] return book confirm accept success borrowId={}", traceId, userId, borrowId);
     }
 }
     

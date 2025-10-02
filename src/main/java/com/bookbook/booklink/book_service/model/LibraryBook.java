@@ -128,16 +128,11 @@ public class LibraryBook {
         totalBorrowCount++;
     }
 
-    /* todo : 대출 로직 등록 할 때 추가 수정
     public void returnCopy(LibraryBookCopy copy) {
-        if (!copiesList.contains(copy)) throw new IllegalArgumentException("Copy does not belong to this library book");
-        if (copy.getStatus() == BookStatus.AVAILABLE) throw new IllegalStateException("Copy is already available");
-
-        copy.setStatus(BookStatus.AVAILABLE);
+        copy.returnBook();
         availableBooks++;
         borrowedCount--;
     }
-*/
 
     public void updateCopies(int targetCopies) {
         int currentCopies = this.copies;

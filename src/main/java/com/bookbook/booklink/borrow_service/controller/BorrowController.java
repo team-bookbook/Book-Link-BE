@@ -111,5 +111,26 @@ public class BorrowController implements BorrowApiDocs {
 
         return ResponseEntity.ok(BaseResponse.success(null));
     }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> acceptReturnBookConfirmation(
+            @RequestParam UUID borrowId,
+            @RequestParam String imageUrl,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] return book confirm accept received, borrowId={}",
+                traceId, userId, borrowId);
+
+        borrowService.acceptReturnBookConfirm(borrowId, imageUrl, userId, traceId);
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] return book confirm accept success, borrowId={}",
+                traceId, userId, borrowId);
+
+        return ResponseEntity.ok(BaseResponse.success(null));
+
+    }
 }
     

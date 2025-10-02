@@ -85,7 +85,8 @@ public interface BorrowApiDocs {
             summary = "반납 수락",
             description = "도서관 주인이 반납 확정 요청을 수락합니다."
     )
-    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.INVALID_BORROW_STATUS
+    , ErrorCode.BORROW_FORBIDDEN})
     @PostMapping("return-accept")
     public ResponseEntity<BaseResponse<Void>> acceptReturnBookConfirmation(
             @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,

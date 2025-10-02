@@ -13,4 +13,6 @@ import com.bookbook.booklink.borrow_service.model.Borrow;
 public interface BorrowRepository extends JpaRepository<Borrow, UUID> {
 
     List<Borrow> findAllByStatusInAndDueAtBefore(List<BorrowStatus> borrowed, LocalDateTime now);
+
+    List<Borrow> findAllByStatusAndBorrowedAtBefore(BorrowStatus borrowStatus, LocalDateTime threeDaysAgo);
 }

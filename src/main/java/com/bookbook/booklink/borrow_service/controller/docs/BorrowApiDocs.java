@@ -8,6 +8,8 @@ import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +38,9 @@ public interface BorrowApiDocs {
             description = "대여 확정 요청 채팅을 전송합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
-    @PostMapping("borrow-accept")
+    @PostMapping("borrow-confirm-request")
     public ResponseEntity<BaseResponse<Void>> requestBorrowConfirmation(
-            @RequestParam UUID borrowId,
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -50,7 +52,7 @@ public interface BorrowApiDocs {
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
     @PatchMapping("/borrow-accept")
     public ResponseEntity<BaseResponse<Void>> acceptBorrowConfirmation(
-            @RequestParam UUID borrowId,
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -62,7 +64,7 @@ public interface BorrowApiDocs {
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
     @PatchMapping("/borrow-suspend")
     public ResponseEntity<BaseResponse<Void>> suspendBorrow(
-            @RequestParam UUID borrowId,
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -72,9 +74,22 @@ public interface BorrowApiDocs {
             description = "반납 확정 요청 채팅을 전송합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
-    @PostMapping("return-accept")
+    @PostMapping("return-confirm-request")
     public ResponseEntity<BaseResponse<Void>> requestReturnBookConfirmation(
-            @RequestParam UUID borrowId,
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "반납 수락",
+            description = "도서관 주인이 반납 확정 요청을 수락합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PostMapping("return-accept")
+    public ResponseEntity<BaseResponse<Void>> acceptReturnBookConfirmation(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @NotBlank(message = "반납 인증 사진은 필수입니다.") @RequestParam String imageUrl,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );

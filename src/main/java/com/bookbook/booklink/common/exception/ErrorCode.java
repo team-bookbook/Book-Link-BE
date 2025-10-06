@@ -150,7 +150,19 @@ public enum ErrorCode {
     COMMENT_ALREADY_LIKES(HttpStatus.BAD_REQUEST, "COMMENT_ALREADY_LIKES_400", "이미 좋아요를 누른 댓글입니다."),
     COMMENT_NOT_LIKED(HttpStatus.BAD_REQUEST, "COMMENT_NOT_LIKED_400", "좋아요를 누르지 않은 댓글입니다."),
     COMMENT_DELETED(HttpStatus.BAD_REQUEST, "COMMENT_DELETED_400", "삭제된 댓글입니다."),
-    BOARD_DELETED(HttpStatus.BAD_REQUEST, "BOARD_DELETED_400", "삭제된 게시글 입니다");
+    BOARD_DELETED(HttpStatus.BAD_REQUEST, "BOARD_DELETED_400", "삭제된 게시글 입니다"),
+
+
+    GROUP_NOT_FOUND(HttpStatus.BAD_REQUEST, "GROUP_NOT_FOUND_400", "모임이 존재하지 않습니다."),
+    PARTICIPANT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PARTICIPANT_NOT_FOUND_400", "해당 모임의 참여자가 아닙니다."),
+    HOST_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "HOST_CANNOT_LEAVE_400", "모임장은 탈퇴할 수 없습니다."),
+    ALREADY_GROUP_MEMBER(HttpStatus.BAD_REQUEST, "ALREADY_GROUP_MEMBER_400", "이미 참여한 멤버입니다."),
+    GROUP_IS_FULL(HttpStatus.BAD_REQUEST, "GROUP_IS_FULL_400", "모임의 정원이 초과되었습니다."),
+    INVALID_GROUP_PASSWORD(HttpStatus.BAD_REQUEST, "INVALID_GROUP_PASSWORD_400", "모임 비밀번호가 틀렸습니다."),
+    NOT_GROUP_MEMBER(HttpStatus.BAD_REQUEST, "NOT_GROUP_MEMBER_400", "그룹 멤버가 아닙니다."),
+    SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST, "SCHEDULE_NOT_FOUND_400", "일정이 존재하지 않습니다."),
+    NOT_SCHEDULE_PARTICIPANT(HttpStatus.BAD_REQUEST, "NOT_SCHEDULE_MEMBER_400", "일정에 참여하지 않은 사용자입니다."),
+    ALREADY_SCHEDULE_PARTICIPANT(HttpStatus.BAD_REQUEST, "ALREADY_SCHEDULE_PARTICIPANT_400", "이미 일정에 참여한 사용자입니다.");
 
     private final HttpStatus httpStatus;
     @Schema(description = "에러 코드", example = "UNKNOWN_ERROR_500", implementation = ErrorCode.class)

@@ -5,6 +5,8 @@ import com.bookbook.booklink.auth_service.code.Role;
 import com.bookbook.booklink.auth_service.code.Status;
 import com.bookbook.booklink.auth_service.model.dto.request.SignUpReqDto;
 import com.bookbook.booklink.auth_service.model.dto.request.UpdateReqDto;
+import com.bookbook.booklink.community.group_service.model.GroupMember;
+import com.bookbook.booklink.community.schedule_service.model.GroupSchedule;
 import com.bookbook.booklink.library_service.model.Library;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -17,6 +19,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -103,6 +107,14 @@ public class Member {
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Library library;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<GroupMember> groupList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<GroupSchedule> scheduleList = new ArrayList<>();
 
     public static Member ofLocalSignup(SignUpReqDto req, String encodedPassword) {
         return Member.builder()

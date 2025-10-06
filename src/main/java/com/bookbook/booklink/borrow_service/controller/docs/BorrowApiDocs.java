@@ -21,8 +21,8 @@ import java.util.UUID;
 public interface BorrowApiDocs {
 
     @Operation(
-            summary = "도서 대여",
-            description = "도서를 대여합니다."
+            summary = "도서 한 개 대여",
+            description = "도서 한 개를 대여합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BOOK_NOT_FOUND,
             ErrorCode.USER_NOT_FOUND, ErrorCode.N0T_AVAILABLE_COPY})

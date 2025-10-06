@@ -114,7 +114,8 @@ public interface BorrowApiDocs {
             summary = "대여 연장 수락",
             description = "대여 연장을 수락합니다."
     )
-    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND,
+            ErrorCode.INVALID_BORROW_STATUS, ErrorCode.BORROW_FORBIDDEN})
     @PostMapping("borrow-extend-request")
     public ResponseEntity<BaseResponse<Void>> acceptBorrowExtend(
             @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,

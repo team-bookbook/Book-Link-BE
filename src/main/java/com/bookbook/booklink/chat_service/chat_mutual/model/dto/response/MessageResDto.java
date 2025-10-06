@@ -44,16 +44,17 @@ public class MessageResDto {
     public static MessageResDto fromEntity(ChatMessages entity) {
         return MessageResDto.builder()
                 .chatId(entity.getChatId())
-                .senderId(entity.getSendId())
+                .senderId(entity.getSenderId())
                 .text(entity.getText())
                 .sentAt(entity.getSentAt())
                 .status(entity.getStatus())
                 .type(entity.getType())
                 .attachments(
-                        entity.getAttachments().stream().map(
-                                a ->
-                                        new FileAttachmentDto(a.getFileName(), a.getFilePath(), a.getFileSize())
-                        ).toList()
+                        entity.getAttachments() == null ?
+                                List.of() :
+                                entity.getAttachments().stream()
+                                        .map(a -> new FileAttachmentDto(a.getFileName(), a.getFilePath(), a.getFileSize()))
+                                        .toList()
                 )
                 .build();
     }

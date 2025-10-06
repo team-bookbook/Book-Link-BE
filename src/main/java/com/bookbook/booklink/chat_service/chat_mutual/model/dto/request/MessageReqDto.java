@@ -16,9 +16,6 @@ public class MessageReqDto {
     @Schema(description = "채팅방 ID", example = "550e8400-e29b-41d4-a716-446655440000")
     private UUID chatId;
 
-    @Schema(description = "보낸 사람 ID", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-    private UUID senderId;
-
     @Schema(description = "메시지 본문", example = "안녕하세요!")
     private String text;
 

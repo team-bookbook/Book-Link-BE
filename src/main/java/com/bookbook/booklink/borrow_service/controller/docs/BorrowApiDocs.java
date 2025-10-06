@@ -116,7 +116,7 @@ public interface BorrowApiDocs {
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND,
             ErrorCode.INVALID_BORROW_STATUS, ErrorCode.BORROW_FORBIDDEN})
-    @PostMapping("borrow-extend-accept")
+    @PatchMapping("borrow-extend-accept")
     public ResponseEntity<BaseResponse<Void>> acceptBorrowExtend(
             @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
             @NotNull(message = "연장 일자는 필수입니다.") @Future(message = "현재보다 미래여야 합니다.") @RequestParam LocalDate returnDate,

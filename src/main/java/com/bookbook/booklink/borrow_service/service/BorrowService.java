@@ -139,6 +139,7 @@ public class BorrowService {
         log.info("[BorrowService] [traceId = {}, userId = {}] return book confirm accept success borrowId={}", traceId, userId, borrowId);
     }
 
+    @Transactional
     public void acceptBorrowExtend(UUID userId, String traceId, UUID borrowId, LocalDate returnDate) {
         log.info("[BorrowService] [traceId = {}, userId = {}] accept book extend initiate borrowId={}", traceId, userId, borrowId);
 

@@ -8,12 +8,14 @@ import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Tag(name = "Borrow API", description = "도서 대여 관련 API")
@@ -91,6 +93,32 @@ public interface BorrowApiDocs {
     public ResponseEntity<BaseResponse<Void>> acceptReturnBookConfirmation(
             @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
             @NotBlank(message = "반납 인증 사진은 필수입니다.") @RequestParam String imageUrl,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "도서 대여 연장 요청",
+            description = "대여 연장이 필요할 시 대여 연장 채팅을 전송합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PostMapping("borrow-extend-request")
+    public ResponseEntity<BaseResponse<Void>> requestBorrowExtend(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+
+    @Operation(
+            summary = "대여 연장 수락",
+            description = "대여 연장을 수락합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PostMapping("borrow-extend-request")
+    public ResponseEntity<BaseResponse<Void>> acceptBorrowExtend(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @NotNull(message = "연장 일자는 필수입니다.") @Future(message = "현재보다 미래여야 합니다.") @RequestParam LocalDate returnDate,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );

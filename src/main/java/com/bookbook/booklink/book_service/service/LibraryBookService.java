@@ -2,6 +2,7 @@ package com.bookbook.booklink.book_service.service;
 
 import com.bookbook.booklink.book_service.model.Book;
 import com.bookbook.booklink.book_service.model.LibraryBook;
+import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookRegisterDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookSearchReqDto;
 import com.bookbook.booklink.book_service.model.dto.request.LibraryBookUpdateDto;

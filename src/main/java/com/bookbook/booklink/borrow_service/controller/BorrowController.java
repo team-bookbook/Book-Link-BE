@@ -3,8 +3,13 @@ package com.bookbook.booklink.borrow_service.controller;
 import com.bookbook.booklink.borrow_service.controller.docs.BorrowApiDocs;
 import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.common.dto.BaseResponse;
+import com.bookbook.booklink.common.exception.ApiErrorResponses;
+import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import com.bookbook.booklink.borrow_service.service.BorrowService;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Slf4j
@@ -131,6 +137,44 @@ public class BorrowController implements BorrowApiDocs {
 
         return ResponseEntity.ok(BaseResponse.success(null));
 
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> requestBorrowExtend(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] borrow extend request received, borrowId={}",
+                traceId, userId, borrowId);
+
+        // todo 대여 연장을 요청하는 채팅 전송
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] borrow extend request success, borrowId={}",
+                traceId, userId, borrowId);
+        return ResponseEntity.ok(BaseResponse.success(null));
+    }
+
+
+    @Override
+    public ResponseEntity<BaseResponse<Void>> acceptBorrowExtend(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @NotNull(message = "연장 일자는 필수입니다.") @Future(message = "현재보다 미래여야 합니다.") @RequestParam LocalDate returnDate,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] accept borrow extend request received, borrowId={}",
+                traceId, userId, borrowId);
+
+        borrowService.acceptBorrowExtend(userId, traceId, borrowId, returnDate);
+
+        log.info("[BorrowController] [traceId = {}, userId = {}] accept borrow extend request success, borrowId={}",
+                traceId, userId, borrowId);
+        return ResponseEntity.ok(BaseResponse.success(null));
     }
 }
     

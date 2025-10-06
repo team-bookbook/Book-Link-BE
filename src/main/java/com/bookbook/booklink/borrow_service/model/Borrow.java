@@ -83,10 +83,7 @@ public class Borrow {
     public void extendBook(LocalDateTime extendedAt) {
         this.status = BorrowStatus.EXTENDED;
         this.dueAt = extendedAt;
-    }
-
-    public void overdueBook() {
-        this.status = BorrowStatus.OVERDUE;
+        this.libraryBookCopy.extendBook(extendedAt);
     }
 
     public void suspendBorrow() {

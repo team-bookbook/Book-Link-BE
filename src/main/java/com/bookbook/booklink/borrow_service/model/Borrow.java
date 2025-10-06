@@ -81,6 +81,10 @@ public class Borrow {
     }
 
     public void extendBook(LocalDateTime extendedAt) {
+        if (this.dueAt.isAfter(extendedAt)) {
+            throw new CustomException(ErrorCode.ILLEGAL_EXTEND_DATE);
+        }
+
         this.status = BorrowStatus.EXTENDED;
         this.dueAt = extendedAt;
         this.libraryBookCopy.extendBook(extendedAt);

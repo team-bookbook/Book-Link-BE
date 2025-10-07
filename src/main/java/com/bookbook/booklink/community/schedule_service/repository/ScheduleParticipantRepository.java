@@ -16,14 +16,14 @@ public interface ScheduleParticipantRepository extends JpaRepository<SchedulePar
 
     @Query("""
             select sp.member from ScheduleParticipant sp
-            join fetch sp.member
+            join sp.member
             where sp.schedule = :schedule
             """)
     List<Member> findMemberBySchedule(GroupSchedule schedule);
 
     @Query("""
             select sp.schedule from ScheduleParticipant sp
-            join fetch sp.schedule
+            join sp.schedule
             where sp.member = :member
             """)
     List<GroupSchedule> findScheduleByMember(Member member);

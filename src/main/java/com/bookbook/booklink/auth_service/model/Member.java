@@ -6,7 +6,7 @@ import com.bookbook.booklink.auth_service.code.Status;
 import com.bookbook.booklink.auth_service.model.dto.request.SignUpReqDto;
 import com.bookbook.booklink.auth_service.model.dto.request.UpdateReqDto;
 import com.bookbook.booklink.community.group_service.model.GroupMember;
-import com.bookbook.booklink.community.schedule_service.model.GroupSchedule;
+import com.bookbook.booklink.community.schedule_service.model.ScheduleParticipant;
 import com.bookbook.booklink.library_service.model.Library;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-
 @Builder
 @Getter
 @NoArgsConstructor
@@ -114,7 +113,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<GroupSchedule> scheduleList = new ArrayList<>();
+    private List<ScheduleParticipant> scheduleList = new ArrayList<>();
 
     public static Member ofLocalSignup(SignUpReqDto req, String encodedPassword) {
         return Member.builder()
@@ -143,4 +142,3 @@ public class Member {
         this.profileImage = dto.getProfileImage();
     }
 }
-    

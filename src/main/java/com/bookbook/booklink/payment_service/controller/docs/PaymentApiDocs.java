@@ -1,17 +1,18 @@
 package com.bookbook.booklink.payment_service.controller.docs;
 
-import com.bookbook.booklink.common.exception.ApiErrorResponses;
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.dto.BaseResponse;
+import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.payment_service.model.dto.request.PaymentInitDto;
 import com.bookbook.booklink.payment_service.model.dto.response.PaymentResDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Tag(name = "Payment API", description = "결제 관련 API")
 @RequestMapping("/api/payment")
@@ -25,7 +26,8 @@ public interface PaymentApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.PAYMENT_ALREADY_EXISTS})
     @PostMapping("/init")
     ResponseEntity<BaseResponse<Boolean>> initPayment(
-            @RequestBody PaymentInitDto paymentInitDto
+            @RequestBody PaymentInitDto paymentInitDto,
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -47,6 +49,6 @@ public interface PaymentApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED})
     @GetMapping("/user/{userId}")
     ResponseEntity<BaseResponse<List<PaymentResDto>>> getPaymentsByUser(
-            @PathVariable UUID userId
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 }

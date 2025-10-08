@@ -1,15 +1,16 @@
 package com.bookbook.booklink.point_service.model;
 
+import com.bookbook.booklink.auth_service.model.Member;
+import com.bookbook.booklink.common.exception.CustomException;
+import com.bookbook.booklink.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
@@ -19,17 +20,15 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@IdClass(UUID.class)
 public class Point {
 
-    @Schema(
-            description = "회원 고유 식별자 (UUID)",
-            example = "550e8400-e29b-41d4-a716-446655440000",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
     @Id
-    @UuidGenerator
-    @Column(updatable = false, nullable = false)
-    private UUID userId;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
+    @Schema(description = "포인트를 사용한 사용자")
+    private Member member;
 
     @Min(value = 0, message = "잔액은 양수여야합니다.")
     @Column(nullable = false)
@@ -46,6 +45,13 @@ public class Point {
      * @param usedPoint 사용된 포인트
      */
     public void usePoint(Integer usedPoint) {
-        this.balance += usedPoint;
+        if (this.balance < usedPoint) {
+            throw new CustomException(ErrorCode.POINT_NOT_ENOUGH);
+        }
+        this.balance -= usedPoint;
+    }
+
+    public void addPoint(Integer addedPoint) {
+        this.balance += addedPoint;
     }
 }

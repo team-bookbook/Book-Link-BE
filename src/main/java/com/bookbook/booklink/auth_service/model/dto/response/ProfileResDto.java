@@ -62,7 +62,7 @@ public class ProfileResDto {
                 .provider(m.getProvider().name())
                 .role(m.getRole().name())
                 .status(m.getStatus().name())
-                .pointBalance(m.getPointBalance())
+                .pointBalance(m.getPoint().getBalance())
                 .createdAt(m.getCreatedAt())
                 .profileImage(m.getProfileImage())
                 .build();

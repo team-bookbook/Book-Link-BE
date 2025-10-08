@@ -8,9 +8,15 @@ import com.bookbook.booklink.auth_service.model.dto.request.UpdateReqDto;
 import com.bookbook.booklink.community.group_service.model.GroupMember;
 import com.bookbook.booklink.community.schedule_service.model.ScheduleParticipant;
 import com.bookbook.booklink.library_service.model.Library;
+import com.bookbook.booklink.payment_service.model.Payment;
+import com.bookbook.booklink.point_service.model.Point;
+import com.bookbook.booklink.point_service.model.PointHistory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -85,12 +91,6 @@ public class Member {
     @Schema(description = "상태", example = "ACTIVE", requiredMode = Schema.RequiredMode.REQUIRED)
     private Status status;
 
-    @Min(0)
-    @Builder.Default
-    @Column(nullable = false)
-    @Schema(description = "보유 포인트", example = "1000", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pointBalance = 0;
-
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     @Schema(description = "가입 일자", example = "2025-09-23T20:05:00")
@@ -107,13 +107,26 @@ public class Member {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Library library;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<GroupMember> groupList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<ScheduleParticipant> scheduleList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<PointHistory> pointHistoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Payment> paymentList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Point point;
 
     public static Member ofLocalSignup(SignUpReqDto req, String encodedPassword) {
         return Member.builder()
@@ -127,7 +140,6 @@ public class Member {
                 .provider(Provider.LOCAL)
                 .role(Role.CUSTOMER)
                 .status(Status.ACTIVE)
-                .pointBalance(0)
                 .build();
     }
 

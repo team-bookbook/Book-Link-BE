@@ -1,5 +1,6 @@
 package com.bookbook.booklink.point_service.service;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
@@ -38,13 +39,17 @@ public class PointService {
     private final IdempotencyService idempotencyService;
     private final PointHistoryRepository pointHistoryRepository;
 
+    private final Integer EXCHANGE_VALUE = 12000;
+
     /**
      * 회원의 포인트 잔액 조회
      *
-     * @param userId 회원 ID
+     * @param member 회원
      * @return 현재 포인트 잔액 DTO
      */
-    public PointBalanceDto getPointBalance(UUID userId) {
+    @Transactional(readOnly = true)
+    public PointBalanceDto getPointBalance(Member member) {
+        UUID userId = member.getId();
         log.info("[PointService] [userId = {}] Get Point Balance request received.", userId);
 
         Point point = findPointByUserId(userId);
@@ -60,10 +65,13 @@ public class PointService {
      *
      * @param pointUseDto 요청 DTO (금액, 거래 타입 등)
      * @param traceId     멱등성 추적 ID
-     * @param userId      회원 ID
+     * @param member      회원
      * @return 업데이트된 포인트 잔액 DTO
      */
-    public PointBalanceDto usePoint(PointUseDto pointUseDto, UUID traceId, UUID userId) {
+    @Transactional
+    public PointBalanceDto usePoint(PointUseDto pointUseDto, UUID traceId, Member member) {
+
+        UUID userId = member.getId();
         log.info("[PointService] [userId = {}] Use Point request received. traceId={}, pointUseDto={}",
                 userId, traceId, pointUseDto);
 
@@ -73,12 +81,17 @@ public class PointService {
                 () -> LockEvent.builder().key(key).build());
 
         // 거래 내역 저장
-        PointHistory newHistory = PointHistory.toEntity(pointUseDto, userId);
+        PointHistory newHistory = PointHistory.toEntity(pointUseDto, member);
         pointHistoryRepository.save(newHistory);
 
         // 잔액 업데이트
         Point point = findPointByUserId(userId);
-        point.usePoint(pointUseDto.getAmount());
+        Integer amount = pointUseDto.getAmount();
+        if (amount >= 0) {
+            point.addPoint(amount);
+        } else {
+            point.usePoint(pointUseDto.getAmount());
+        }
         Point updatedPoint = pointRepository.save(point);
 
         log.info("[PointService] [userId = {}] Use Point success. newBalance={}", userId, updatedPoint.getBalance());
@@ -88,10 +101,13 @@ public class PointService {
     /**
      * 회원의 포인트 거래 내역 조회
      *
-     * @param userId 회원 ID
+     * @param member 회원
      * @return 포인트 거래 내역 리스트
      */
-    public List<PointHistoryListDto> getPointHistoryList(UUID userId) {
+    @Transactional(readOnly = true)
+    public List<PointHistoryListDto> getPointHistoryList(Member member) {
+
+        UUID userId = member.getId();
         log.info("[PointService] [userId = {}] Get Point History request received.", userId);
 
         List<PointHistory> pointHistoryList = pointHistoryRepository.findAllByUserIdOrderByCreatedAt(userId);
@@ -105,12 +121,15 @@ public class PointService {
      * <p>
      * 멱등성 체크 후 포인트를 지정된 단위(num)만큼 차감하고, 교환 코드를 발급합니다.
      *
-     * @param userId  회원 ID
+     * @param member  회원
      * @param traceId 멱등성 추적 ID
      * @param num     교환 단위 수량
      * @return 포인트 전환 결과 DTO
      */
-    public PointExchangeDto exchangePoint(UUID userId, UUID traceId, Integer num) {
+    @Transactional
+    public PointExchangeDto exchangePoint(Member member, UUID traceId, Integer num) {
+
+        UUID userId = member.getId();
         log.info("[PointService] [userId = {}] Exchange Point request received. traceId={}, num={}",
                 userId, traceId, num);
 
@@ -121,16 +140,16 @@ public class PointService {
 
         Point point = findPointByUserId(userId);
 
-        if (point.getBalance() < 12000 * num) {
+        if (point.getBalance() < EXCHANGE_VALUE * num) {
             log.warn("[PointService] [userId = {}] Exchange Point failed. Insufficient balance. balance={}, required={}",
-                    userId, point.getBalance(), 12000 * num);
+                    userId, point.getBalance(), EXCHANGE_VALUE * num);
             throw new CustomException(ErrorCode.POINT_NOT_ENOUGH);
         }
 
         point.usePoint(num);
         Point updatedPoint = pointRepository.save(point);
 
-        PointHistory pointHistory = PointHistory.toEntity(12000 * num, TransactionType.EXCHANGE, userId);
+        PointHistory pointHistory = PointHistory.toEntity(EXCHANGE_VALUE * num, TransactionType.EXCHANGE, member);
         pointHistoryRepository.save(pointHistory);
 
         PointExchangeDto result = PointExchangeDto.builder()
@@ -148,13 +167,15 @@ public class PointService {
      * <p>
      * 멱등성 체크 후 결제 정보를 확인하고, 해당 금액만큼 포인트를 적립합니다.
      *
-     * @param userId    회원 ID
+     * @param member    회원
      * @param paymentId 결제 ID
      * @param traceId   멱등성 추적 ID
      * @return 충전된 금액
      */
     @Transactional
-    public Integer chargePoint(UUID userId, String paymentId, UUID traceId) {
+    public Integer chargePoint(Member member, String paymentId, UUID traceId) {
+
+        UUID userId = member.getId();
         log.info("[PointService] [userId = {}] Charge Point request received. traceId={}, paymentId={}",
                 userId, traceId, paymentId);
 
@@ -175,7 +196,7 @@ public class PointService {
         pointRepository.save(point);
 
         // 4. 히스토리 기록
-        PointHistory history = PointHistory.toEntity(amount, TransactionType.CHARGE, userId);
+        PointHistory history = PointHistory.toEntity(amount, TransactionType.CHARGE, member);
         pointHistoryRepository.save(history);
 
         log.info("[PointService] [userId = {}] Charge Point success. chargedAmount={}, newBalance={}",
@@ -188,22 +209,23 @@ public class PointService {
      * <p>
      * 결제를 취소하고, 해당 금액만큼 포인트를 차감합니다.
      *
-     * @param userId    회원 ID
+     * @param member    회원 ID
      * @param paymentId 결제 ID
      * @param amount    환불 금액
      * @param reason    환불 사유
      */
-    public void cancelPoint(UUID userId, String paymentId, Integer amount, String reason) {
+    @Transactional
+    public void cancelPoint(Member member, String paymentId, Integer amount, String reason) {
+        UUID userId = member.getId();
         log.info("[PointService] [userId = {}] Cancel Payment request received. paymentId={}, amount={}, reason={}",
                 userId, paymentId, amount, reason);
 
         paymentService.cancelPayment(paymentId, amount, reason);
 
         Point point = findPointByUserId(userId);
-        point.usePoint(-amount);
-        pointRepository.save(point);
+        point.usePoint(amount);
 
-        PointHistory history = PointHistory.toEntity(amount, TransactionType.REFUND, userId);
+        PointHistory history = PointHistory.toEntity(amount, TransactionType.REFUND, member);
         pointHistoryRepository.save(history);
 
         log.info("[PointService] [userId = {}] Cancel Payment success. paymentId={}, refundedAmount={}, newBalance={}",

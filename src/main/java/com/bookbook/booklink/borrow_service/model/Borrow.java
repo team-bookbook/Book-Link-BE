@@ -19,6 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Borrow {
 
     @Id
@@ -86,5 +87,15 @@ public class Borrow {
 
     public void overdueBook() {
         this.status = BorrowStatus.OVERDUE;
+    }
+
+    public void suspendBorrow() {
+        this.status = BorrowStatus.SUSPENDED;
+        this.libraryBookCopy.returnBook();
+    }
+
+    public void markOverdue() {
+        this.status = BorrowStatus.OVERDUE;
+        this.libraryBookCopy.overdueBook();
     }
 }

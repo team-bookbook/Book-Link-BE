@@ -8,12 +8,11 @@ import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -22,14 +21,76 @@ import java.util.UUID;
 public interface BorrowApiDocs {
 
     @Operation(
-            summary = "도서 대여",
-            description = "도서를 대여합니다."
+            summary = "도서 한 개 대여",
+            description = "도서 한 개를 대여합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BOOK_NOT_FOUND,
             ErrorCode.USER_NOT_FOUND, ErrorCode.N0T_AVAILABLE_COPY})
     @PostMapping
     public ResponseEntity<BaseResponse<UUID>> borrowBook(
             @Valid @RequestBody BorrowRequestDto borrowRequestDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "대여 확정 요청",
+            description = "대여 확정 요청 채팅을 전송합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PostMapping("borrow-confirm-request")
+    public ResponseEntity<BaseResponse<Void>> requestBorrowConfirmation(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "대여 확정 수락",
+            description = "대여 확정 요청을 수락합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
+    @PatchMapping("/borrow-accept")
+    public ResponseEntity<BaseResponse<Void>> acceptBorrowConfirmation(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "대여 중단",
+            description = "대여를 중단합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
+    @PatchMapping("/borrow-suspend")
+    public ResponseEntity<BaseResponse<Void>> suspendBorrow(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "반납 확정 요청",
+            description = "반납 확정 요청 채팅을 전송합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
+    @PostMapping("return-confirm-request")
+    public ResponseEntity<BaseResponse<Void>> requestReturnBookConfirmation(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
+
+    @Operation(
+            summary = "반납 수락",
+            description = "도서관 주인이 반납 확정 요청을 수락합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.INVALID_BORROW_STATUS
+    , ErrorCode.BORROW_FORBIDDEN})
+    @PostMapping("return-accept")
+    public ResponseEntity<BaseResponse<Void>> acceptReturnBookConfirmation(
+            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @NotBlank(message = "반납 인증 사진은 필수입니다.") @RequestParam String imageUrl,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );

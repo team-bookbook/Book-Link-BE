@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Tag(name = "Borrow API", description = "도서 대여 관련 API")
-@RequestMapping("/api/borrow")
+@RequestMapping("/api/borrows")
 public interface BorrowApiDocs {
 
     @Operation(
@@ -40,9 +40,9 @@ public interface BorrowApiDocs {
             description = "대여 확정 요청 채팅을 전송합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
-    @PostMapping("borrow-confirm-request")
+    @PostMapping("/{borrowId}/confirm-requests")
     public ResponseEntity<BaseResponse<Void>> requestBorrowConfirmation(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -52,9 +52,9 @@ public interface BorrowApiDocs {
             description = "대여 확정 요청을 수락합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
-    @PatchMapping("/borrow-accept")
+    @PatchMapping("/{borrowId}/confirm")
     public ResponseEntity<BaseResponse<Void>> acceptBorrowConfirmation(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -64,9 +64,9 @@ public interface BorrowApiDocs {
             description = "대여를 중단합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.BORROW_FORBIDDEN})
-    @PatchMapping("/borrow-suspend")
+    @PatchMapping("/{borrowId}/suspend")
     public ResponseEntity<BaseResponse<Void>> suspendBorrow(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -76,9 +76,9 @@ public interface BorrowApiDocs {
             description = "반납 확정 요청 채팅을 전송합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
-    @PostMapping("return-confirm-request")
+    @PostMapping("/{borrowId}/return-requests")
     public ResponseEntity<BaseResponse<Void>> requestReturnBookConfirmation(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -89,9 +89,9 @@ public interface BorrowApiDocs {
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND, ErrorCode.INVALID_BORROW_STATUS
     , ErrorCode.BORROW_FORBIDDEN})
-    @PostMapping("return-accept")
+    @PatchMapping("{borrowId}/return")
     public ResponseEntity<BaseResponse<Void>> acceptReturnBookConfirmation(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @NotBlank(message = "반납 인증 사진은 필수입니다.") @RequestParam String imageUrl,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
@@ -102,9 +102,9 @@ public interface BorrowApiDocs {
             description = "대여 연장이 필요할 시 대여 연장 채팅을 전송합니다."
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR /*todo 에러 코드 추가*/})
-    @PostMapping("borrow-extend-request")
+    @PostMapping("/{borrowId}/extend-requests")
     public ResponseEntity<BaseResponse<Void>> requestBorrowExtend(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -116,9 +116,9 @@ public interface BorrowApiDocs {
     )
     @ApiErrorResponses({ErrorCode.DATABASE_ERROR, ErrorCode.BORROW_NOT_FOUND,
             ErrorCode.INVALID_BORROW_STATUS, ErrorCode.BORROW_FORBIDDEN})
-    @PatchMapping("borrow-extend-accept")
+    @PatchMapping("/{borrowId}/extend")
     public ResponseEntity<BaseResponse<Void>> acceptBorrowExtend(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @NotNull(message = "연장 일자는 필수입니다.") @Future(message = "현재보다 미래여야 합니다.") @RequestParam LocalDate returnDate,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId

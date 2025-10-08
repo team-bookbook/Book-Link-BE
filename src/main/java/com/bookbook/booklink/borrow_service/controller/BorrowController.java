@@ -46,7 +46,7 @@ public class BorrowController implements BorrowApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> requestBorrowConfirmation(
-            @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
@@ -64,7 +64,7 @@ public class BorrowController implements BorrowApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> acceptBorrowConfirmation(
-            @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
@@ -82,7 +82,7 @@ public class BorrowController implements BorrowApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> suspendBorrow(
-            @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
@@ -101,7 +101,7 @@ public class BorrowController implements BorrowApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> requestReturnBookConfirmation(
-            @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
@@ -120,7 +120,7 @@ public class BorrowController implements BorrowApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> acceptReturnBookConfirmation(
-            @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @RequestParam String imageUrl,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
@@ -141,7 +141,7 @@ public class BorrowController implements BorrowApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> requestBorrowExtend(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     ) {
@@ -160,7 +160,7 @@ public class BorrowController implements BorrowApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Void>> acceptBorrowExtend(
-            @NotNull(message = "대여 id는 필수입니다.") @RequestParam UUID borrowId,
+            @PathVariable UUID borrowId,
             @NotNull(message = "연장 일자는 필수입니다.") @Future(message = "현재보다 미래여야 합니다.") @RequestParam LocalDate returnDate,
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId

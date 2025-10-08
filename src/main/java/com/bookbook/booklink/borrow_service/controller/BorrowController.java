@@ -93,7 +93,7 @@ public class BorrowController implements BorrowApiDocs {
 
         borrowService.suspendBorrow(userId, traceId, borrowId);
 
-        log.info("[BorrowController] [traceId = {}, userId = {}] accept borrow success, borrowId={}",
+        log.info("[BorrowController] [traceId = {}, userId = {}] suspend borrow success, borrowId={}",
                 traceId, userId, borrowId);
         return ResponseEntity.ok(BaseResponse.success(null));
 

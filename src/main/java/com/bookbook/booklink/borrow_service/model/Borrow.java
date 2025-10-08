@@ -19,6 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Borrow {
 
     @Id
@@ -80,11 +81,22 @@ public class Borrow {
     }
 
     public void extendBook(LocalDateTime extendedAt) {
+        if (this.dueAt.isAfter(extendedAt)) {
+            throw new CustomException(ErrorCode.ILLEGAL_EXTEND_DATE);
+        }
+
         this.status = BorrowStatus.EXTENDED;
         this.dueAt = extendedAt;
+        this.libraryBookCopy.extendBook(extendedAt);
     }
 
-    public void overdueBook() {
+    public void suspendBorrow() {
+        this.status = BorrowStatus.SUSPENDED;
+        this.libraryBookCopy.returnBook();
+    }
+
+    public void markOverdue() {
         this.status = BorrowStatus.OVERDUE;
+        this.libraryBookCopy.overdueBook();
     }
 }

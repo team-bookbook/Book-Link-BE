@@ -45,24 +45,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter =
-                new JwtAuthenticationFilter(authenticationManager, jwtUtil, refreshTokenService);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/api/login"); // 로그인 URL 지정
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/member/signup", "/api/login", "/api/token/reissue").permitAll()
+                        // 컨트롤러 기반 로그인/토큰 재발급/회원가입 허용
+                        .requestMatchers("/api/member/signup", "/api/auth/login", "/api/token/reissue").permitAll()
+                        // Swagger 문서 허용
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
+                        // 정적/웹소켓 등 허용
                         .requestMatchers(
                                 "/chat-test.html", "/ws/**", "/favicon.ico",
                                 "/css/**", "/js/**", "/images/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)
 

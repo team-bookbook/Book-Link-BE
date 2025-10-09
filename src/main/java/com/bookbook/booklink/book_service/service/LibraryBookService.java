@@ -16,7 +16,6 @@ import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.library_service.model.Library;
 import com.bookbook.booklink.library_service.model.dto.response.LibraryBookListProjection;
 import com.bookbook.booklink.library_service.service.LibraryService;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -50,11 +49,11 @@ public class LibraryBookService {
 
         // todo : 에러났을 때 멱등성 체크 풀기
         LibraryBook libraryBook = LibraryBook.toEntity(bookRegisterDto, book, library);
-      
+
         for (int i = 0; i < bookRegisterDto.getCopies(); i++) {
             libraryBook.addCopy();
         }
-        for(String url : bookRegisterDto.getPreviewImages()) {
+        for (String url : bookRegisterDto.getPreviewImages()) {
             libraryBook.addImage(url);
         }
 
@@ -153,17 +152,17 @@ public class LibraryBookService {
     public LibraryBookCopy getLibraryBookCopy(UUID libraryBookId) {
         LibraryBook libraryBook = getLibraryBookOrThrow(libraryBookId);
         LibraryBookCopy libraryBookCopy = null;
-        for(LibraryBookCopy copy : libraryBook.getCopiesList()) {
+        for (LibraryBookCopy copy : libraryBook.getCopiesList()) {
             if (copy.getStatus().toString().equals("AVAILABLE")) {
                 libraryBookCopy = copy;
             }
         }
-        if(libraryBookCopy == null) {
+        if (libraryBookCopy == null) {
             throw new CustomException(ErrorCode.DATABASE_ERROR);
         }
         return libraryBookCopy;
     }
-  
+
     @Transactional(readOnly = true)
     public LibraryBookDetailResDto getLibraryBookDetail(UUID libraryBookId) {
         LibraryBook libraryBook = libraryBookRepository.findById(libraryBookId)

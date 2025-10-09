@@ -21,9 +21,6 @@ public class NotificationResDto {
     @Schema(description = "알림 고유 식별자", example = "c3c9c5d4-52a1-4a9d-93c8-9f0a1a2f6f6d", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID id;
 
-    @Schema(description = "알림 수신자(회원) ID", example = "2d5f90aa-1c4d-4c63-97bb-4cf33a1a52b0", requiredMode = Schema.RequiredMode.REQUIRED)
-    private UUID userId;
-
     @Schema(description = "알림 메시지", example = "반납일이 3일 남았습니다.", requiredMode = Schema.RequiredMode.REQUIRED)
     private String message;
 
@@ -42,7 +39,6 @@ public class NotificationResDto {
     public static NotificationResDto fromEntity(Notification notification) {
         return NotificationResDto.builder()
                 .id(notification.getId())
-                .userId(notification.getUserId())
                 .message(notification.getMessage())
                 .type(notification.getType())
                 .relatedId(notification.getRelatedId())

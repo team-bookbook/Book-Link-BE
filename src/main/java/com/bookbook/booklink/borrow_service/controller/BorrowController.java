@@ -2,20 +2,17 @@ package com.bookbook.booklink.borrow_service.controller;
 
 import com.bookbook.booklink.borrow_service.controller.docs.BorrowApiDocs;
 import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
+import com.bookbook.booklink.borrow_service.service.BorrowService;
 import com.bookbook.booklink.common.dto.BaseResponse;
-import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
-import com.bookbook.booklink.borrow_service.service.BorrowService;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -37,7 +34,7 @@ public class BorrowController implements BorrowApiDocs {
         log.info("[BorrowController] [traceId = {}, userId = {}] borrow book request received, borrowRequestDto={}",
                 traceId, userId, borrowRequestDto);
 
-        UUID borrowId = borrowService.borrowBook(userId, traceId, borrowRequestDto);
+        UUID borrowId = borrowService.borrowBook(customUserDetails.getMember(), traceId, borrowRequestDto);
 
         log.info("[BorrowController] [traceId = {}, userId = {}] borrow book request success, borrowId={}",
                 traceId, userId, borrowId);

@@ -133,6 +133,8 @@ public enum ErrorCode {
     @Schema(description = "대여 가능한 책이 존재합니다.")
     BORROW_BOOK_AVAILABLE(HttpStatus.BAD_REQUEST, "BORROW_BOOK_AVAILABLE_400", "대여 가능한 책이 존재합니다."),
 
+    @Schema(description = "해당 조건의 예약을 찾을 수 없습니다.")
+    RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "RESERVATION_NOT_FOUND_400", "해당 조건의 예약을 찾을 수 없습니다."),
     /*
      * Review
      */

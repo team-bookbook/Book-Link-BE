@@ -3,10 +3,7 @@ package com.bookbook.booklink.borrow_service.controller;
 import com.bookbook.booklink.borrow_service.controller.docs.BorrowApiDocs;
 import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.common.dto.BaseResponse;
-import com.bookbook.booklink.common.exception.ApiErrorResponses;
-import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.jwt.CustomUserDetail.CustomUserDetails;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -130,7 +127,7 @@ public class BorrowController implements BorrowApiDocs {
         log.info("[BorrowController] [traceId = {}, userId = {}] return book confirm accept received, borrowId={}",
                 traceId, userId, borrowId);
 
-        borrowService.acceptReturnBookConfirm(borrowId, imageUrl, userId, traceId);
+        borrowService.returnBook(borrowId, imageUrl, userId, traceId);
 
         log.info("[BorrowController] [traceId = {}, userId = {}] return book confirm accept success, borrowId={}",
                 traceId, userId, borrowId);

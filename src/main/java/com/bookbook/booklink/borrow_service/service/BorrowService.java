@@ -4,7 +4,6 @@ import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.auth_service.service.MemberService;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.model.LibraryBookCopy;
-import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.borrow_service.model.Borrow;
 import com.bookbook.booklink.borrow_service.model.BorrowStatus;
@@ -15,8 +14,6 @@ import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.point_service.model.TransactionType;
 import com.bookbook.booklink.point_service.model.dto.request.PointUseDto;
 import com.bookbook.booklink.point_service.service.PointService;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +31,7 @@ public class BorrowService {
     private final MemberService memberService;
     private final LibraryBookService libraryBookService;
     private final PointService pointService;
+    private final ReservationService reservationService;
 
     @Transactional
     public UUID borrowBook(UUID userId, String traceId, BorrowRequestDto borrowRequestDto) {
@@ -113,7 +111,7 @@ public class BorrowService {
     }
 
     @Transactional
-    public void acceptReturnBookConfirm(UUID borrowId, String imageUrl, UUID userId, String traceId) {
+    public void returnBook(UUID borrowId, String imageUrl, UUID userId, String traceId) {
         log.info("[BorrowService] [traceId = {}, userId = {}] return book confirm accept initiate borrowId={}", traceId, userId, borrowId);
 
         Borrow borrow = borrowRepository.findById(borrowId)
@@ -135,6 +133,8 @@ public class BorrowService {
 
         borrow.returnBook(LocalDateTime.now(), imageUrl);
         libraryBook.returnCopy(copy);
+
+        reservationService.activeReservation(userId, traceId, libraryBook.getId());
 
         log.info("[BorrowService] [traceId = {}, userId = {}] return book confirm accept success borrowId={}", traceId, userId, borrowId);
     }

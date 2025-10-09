@@ -5,6 +5,7 @@ import com.bookbook.booklink.auth_service.service.MemberService;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.borrow_service.model.Reservation;
+import com.bookbook.booklink.borrow_service.model.ReservationStatus;
 import com.bookbook.booklink.borrow_service.repository.ReservationRepository;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
@@ -45,4 +46,15 @@ public class ReservationService {
         log.info("[ReservationService] [traceId = {}, userId = {}] reserve book success reservationId={}", traceId, userId, reservationId);
         return reservationId;
     }
+
+    @Transactional
+    public void activeReservation(UUID userId, String traceId, UUID libraryBookId) {
+        log.info("[ReservationService] [traceId = {}, userId = {}] active reservation initiate libraryBookId={}", traceId, userId, libraryBookId);
+
+        reservationRepository.findFirstByLibraryBookIdAndStatusOrderByReservedAtAsc(libraryBookId, ReservationStatus.WAITING)
+                .ifPresent(reservation -> {
+                    reservation.setAvailable();
+                    // todo 알림 발송 로직 호출, libraryBookId 포함
+                    log.info("[ReservationService] [traceId = {}, userId = {}] activate reservation success reservationId={}", traceId, userId, reservation.getId());
+                });}
 }

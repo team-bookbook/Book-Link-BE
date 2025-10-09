@@ -51,8 +51,16 @@ public class Reservation {
 
     @Schema(description = "예약 상태", example = "AVAILABLE", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     @Column(nullable = false, length = 20)
-    private ReservationStatus status;
+    private ReservationStatus status = ReservationStatus.WAITING;
+
+    public static Reservation toEntity(Member member, LibraryBook libraryBook) {
+        return Reservation.builder()
+                .member(member)
+                .libraryBook(libraryBook)
+                .build();
+    }
 
     public void updateStatus(ReservationStatus newStatus) {
         if (!status.canTransitionTo(newStatus)) {

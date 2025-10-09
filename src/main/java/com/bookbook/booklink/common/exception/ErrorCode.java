@@ -129,6 +129,10 @@ public enum ErrorCode {
 
     @Schema(description = "수행 불가능한 대출 상태입니다.")
     INVALID_RESERVATION_STATUS_TRANSITION(HttpStatus.BAD_REQUEST, "RESERVATION_INVALID_STATUS_400", "수행 불가능한 대출 상태입니다."),
+
+    @Schema(description = "대여 가능한 책이 존재합니다.")
+    BORROW_BOOK_AVAILABLE(HttpStatus.BAD_REQUEST, "BORROW_BOOK_AVAILABLE_400", "대여 가능한 책이 존재합니다."),
+
     /*
      * Review
      */

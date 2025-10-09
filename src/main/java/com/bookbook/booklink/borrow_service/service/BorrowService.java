@@ -7,8 +7,11 @@ import com.bookbook.booklink.book_service.model.LibraryBookCopy;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.borrow_service.model.Borrow;
 import com.bookbook.booklink.borrow_service.model.BorrowStatus;
+import com.bookbook.booklink.borrow_service.model.Reservation;
+import com.bookbook.booklink.borrow_service.model.ReservationStatus;
 import com.bookbook.booklink.borrow_service.model.dto.request.BorrowRequestDto;
 import com.bookbook.booklink.borrow_service.repository.BorrowRepository;
+import com.bookbook.booklink.borrow_service.repository.ReservationRepository;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.point_service.model.TransactionType;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -32,6 +36,7 @@ public class BorrowService {
     private final LibraryBookService libraryBookService;
     private final PointService pointService;
     private final ReservationService reservationService;
+    private final ReservationRepository reservationRepository;
 
     @Transactional
     public UUID borrowBook(UUID userId, String traceId, BorrowRequestDto borrowRequestDto) {
@@ -44,6 +49,17 @@ public class BorrowService {
         LibraryBook libraryBook = libraryBookService.getLibraryBookOrThrow(libraryBookId);
         LibraryBookCopy copy = libraryBookService.getLibraryBookCopy(libraryBookId);
         Member member = memberService.getMemberOrThrow(userId);
+
+        Optional<Reservation> availableReservationOpt = reservationRepository
+                .findFirstByLibraryBookIdAndStatusOrderByReservedAtAsc(libraryBookId, ReservationStatus.AVAILABLE);
+
+        if (availableReservationOpt.isPresent()) {
+            Reservation availableReservation = availableReservationOpt.get();
+            if (!availableReservation.getMember().getId().equals(userId)) {
+                throw new CustomException(ErrorCode.RESERVATION_BORROW_NOT_ALLOWED);
+            }
+            availableReservation.updateStatus(ReservationStatus.BORROWED);
+        }
 
         Borrow borrow = Borrow.createBorrow(copy, member, borrowedAt, dueAt);
         libraryBook.borrowCopy(copy, borrowedAt, dueAt);

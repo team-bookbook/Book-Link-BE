@@ -7,8 +7,8 @@ import com.bookbook.booklink.notification_service.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class NotificationController implements NotificationApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<List<NotificationResDto>>> getNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     ) {
 
         List<NotificationResDto> notificationList = notificationService.getNotifications(userId);
@@ -33,9 +33,8 @@ public class NotificationController implements NotificationApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<List<NotificationResDto>>> getUnreadNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     ) {
-
         List<NotificationResDto> notificationList = notificationService.getUnreadNotifications(userId);
 
         return ResponseEntity.ok()
@@ -45,7 +44,7 @@ public class NotificationController implements NotificationApiDocs {
     @Override
     public ResponseEntity<BaseResponse<Boolean>> readNotification(
             @PathVariable UUID id,
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     ) {
         log.info("[NotificationController] [userId = {}] Read Notification request received. notificationId={}",
                 userId, id);
@@ -61,8 +60,9 @@ public class NotificationController implements NotificationApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Boolean>> readAllNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     ) {
+
         log.info("[NotificationController] [userId = {}] Read aAll Notification request received.",
                 userId);
 
@@ -78,8 +78,9 @@ public class NotificationController implements NotificationApiDocs {
     @Override
     public ResponseEntity<BaseResponse<Boolean>> deleteNotification(
             @PathVariable UUID id,
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     ) {
+
         log.info("[NotificationController] [userId = {}] Delete Notification request received. notificationId={}",
                 userId, id);
 
@@ -94,7 +95,7 @@ public class NotificationController implements NotificationApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Boolean>> deleteAllNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     ) {
         log.info("[NotificationController] [userId = {}] Delete all Notification request received.",
                 userId);
@@ -110,7 +111,7 @@ public class NotificationController implements NotificationApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Boolean>> deleteAllReadNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     ) {
         log.info("[NotificationController] [userId = {}] Delete all read Notification request received.",
                 userId);

@@ -1,12 +1,13 @@
 package com.bookbook.booklink.notification_service.controller.docs;
 
-import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.dto.BaseResponse;
+import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.notification_service.model.dto.response.NotificationResDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface NotificationApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @GetMapping
     public ResponseEntity<BaseResponse<List<NotificationResDto>>> getNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     );
 
     @Operation(
@@ -35,7 +36,7 @@ public interface NotificationApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @GetMapping("/unread")
     ResponseEntity<BaseResponse<List<NotificationResDto>>> getUnreadNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     );
 
     @Operation(
@@ -47,7 +48,7 @@ public interface NotificationApiDocs {
     @PutMapping("/{id}")
     ResponseEntity<BaseResponse<Boolean>> readNotification(
             @PathVariable UUID id,
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     );
 
     @Operation(
@@ -58,7 +59,7 @@ public interface NotificationApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @PutMapping("/read-all")
     ResponseEntity<BaseResponse<Boolean>> readAllNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     );
 
     @Operation(
@@ -70,7 +71,7 @@ public interface NotificationApiDocs {
     @DeleteMapping("/{id}")
     ResponseEntity<BaseResponse<Boolean>> deleteNotification(
             @PathVariable UUID id,
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     );
 
     @Operation(
@@ -81,7 +82,7 @@ public interface NotificationApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @DeleteMapping
     ResponseEntity<BaseResponse<Boolean>> deleteAllNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     );
 
     @Operation(
@@ -92,6 +93,6 @@ public interface NotificationApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @DeleteMapping("/read")
     ResponseEntity<BaseResponse<Boolean>> deleteAllReadNotifications(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member.id") UUID userId
     );
 }

@@ -8,6 +8,7 @@ import com.bookbook.booklink.auth_service.model.dto.request.UpdateReqDto;
 import com.bookbook.booklink.community.group_service.model.GroupMember;
 import com.bookbook.booklink.community.schedule_service.model.ScheduleParticipant;
 import com.bookbook.booklink.library_service.model.Library;
+import com.bookbook.booklink.notification_service.model.Notification;
 import com.bookbook.booklink.payment_service.model.Payment;
 import com.bookbook.booklink.point_service.model.Point;
 import com.bookbook.booklink.point_service.model.PointHistory;
@@ -122,6 +123,10 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Payment> paymentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Notification> notificationList = new ArrayList<>();
 
     @OneToOne(mappedBy = "member",
             cascade = CascadeType.ALL,

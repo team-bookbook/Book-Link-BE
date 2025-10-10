@@ -1,9 +1,11 @@
 package com.bookbook.booklink.point_service.model;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.point_service.model.dto.request.PointUseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,29 +79,27 @@ public class PointHistory {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(nullable = false, updatable = false)
-    @Schema(
-            description = "포인트를 얻거나 사용한 회원의 UUID",
-            example = "550e8400-e29b-41d4-a716-446655440000",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
+    @Schema(description = "포인트를 사용한 사용자")
+    private Member member;
 
-    public static PointHistory toEntity(PointUseDto pointUseDto, UUID userId) {
+    public static PointHistory toEntity(PointUseDto pointUseDto, Member member) {
         return PointHistory.builder()
                 .amount(pointUseDto.getAmount())
                 .type(pointUseDto.getType())
                 .description(pointUseDto.getType().getDefaultDescription())
-                .userId(userId)
+                .member(member)
                 .build();
     }
 
-    public static PointHistory toEntity(Integer amount, TransactionType type, UUID userId) {
+    public static PointHistory toEntity(Integer amount, TransactionType type, Member member) {
         return PointHistory.builder()
                 .amount(amount)
                 .type(type)
                 .description(type.getDefaultDescription())
-                .userId(userId)
+                .member(member)
                 .build();
     }
 }

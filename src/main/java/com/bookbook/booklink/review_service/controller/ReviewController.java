@@ -1,5 +1,6 @@
 package com.bookbook.booklink.review_service.controller;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.dto.BaseResponse;
 import com.bookbook.booklink.review_service.controller.docs.ReviewApiDocs;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,15 +29,15 @@ public class ReviewController implements ReviewApiDocs {
     @Override
     public ResponseEntity<BaseResponse<Boolean>> createReview(
             @Valid @RequestBody ReviewCreateDto reviewCreateDto,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @RequestHeader("Trace-Id") String traceId
     ) {
-        //todo: 실제 user Id로 변경해야함
-        UUID userId = UUID.randomUUID();
+        UUID userId = member.getId();
 
         log.info("[ReviewController] [traceId = {}, userId = {}] create review request received. targetId={}",
                 traceId, userId, reviewCreateDto.getTargetId());
 
-        reviewService.createReview(reviewCreateDto, traceId, userId);
+        reviewService.createReview(reviewCreateDto, traceId, member);
 
         log.info("[ReviewController] [traceId = {}, userId = {}] create review response success. targetId={}",
                 traceId, userId, reviewCreateDto.getTargetId());
@@ -47,6 +49,7 @@ public class ReviewController implements ReviewApiDocs {
     @Override
     public ResponseEntity<BaseResponse<Boolean>> updateReview(
             @PathVariable UUID reviewId,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @Valid @RequestBody ReviewUpdateDto reviewUpdateDto,
             @RequestHeader("Trace-Id") String traceId
     ) {
@@ -66,7 +69,8 @@ public class ReviewController implements ReviewApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Boolean>> deleteReview(
-            @PathVariable UUID reviewId
+            @PathVariable UUID reviewId,
+            @AuthenticationPrincipal(expression = "member") Member member
     ) {
         UUID traceId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
@@ -85,9 +89,9 @@ public class ReviewController implements ReviewApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<List<ReviewListDto>>> getLibraryReview(
-            @PathVariable UUID libraryId
+            @PathVariable UUID libraryId,
+            @AuthenticationPrincipal(expression = "member") Member member
     ) {
-        // todo: user 테이블 생성되면 id 대신에 닉네임 주기
         List<ReviewListDto> reviewListDtoList = reviewService.getLibraryReview(libraryId);
 
         return ResponseEntity.ok()
@@ -96,12 +100,19 @@ public class ReviewController implements ReviewApiDocs {
 
     @Override
     public ResponseEntity<BaseResponse<Double>> getAvgRating(
-            @PathVariable String targetId
+            @PathVariable UUID targetId
     ) {
         Double avgRating = reviewService.getAvgRating(targetId);
 
         return ResponseEntity.ok()
                 .body(BaseResponse.success(avgRating));
+    }
+
+    public ResponseEntity<BaseResponse<List<ReviewListDto>>> getMyReview(
+            @AuthenticationPrincipal(expression = "member") Member member
+    ) {
+        return ResponseEntity.ok()
+                .body(BaseResponse.success(reviewService.getMyReview(member)));
     }
 }
     

@@ -1,5 +1,6 @@
 package com.bookbook.booklink.notification_service.model;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.notification_service.model.dto.request.NotificationCreateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -33,14 +34,11 @@ public class Notification {
     )
     private UUID id;
 
-    @Column(nullable = false)
-    @NotNull(message = "알림 수신자의 ID는 필수입니다.")
-    @Schema(
-            description = "알림 수신자(회원) ID",
-            example = "2d5f90aa-1c4d-4c63-97bb-4cf33a1a52b0",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
+    @Schema(description = "알림을 받은 사용자")
+    private Member member;
 
     @Column(nullable = false)
     @NotBlank(message = "알림 메시지는 필수입니다.")
@@ -86,9 +84,9 @@ public class Notification {
     )
     private LocalDateTime createdAt;
 
-    public static Notification toEntity(NotificationCreateDto notificationCreateDto) {
+    public static Notification toEntity(NotificationCreateDto notificationCreateDto, Member member) {
         return Notification.builder()
-                .userId(notificationCreateDto.getUserId())
+                .member(member)
                 .message(notificationCreateDto.getType().getDefaultMessage())
                 .type(notificationCreateDto.getType())
                 .relatedId(notificationCreateDto.getRelatedId())

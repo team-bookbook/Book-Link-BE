@@ -4,7 +4,6 @@ import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.auth_service.service.MemberService;
 import com.bookbook.booklink.book_service.model.LibraryBook;
 import com.bookbook.booklink.book_service.model.LibraryBookCopy;
-import com.bookbook.booklink.book_service.repository.LibraryBookRepository;
 import com.bookbook.booklink.book_service.service.LibraryBookService;
 import com.bookbook.booklink.borrow_service.model.Borrow;
 import com.bookbook.booklink.borrow_service.model.BorrowStatus;
@@ -36,8 +35,8 @@ public class BorrowService {
     private final PointService pointService;
 
     @Transactional
-    public UUID borrowBook(UUID userId, String traceId, BorrowRequestDto borrowRequestDto) {
-        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book initiate borrowRequestDto={}", traceId, userId, borrowRequestDto);
+    public UUID borrowBook(Member member, String traceId, BorrowRequestDto borrowRequestDto) {
+        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book initiate borrowRequestDto={}", traceId, member.getId(), borrowRequestDto);
 
         UUID libraryBookId = borrowRequestDto.getLibraryBookId();
         LocalDateTime borrowedAt = LocalDateTime.now();
@@ -45,7 +44,6 @@ public class BorrowService {
 
         LibraryBook libraryBook = libraryBookService.getLibraryBookOrThrow(libraryBookId);
         LibraryBookCopy copy = libraryBookService.getLibraryBookCopy(libraryBookId);
-        Member member = memberService.getMemberOrThrow(userId);
 
         Borrow borrow = Borrow.createBorrow(copy, member, borrowedAt, dueAt);
         libraryBook.borrowCopy(copy, borrowedAt, dueAt);
@@ -56,7 +54,7 @@ public class BorrowService {
                     .amount(deposit)
                     .type(TransactionType.USE)
                     .build();
-            pointService.usePoint(dto, UUID.fromString(traceId), userId);
+            pointService.usePoint(dto, UUID.fromString(traceId), member);
         }
 
         // todo : 1대1 채팅창 open
@@ -64,7 +62,7 @@ public class BorrowService {
         Borrow savedBorrow = borrowRepository.save(borrow);
         UUID borrowId = savedBorrow.getId();
 
-        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book success borrowId={}", traceId, userId, borrowId);
+        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book success borrowId={}", traceId, member.getId(), borrowId);
         return borrowId;
     }
 

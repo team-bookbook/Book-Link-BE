@@ -1,12 +1,13 @@
 package com.bookbook.booklink.review_service.model;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,7 +56,6 @@ public class Review {
     )
     private String comment;
 
-    // 리뷰 남긴 날짜
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     @Schema(
@@ -74,36 +74,36 @@ public class Review {
     )
     private TargetType targetType;
 
-    @Column(nullable = false)
-    @NotBlank(message = "리뷰 작성자 ID는 필수입니다.")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "reviewer_id", nullable = false)
     @Schema(
             description = "리뷰 작성자 ID",
-            example = "user-1234",
+            example = "510e8440-eb9b-11d4-aa16-424651640000",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String reviewerId;
+    private Member reviewer;
 
     @Column(nullable = false)
-    @NotBlank(message = "리뷰 대상 ID는 필수입니다.")
+    @NotNull(message = "리뷰 대상 ID는 필수입니다.")
     @Schema(
             description = "리뷰 대상자 ID (도서관 또는 유저)",
             example = "510e8440-eb9b-11d4-aa16-424651640000",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String targetId;
+    private UUID targetId;
 
     // TODO: 리뷰할 거래 연결 (Loan 등)
 
     /**
      * DTO → Entity 변환
      */
-    public static Review toEntity(ReviewCreateDto createDto) {
+    public static Review toEntity(ReviewCreateDto createDto, Member reviewer) {
 
         return Review.builder()
                 .rating(createDto.getRating())
                 .comment(createDto.getComment())
                 .targetType(createDto.getTargetType())
-                .reviewerId(createDto.getReviewerId())
+                .reviewer(reviewer)
                 .targetId(createDto.getTargetId())
                 .build();
     }

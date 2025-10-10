@@ -1,7 +1,8 @@
 package com.bookbook.booklink.point_service.controller.docs;
 
-import com.bookbook.booklink.common.exception.ApiErrorResponses;
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.dto.BaseResponse;
+import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.point_service.model.dto.request.PointUseDto;
 import com.bookbook.booklink.point_service.model.dto.response.PointBalanceDto;
@@ -10,6 +11,7 @@ import com.bookbook.booklink.point_service.model.dto.response.PointHistoryListDt
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public interface PointApiDocs {
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.POINT_NOT_FOUND, ErrorCode.DATABASE_ERROR, ErrorCode.METHOD_UNAUTHORIZED})
     @GetMapping("/balance")
     ResponseEntity<BaseResponse<PointBalanceDto>> getPointBalance(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -36,7 +38,7 @@ public interface PointApiDocs {
     @ApiErrorResponses({ErrorCode.DUPLICATE_REQUEST, ErrorCode.VALIDATION_FAILED, ErrorCode.POINT_NOT_FOUND, ErrorCode.DATABASE_ERROR, ErrorCode.METHOD_UNAUTHORIZED})
     @PostMapping("/use")
     ResponseEntity<BaseResponse<PointBalanceDto>> usePoint(
-            @RequestParam UUID userId,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @RequestBody PointUseDto pointUseDto,
             @RequestHeader("Trace-Id") UUID traceId
     );
@@ -48,7 +50,7 @@ public interface PointApiDocs {
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR, ErrorCode.METHOD_UNAUTHORIZED})
     @GetMapping("/history")
     ResponseEntity<BaseResponse<List<PointHistoryListDto>>> getPointHistory(
-            @RequestParam UUID userId
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -61,7 +63,7 @@ public interface PointApiDocs {
             ErrorCode.PAYMENT_NOT_FOUND, ErrorCode.PAYMENT_AMOUNT_MISMATCH, ErrorCode.JSON_PARSING_ERROR})
     @PostMapping("/charge")
     ResponseEntity<BaseResponse<Integer>> chargePoint(
-            @RequestParam UUID userId,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @RequestParam String paymentId,
             @RequestHeader("Trace-Id") UUID traceId
     );
@@ -73,7 +75,7 @@ public interface PointApiDocs {
     @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR, ErrorCode.INVALID_API_TOKEN, ErrorCode.PAYMENT_CANCEL_FAILED, ErrorCode.METHOD_UNAUTHORIZED})
     @PostMapping("/cancel")
     ResponseEntity<BaseResponse<Boolean>> cancelPayment(
-            @RequestParam UUID userId,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @RequestParam String paymentId,
             @RequestParam Integer amount,
             @RequestParam String reason
@@ -86,7 +88,7 @@ public interface PointApiDocs {
     @ApiErrorResponses({ErrorCode.DUPLICATE_REQUEST, ErrorCode.VALIDATION_FAILED, ErrorCode.POINT_NOT_ENOUGH, ErrorCode.DATABASE_ERROR, ErrorCode.METHOD_UNAUTHORIZED})
     @PostMapping("/exchange")
     ResponseEntity<BaseResponse<PointExchangeDto>> exchangePoint(
-            @RequestParam UUID userId,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @RequestParam Integer num,
             @RequestHeader("Trace-Id") UUID traceId
     );

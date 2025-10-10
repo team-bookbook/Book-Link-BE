@@ -43,23 +43,21 @@
             return;
         }
 
-        const socket = new WebSocket("ws://localhost:8080/ws/chat");
+        // ✅ 토큰을 WebSocket URL에 포함
+        const socket = new WebSocket("ws://localhost:8080/ws/chat?token=" + token);
         stompClient = Stomp.over(socket);
 
-        stompClient.connect(
-            { "Authorization": "Bearer " + token },
-            () => {
-                log("✅ WebSocket 연결 성공");
+        // STOMP CONNECT에는 이제 헤더를 안 넣음
+        stompClient.connect({}, () => {
+            log("✅ WebSocket 연결 성공");
 
-                stompClient.subscribe("/sub/chat/" + chatId, (message) => {
-                    const msg = JSON.parse(message.body);
-                    log("📩 받은 메시지: " + msg.text);
-                });
-            },
-            (error) => {
-                log("❌ 연결 실패: " + error);
-            }
-        );
+            stompClient.subscribe("/sub/chat/" + chatId, (message) => {
+                const msg = JSON.parse(message.body);
+                log("📩 받은 메시지: " + msg.text);
+            });
+        }, (error) => {
+            log("❌ 연결 실패: " + error);
+        });
     }
 
     function sendMessage() {

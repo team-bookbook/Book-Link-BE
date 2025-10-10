@@ -50,7 +50,6 @@ public class ChatWebSocketController {
         saved = MessageResDto.builder()
                 .chatId(saved.getChatId())
                 .senderId(saved.getSenderId())
-                .senderEmail(email)
                 .text(saved.getText())
                 .sentAt(saved.getSentAt())
                 .status(saved.getStatus())

@@ -116,7 +116,7 @@ public class BorrowService {
     public void acceptReturnBookConfirm(UUID borrowId, String imageUrl, UUID userId, String traceId) {
         log.info("[BorrowService] [traceId = {}, userId = {}] return book confirm accept initiate borrowId={}", traceId, userId, borrowId);
 
-        Borrow borrow = borrowRepository.findById(borrowId)
+        Borrow borrow = borrowRepository.findByIdWithFetchJoin(borrowId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BORROW_NOT_FOUND));
 
         if (!(borrow.getStatus().equals(BorrowStatus.BORROWED)
@@ -125,7 +125,7 @@ public class BorrowService {
             throw new CustomException(ErrorCode.INVALID_BORROW_STATUS);
         }
 
-        UUID libraryOwnerId = borrow.getLibraryBookCopy().getLibraryBook().getLibrary().getMember().getId();
+        UUID libraryOwnerId = borrow.getLibraryBookCopy().getLibraryBook().getOwnerId();
         if (!userId.equals(libraryOwnerId)) {
             throw new CustomException(ErrorCode.BORROW_FORBIDDEN);
         }

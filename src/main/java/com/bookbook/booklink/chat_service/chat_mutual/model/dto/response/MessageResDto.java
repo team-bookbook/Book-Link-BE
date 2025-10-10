@@ -26,9 +26,6 @@ public class MessageResDto {
     @Schema(description = "보낸 사람 ID", example = "7fa85f64-5717-4562-b3fc-2c963f66afa6")
     private UUID senderId;
 
-    @Schema(description = "보낸 사람 이메일", example = "test1@example.com")
-    private String senderEmail;
-
     @Schema(description = "메시지 본문", example = "안녕하세요!")
     private String text;
 
@@ -45,15 +42,9 @@ public class MessageResDto {
     private List<FileAttachmentDto> attachments;
 
     public static MessageResDto fromEntity(ChatMessages entity) {
-        // 히스토리 조회 등 senderEmail이 필요 없거나 모를 때 사용
-        return fromEntity(entity, null);
-    }
-
-    public static MessageResDto fromEntity(ChatMessages entity,String senderEmail) {
         return MessageResDto.builder()
                 .chatId(entity.getChatId())
                 .senderId(entity.getSenderId())
-                .senderEmail(senderEmail)
                 .text(entity.getText())
                 .sentAt(entity.getSentAt())
                 .status(entity.getStatus())

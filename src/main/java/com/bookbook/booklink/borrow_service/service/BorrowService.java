@@ -40,6 +40,7 @@ public class BorrowService {
 
     @Transactional
     public UUID borrowBook(Member member, String traceId, BorrowRequestDto borrowRequestDto) {
+        UUID userId = member.getId();
         log.info("[BorrowService] [traceId = {}, userId = {}] borrow book initiate borrowRequestDto={}", traceId, member.getId(), borrowRequestDto);
 
         UUID libraryBookId = borrowRequestDto.getLibraryBookId();

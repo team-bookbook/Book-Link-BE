@@ -39,8 +39,8 @@ public class BorrowService {
     private final ReservationRepository reservationRepository;
 
     @Transactional
-    public UUID borrowBook(UUID userId, String traceId, BorrowRequestDto borrowRequestDto) {
-        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book initiate borrowRequestDto={}", traceId, userId, borrowRequestDto);
+    public UUID borrowBook(Member member, String traceId, BorrowRequestDto borrowRequestDto) {
+        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book initiate borrowRequestDto={}", traceId, member.getId(), borrowRequestDto);
 
         UUID libraryBookId = borrowRequestDto.getLibraryBookId();
         LocalDateTime borrowedAt = LocalDateTime.now();
@@ -48,7 +48,6 @@ public class BorrowService {
 
         LibraryBook libraryBook = libraryBookService.getLibraryBookOrThrow(libraryBookId);
         LibraryBookCopy copy = libraryBookService.getLibraryBookCopy(libraryBookId);
-        Member member = memberService.getMemberOrThrow(userId);
 
         Optional<Reservation> availableReservationOpt = reservationRepository
                 .findFirstByLibraryBookIdAndStatusOrderByReservedAtAsc(libraryBookId, ReservationStatus.AVAILABLE);
@@ -70,7 +69,7 @@ public class BorrowService {
                     .amount(deposit)
                     .type(TransactionType.USE)
                     .build();
-            pointService.usePoint(dto, UUID.fromString(traceId), userId);
+            pointService.usePoint(dto, UUID.fromString(traceId), member);
         }
 
         // todo : 1대1 채팅창 open
@@ -78,7 +77,7 @@ public class BorrowService {
         Borrow savedBorrow = borrowRepository.save(borrow);
         UUID borrowId = savedBorrow.getId();
 
-        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book success borrowId={}", traceId, userId, borrowId);
+        log.info("[BorrowService] [traceId = {}, userId = {}] borrow book success borrowId={}", traceId, member.getId(), borrowId);
         return borrowId;
     }
 
@@ -130,7 +129,7 @@ public class BorrowService {
     public void returnBook(UUID borrowId, String imageUrl, UUID userId, String traceId) {
         log.info("[BorrowService] [traceId = {}, userId = {}] return book confirm accept initiate borrowId={}", traceId, userId, borrowId);
 
-        Borrow borrow = borrowRepository.findById(borrowId)
+        Borrow borrow = borrowRepository.findByIdWithFetchJoin(borrowId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BORROW_NOT_FOUND));
 
         if (!(borrow.getStatus().equals(BorrowStatus.BORROWED)
@@ -139,7 +138,7 @@ public class BorrowService {
             throw new CustomException(ErrorCode.INVALID_BORROW_STATUS);
         }
 
-        UUID libraryOwnerId = borrow.getLibraryBookCopy().getLibraryBook().getLibrary().getMember().getId();
+        UUID libraryOwnerId = borrow.getLibraryBookCopy().getLibraryBook().getOwnerId();
         if (!userId.equals(libraryOwnerId)) {
             throw new CustomException(ErrorCode.BORROW_FORBIDDEN);
         }

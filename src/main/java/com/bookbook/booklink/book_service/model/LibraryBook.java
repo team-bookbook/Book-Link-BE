@@ -78,6 +78,9 @@ public class LibraryBook {
     @Schema(description = "이 도서를 소장한 도서관")
     private Library library;
 
+    @Column(nullable = false, updatable = false)
+    private UUID ownerId;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_id", nullable = false)
     @Schema(description = "도서 정보")
@@ -198,6 +201,13 @@ public class LibraryBook {
 
         if (previewImages != null) {
             previewImages.forEach(this::addImage);
+        }
+    }
+
+    @PrePersist
+    public void setOwnerIdBeforeSave() {
+        if (library != null && library.getMember() != null) {
+            this.ownerId = library.getMember().getId();
         }
     }
 }

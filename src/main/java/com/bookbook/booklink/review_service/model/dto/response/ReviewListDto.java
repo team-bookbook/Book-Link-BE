@@ -18,8 +18,8 @@ public class ReviewListDto {
     @Schema(description = "리뷰 ID", example = "550e8400-e29b-41d4-a716-446655440000")
     private UUID reviewId;
 
-    @Schema(description = "작성자 ID", example = "test@test.com")
-    private String userId;
+    @Schema(description = "작성자 이름", example = "test@test.com")
+    private String reviewerName;
 
     @Schema(description = "별점", example = "4")
     private Short rating;
@@ -30,7 +30,7 @@ public class ReviewListDto {
     public static ReviewListDto fromEntity(Review review) {
         return ReviewListDto.builder()
                 .reviewId(review.getId())
-                .userId(review.getTargetId())
+                .reviewerName(review.getReviewer().getName())
                 .rating(review.getRating())
                 .comment(review.getComment())
                 .build();

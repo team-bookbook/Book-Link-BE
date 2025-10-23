@@ -1,8 +1,9 @@
 package com.bookbook.booklink.review_service.controller.docs;
 
 
-import com.bookbook.booklink.common.exception.ApiErrorResponses;
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.dto.BaseResponse;
+import com.bookbook.booklink.common.exception.ApiErrorResponses;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public interface ReviewApiDocs {
     @PostMapping
     public ResponseEntity<BaseResponse<Boolean>> createReview(
             @Valid @RequestBody ReviewCreateDto reviewCreateDto,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @RequestHeader("Trace-Id") String traceId
     );
 
@@ -43,6 +46,7 @@ public interface ReviewApiDocs {
     @PutMapping("/{reviewId}")
     public ResponseEntity<BaseResponse<Boolean>> updateReview(
             @PathVariable UUID reviewId,
+            @AuthenticationPrincipal(expression = "member") Member member,
             @Valid @RequestBody ReviewUpdateDto reviewUpdateDto,
             @RequestHeader("Trace-Id") String traceId
     );
@@ -55,7 +59,8 @@ public interface ReviewApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION, ErrorCode.REVIEW_NOT_FOUND})
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<BaseResponse<Boolean>> deleteReview(
-            @PathVariable UUID reviewId
+            @PathVariable UUID reviewId,
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -66,7 +71,8 @@ public interface ReviewApiDocs {
             ErrorCode.METHOD_UNAUTHORIZED, ErrorCode.DATA_INTEGRITY_VIOLATION})
     @GetMapping("/{libraryId}")
     public ResponseEntity<BaseResponse<List<ReviewListDto>>> getLibraryReview(
-            @PathVariable UUID libraryId
+            @PathVariable UUID libraryId,
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 
     @Operation(
@@ -78,6 +84,17 @@ public interface ReviewApiDocs {
             ErrorCode.DATA_INTEGRITY_VIOLATION})
     @GetMapping("/rating/{targetId}")
     public ResponseEntity<BaseResponse<Double>> getAvgRating(
-            @PathVariable String targetId
+            @PathVariable UUID targetId
+    );
+
+    @Operation(
+            summary = "내 리뷰 조회",
+            description = "사용자가 도서관에 대해 작성한 리뷰 목록을 조회합니다. "
+    )
+    @ApiErrorResponses({ErrorCode.VALIDATION_FAILED, ErrorCode.DATABASE_ERROR,
+            ErrorCode.DATA_INTEGRITY_VIOLATION})
+    @GetMapping("/my")
+    ResponseEntity<BaseResponse<List<ReviewListDto>>> getMyReview(
+            @AuthenticationPrincipal(expression = "member") Member member
     );
 }

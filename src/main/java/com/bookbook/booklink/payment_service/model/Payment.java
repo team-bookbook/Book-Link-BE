@@ -1,8 +1,10 @@
 package com.bookbook.booklink.payment_service.model;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -68,13 +70,11 @@ public class Payment {
     )
     private String paymentId;
 
-    @Column(nullable = false, updatable = false)
-    @Schema(
-            description = "결제를 진행한 회원의 UUID",
-            example = "550e8400-e29b-41d4-a716-446655440000",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
+    @Schema(description = "포인트를 사용한 사용자")
+    private Member member;
 
     @CreationTimestamp
     @Column(nullable = false)

@@ -1,6 +1,8 @@
 package com.bookbook.booklink.payment_service.repository;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.payment_service.model.Payment;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,6 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
 
     Optional<Payment> findByPaymentId(String paymentId);
 
-    List<Payment> findAllByUserId(UUID userId);
+    List<Payment> findAllByMember(@NotNull Member member);
 }
     

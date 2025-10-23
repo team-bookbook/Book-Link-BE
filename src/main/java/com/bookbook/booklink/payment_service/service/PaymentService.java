@@ -1,5 +1,6 @@
 package com.bookbook.booklink.payment_service.service;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.payment_service.model.Payment;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * 결제 관련 비즈니스 로직을 처리하는 서비스 클래스
@@ -35,7 +35,7 @@ public class PaymentService {
      * @throws CustomException 동일한 paymentId가 이미 존재할 경우
      */
     @Transactional
-    public void initPayment(PaymentInitDto dto) {
+    public void initPayment(PaymentInitDto dto, Member member) {
         log.info("[PaymentService] Init payment start. paymentId={}, amount={}, method={}",
                 dto.getPaymentId(), dto.getAmount(), dto.getMethod());
 
@@ -50,6 +50,7 @@ public class PaymentService {
                 .status(PaymentStatus.READY)
                 .paymentId(dto.getPaymentId())
                 .createdAt(LocalDateTime.now())
+                .member(member)
                 .build();
 
         paymentRepository.save(payment);
@@ -120,15 +121,15 @@ public class PaymentService {
     /**
      * 특정 사용자의 결제 내역을 조회한다.
      *
-     * @param userId 사용자 고유 식별자
+     * @param member 사용자
      * @return PaymentResDto 리스트
      */
-    public List<PaymentResDto> getPaymentsByUser(UUID userId) {
-        log.info("[PaymentService] Get payments by user. userId={}", userId);
+    public List<PaymentResDto> getPaymentsByUser(Member member) {
+        log.info("[PaymentService] Get payments by user. userId={}", member.getId());
 
-        List<Payment> paymentList = paymentRepository.findAllByUserId(userId);
+        List<Payment> paymentList = paymentRepository.findAllByMember(member);
 
-        log.info("[PaymentService] Found {} payments. userId={}", paymentList.size(), userId);
+        log.info("[PaymentService] Found {} payments. userId={}", paymentList.size(), member.getId());
         return paymentList.stream().map(PaymentResDto::fromEntity).toList();
     }
 

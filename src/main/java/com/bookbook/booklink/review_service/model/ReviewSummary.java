@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -23,7 +24,7 @@ public class ReviewSummary {
 
     @Id
     @Schema(description = "리뷰 대상 ID (도서관 또는 사용자)", example = "510e8440-eb9b-11d4-aa16-424651640000")
-    private String targetId;
+    private UUID targetId;
 
     @Schema(description = "리뷰 대상 유형", example = "LIBRARY")
     private TargetType targetType;

@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 @Schema(description = "리뷰 생성 요청 DTO")
 public class ReviewCreateDto {
@@ -15,7 +17,7 @@ public class ReviewCreateDto {
             example = "user-1234",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String reviewerId;
+    private UUID reviewerId;
 
     @NotBlank(message = "리뷰 대상 ID는 필수입니다.")
     @Schema(
@@ -23,7 +25,7 @@ public class ReviewCreateDto {
             example = "510e8440-eb9b-11d4-aa16-424651640000",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private String targetId;
+    private UUID targetId;
 
     @NotNull(message = "리뷰 대상 타입은 필수입니다.")
     @Schema(

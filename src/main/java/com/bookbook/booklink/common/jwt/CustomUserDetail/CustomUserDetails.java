@@ -7,12 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails,Principal{
 
     private final Member member;
 
@@ -28,6 +29,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
+        return member.getEmail();
+    }
+
+    @Override
+    public String getName(){
         return member.getEmail();
     }
 

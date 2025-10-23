@@ -1,11 +1,13 @@
 package com.bookbook.booklink.review_service.service;
 
+import com.bookbook.booklink.auth_service.model.Member;
 import com.bookbook.booklink.common.event.LockEvent;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
 import com.bookbook.booklink.common.service.IdempotencyService;
 import com.bookbook.booklink.review_service.model.Review;
 import com.bookbook.booklink.review_service.model.ReviewSummary;
+import com.bookbook.booklink.review_service.model.TargetType;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewCreateDto;
 import com.bookbook.booklink.review_service.model.dto.request.ReviewUpdateDto;
 import com.bookbook.booklink.review_service.model.dto.response.ReviewListDto;
@@ -32,11 +34,11 @@ public class ReviewService {
      *
      * @param reviewCreateDto 별점, 한줄평이 담긴 dto
      * @param traceId         요청 멱등성 체크용 ID
-     * @param userId          요청 사용자 ID
+     * @param member          요청 사용자
      */
     @Transactional
-    public void createReview(ReviewCreateDto reviewCreateDto, String traceId, UUID userId) {
-
+    public void createReview(ReviewCreateDto reviewCreateDto, String traceId, Member member) {
+        UUID userId = member.getId();
         log.info("[ReviewService] [traceId={}, userId={}] create review initiate. targetId={}",
                 traceId, userId, reviewCreateDto.getTargetId());
 
@@ -46,7 +48,7 @@ public class ReviewService {
                 () -> LockEvent.builder().key(key).build());
 
         // 타입에 따라 review 생성 후 저장
-        Review newReview = Review.toEntity(reviewCreateDto);
+        Review newReview = Review.toEntity(reviewCreateDto, member);
         Review savedReview = reviewRepository.save(newReview);
 
         // 리뷰 집계
@@ -121,7 +123,7 @@ public class ReviewService {
 
         // 리뷰 삭제
         Review existingReview = findReviewById(reviewId);
-        String targetId = existingReview.getTargetId();
+        UUID targetId = existingReview.getTargetId();
         reviewRepository.delete(existingReview);
 
         // 리뷰 집계에 반영
@@ -139,7 +141,7 @@ public class ReviewService {
      * @param targetId 조회할 ID
      * @return 리뷰 집계 혹은 null
      */
-    public ReviewSummary findReviewSummaryByTargetId(String targetId) {
+    public ReviewSummary findReviewSummaryByTargetId(UUID targetId) {
 
         return reviewSummaryRepository.findById(targetId).orElse(null);
     }
@@ -164,7 +166,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public List<ReviewListDto> getLibraryReview(UUID libraryId) {
 
-        List<Review> libraryReviewList = reviewRepository.findAllByTargetId(libraryId.toString());
+        List<Review> libraryReviewList = reviewRepository.findAllByTargetId(libraryId);
 
         return libraryReviewList.stream().map(ReviewListDto::fromEntity).toList();
     }
@@ -176,7 +178,7 @@ public class ReviewService {
      * @return 평균 별점 or null
      */
     @Transactional(readOnly = true)
-    public Double getAvgRating(String targetId) {
+    public Double getAvgRating(UUID targetId) {
 
         ReviewSummary reviewSummary = findReviewSummaryByTargetId(targetId);
 
@@ -186,6 +188,19 @@ public class ReviewService {
             return reviewSummary.getAvgRating();
         }
 
+    }
+
+    /**
+     * 유저가 도서관에 단 리뷰를 조회하는 메서드
+     *
+     * @param member 조회할 유저
+     * @return 리뷰 목록 dto
+     */
+    @Transactional(readOnly = true)
+    public List<ReviewListDto> getMyReview(Member member) {
+        List<Review> reviewList = reviewRepository.findAllByReviewerAndTargetType(member, TargetType.LIBRARY);
+
+        return reviewList.stream().map(ReviewListDto::fromEntity).toList();
     }
 
 }

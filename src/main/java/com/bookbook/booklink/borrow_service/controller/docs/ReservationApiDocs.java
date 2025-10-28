@@ -29,4 +29,16 @@ public interface ReservationApiDocs {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Trace-Id") String traceId
     );
+
+    @Operation(
+            summary = "도서 예약 취소",
+            description = "도서 예약을 취소합니다."
+    )
+    @ApiErrorResponses({ErrorCode.DATABASE_ERROR, /* todo 에러 코드 추가 */})
+    @DeleteMapping()
+    public ResponseEntity<BaseResponse<UUID>> removeReservation(
+            @NotNull @RequestParam UUID reservationId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    );
 }

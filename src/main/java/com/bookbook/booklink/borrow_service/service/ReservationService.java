@@ -9,6 +9,7 @@ import com.bookbook.booklink.borrow_service.model.ReservationStatus;
 import com.bookbook.booklink.borrow_service.repository.ReservationRepository;
 import com.bookbook.booklink.common.exception.CustomException;
 import com.bookbook.booklink.common.exception.ErrorCode;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -57,4 +58,13 @@ public class ReservationService {
                     // todo 알림 발송 로직 호출, libraryBookId 포함
                     log.info("[ReservationService] [traceId = {}, userId = {}] activate reservation success reservationId={}", traceId, userId, reservation.getId());
                 });}
+
+    public void deleteReservation(UUID userId, String traceId, @NotNull UUID reservationId) {
+        log.info("[ReservationService] [traceId = {}, userId = {}] delete reservation initiate libraryBookId={}", traceId, userId, reservationId);
+
+        reservationRepository.deleteById(reservationId);
+
+        log.info("[ReservationService] [traceId = {}, userId = {}] delete reservation success libraryBookId={}", traceId, userId, reservationId);
+
+    }
 }

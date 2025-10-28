@@ -39,4 +39,23 @@ public class ReservationController implements ReservationApiDocs {
         return ResponseEntity.ok(BaseResponse.success(reservationId));
 
     }
+
+    @Override
+    public ResponseEntity<BaseResponse<UUID>> removeReservation(
+            @NotNull @RequestParam UUID reservationId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestHeader("Trace-Id") String traceId
+    ) {
+        UUID userId = customUserDetails.getMember().getId();
+
+        log.info("[ReservationController] [traceId = {}, userId = {}] delete reservation request received, libraryBookId={}",
+                traceId, userId, reservationId);
+
+        reservationService.deleteReservation(userId, traceId, reservationId);
+
+        log.info("[ReservationController] [traceId = {}, userId = {}] delete reservation request success, reservationId={}",
+                traceId, userId, reservationId);
+        return ResponseEntity.ok(BaseResponse.success(reservationId));
+
+    }
 }

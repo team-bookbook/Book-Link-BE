@@ -20,11 +20,13 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(UUID.class)
 public class Point {
 
     @Id
+    private UUID id;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId // membr의 id를 Point의 id로 사용
     @JoinColumn(name = "member_id", nullable = false)
     @NotNull
     @Schema(description = "포인트를 사용한 사용자")
